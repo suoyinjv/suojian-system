@@ -2,41 +2,53 @@
 namespace Admin\Controller;
 use Think\Controller;
 
+/**
+ * 排课管理 - HTML页面 + JSON API
+ */
 class ScheduleController extends Controller {
     
-    // 排课列表
+    /**
+     * 排课列表（页面 / JSON API）
+     */
     public function index() {
-        $page = I('page', 1, 'intval');
-        $rows = I('rows', 20, 'intval');
+        $is_json = I('json', 0, 'intval');
         
-        $list = M('schedule')
-            ->alias('s')
-            ->field('s.*,c.name as class_name,co.name as course_name,t.name as teacher_name')
-            ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
-            ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
-            ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
-            ->order('s.week_day,s.start_time')
-            ->page($page, $rows)
-            ->select();
+        if ($is_json) {
+            $page = I('page', 1, 'intval');
+            $rows = I('rows', 20, 'intval');
             
-        $total = M('schedule')->count();
-        
-        $week_arr = [1=>'周一',2=>'周二',3=>'周三',4=>'周四',5=>'周五',6=>'周六',7=>'周日'];
-        foreach ($list as &$v) {
-            $v['week_text'] = $week_arr[$v['week_day']];
-            $v['time_text'] = substr($v['start_time'],0,5).'-'.substr($v['end_time'],0,5);
-            $v['status_text'] = $v['status'] ? '启用' : '禁用';
+            $list = M('schedule')
+                ->alias('s')
+                ->field('s.*,c.name as class_name,co.course_name as course_name,t.username as teacher_name')
+                ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
+                ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
+                ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
+                ->order('s.week_day,s.start_time')
+                ->page($page, $rows)
+                ->select();
+                
+            $total = M('schedule')->count();
+            
+            $week_arr = [1=>'周一',2=>'周二',3=>'周三',4=>'周四',5=>'周五',6=>'周六',7=>'周日'];
+            foreach ($list as &$v) {
+                $v['week_text'] = $week_arr[$v['week_day']] ?: '-';
+                $v['time_text'] = ($v['start_time'] ? substr($v['start_time'],0,5) : '') . '-' . ($v['end_time'] ? substr($v['end_time'],0,5) : '');
+                $v['status_text'] = $v['status'] ? '启用' : '禁用';
+            }
+            
+            $this->ajaxReturn(['total'=>$total, 'rows'=>$list]);
         }
         
-        $this->ajaxReturn(['total'=>$total,'rows'=>$list]);
+        $this->display();
     }
     
-    // 添加排课
+    /**
+     * 添加排课（API only）
+     */
     public function add() {
         $data = I('post.');
         $data['create_time'] = time();
         
-        // 检查时间冲突
         $conflict = M('schedule')->where([
             'teacher_id'=>$data['teacher_id'],
             'week_day'=>$data['week_day'],
@@ -52,7 +64,9 @@ class ScheduleController extends Controller {
         $this->ajaxReturn(['code'=>$result?1:0, 'msg'=>$result?'添加成功':'添加失败']);
     }
     
-    // 编辑排课
+    /**
+     * 编辑排课（API only）
+     */
     public function edit() {
         $data = I('post.');
         $data['id'] = I('id', 0, 'intval');
@@ -61,30 +75,42 @@ class ScheduleController extends Controller {
         $this->ajaxReturn(['code'=>$result!==false?1:0, 'msg'=>$result!==false?'更新成功':'更新失败']);
     }
     
-    // 删除排课
+    /**
+     * 删除排课（API only）
+     */
     public function del() {
         $id = I('id', 0, 'intval');
         $result = M('schedule')->delete($id);
         $this->ajaxReturn(['code'=>$result?1:0, 'msg'=>$result?'删除成功':'删除失败']);
     }
     
-    // 课表视图（可视化）
+    /**
+     * 课表视图（页面 / JSON API）
+     */
     public function scheduleView() {
-        $week_day = I('week_day', date('N'), 'intval');
+        $is_json = I('json', 0, 'intval');
         
-        $list = M('schedule')
-            ->alias('s')
-            ->field('s.*,c.name as class_name,co.name as course_name,t.name as teacher_name')
-            ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
-            ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
-            ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
-            ->where(['s.week_day'=>$week_day, 's.status'=>1])
-            ->select();
+        if ($is_json) {
+            $week_day = I('week_day', date('N'), 'intval');
             
-        $this->ajaxReturn(['list'=>$list]);
+            $list = M('schedule')
+                ->alias('s')
+                ->field('s.*,c.name as class_name,co.course_name as course_name,t.username as teacher_name')
+                ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
+                ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
+                ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
+                ->where(['s.week_day'=>$week_day, 's.status'=>1])
+                ->select();
+                
+            $this->ajaxReturn(['list'=>$list]);
+        }
+        
+        $this->display();
     }
     
-    // 获取老师可排课时间
+    /**
+     * 获取老师可排课时间（API only）
+     */
     public function teacherFreeTime() {
         $teacher_id = I('teacher_id', 0, 'intval');
         $week_day = I('week_day', 0, 'intval');
@@ -93,14 +119,12 @@ class ScheduleController extends Controller {
             $this->ajaxReturn(['code'=>0, 'msg'=>'参数错误']);
         }
         
-        // 获取已排课时间
         $busy = M('schedule')->where([
             'teacher_id'=>$teacher_id,
             'week_day'=>$week_day,
             'status'=>1
         ])->select();
         
-        // 生成可用时间段 (08:00-21:00)
         $time_slots = [];
         for ($h=8; $h<21; $h++) {
             $start = sprintf('%02d:00', $h);
@@ -120,7 +144,9 @@ class ScheduleController extends Controller {
         $this->ajaxReturn(['code'=>1, 'slots'=>$time_slots, 'busy'=>$busy]);
     }
     
-    // 转向课表视图
+    /**
+     * 转向课表视图
+     */
     public function timetable() {
         $this->redirect('scheduleView');
     }
