@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加学习计划</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-plus"></i> 添加学习计划</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="addForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">学生 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="student_id" class="am-form-field" required>
+                                        <option value="">请选择学生</option>
+                                        <volist name="students" id="item">
+                                        <option value="{$item.id}">{$item.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课程</label>
+                                <div class="am-u-sm-7">
+                                    <select name="course_id" class="am-form-field">
+                                        <option value="">请选择课程</option>
+                                        <volist name="courses" id="item">
+                                        <option value="{$item.id}">{$item.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">计划标题 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="title" class="am-form-field" placeholder="请输入计划标题" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">目标日期</label>
+                                <div class="am-u-sm-7">
+                                    <input type="date" name="target_date" class="am-form-field" value="{:date('Y-m-d')}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">计划内容</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="content" class="am-form-field" rows="5" placeholder="请输入计划详细描述"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-check"></i> 提交
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#addForm').submit(function() {
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if(res.status) {
+            location.href = '__CONTROLLER__/index';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

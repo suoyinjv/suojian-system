@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>营收数据报表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <script src="__PUBLIC__/echarts.min.js"></script>
+    <style>
+        .stat-card { padding: 20px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .chart-container { height: 300px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>💰 营收数据报表</h2>
+        
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-4">
+                <div class="stat-card blue">
+                    <div class="stat-number">¥{$year_income}</div>
+                    <div class="stat-label">年度营收</div>
+                </div>
+            </div>
+            <div class="am-u-sm-4">
+                <div class="stat-card green">
+                    <div class="stat-number">¥{$monthIncome}</div>
+                    <div class="stat-label">本月营收</div>
+                </div>
+            </div>
+            <div class="am-u-sm-4">
+                <div class="stat-card orange">
+                    <div class="stat-number">{$orderCount}</div>
+                    <div class="stat-label">订单数</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-g">
+            <div class="am-u-sm-8">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">月度营收趋势（近12月）</div>
+                    <div class="am-panel-bd">
+                        <div id="incomeChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-4">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">课程营收占比</div>
+                    <div class="am-panel-bd">
+                        <div id="courseChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-default" style="margin-top: 20px;">
+            <div class="am-panel-hd">支付方式分布</div>
+            <div class="am-panel-bd">
+                <div id="payChart" style="height:250px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var incomeTrend = {$month_income_trend|default='[]'};
+var courseData = {$course_data|default='[]'};
+var payData = {$pay_data|default='[]'};
+
+if (incomeTrend.length) {
+    var incomeChart = echarts.init(document.getElementById('incomeChart'));
+    incomeChart.setOption({
+        tooltip: { trigger: 'axis' },
+        xAxis: { type: 'category', data: incomeTrend.map(function(d){return d.month;}) },
+        yAxis: { type: 'value', axisLabel: { formatter: '¥{value}' } },
+        series: [
+            { type: 'bar', data: incomeTrend.map(function(d){return d.money;}), itemStyle: { color: '#667eea' } },
+            { type: 'line', data: incomeTrend.map(function(d){return d.money;}), smooth: true, itemStyle: { color: '#764ba2' } }
+        ]
+    });
+}
+
+if (courseData.length) {
+    var courseChart = echarts.init(document.getElementById('courseChart'));
+    courseChart.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
+        series: [{ type: 'pie', radius: ['35%', '65%'], data: courseData }]
+    });
+}
+
+if (payData.length) {
+    var payChart = echarts.init(document.getElementById('payChart'));
+    payChart.setOption({
+        tooltip: { trigger: 'item', formatter: '{b}: ¥{c} ({d}%)' },
+        legend: { orient: 'vertical', right: 10, top: 'center' },
+        series: [{ type: 'pie', radius: ['30%', '60%'], center: ['40%', '50%'], data: payData }]
+    });
+}
+</script>
+</body>
+</html>

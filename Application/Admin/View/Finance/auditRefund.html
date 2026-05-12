@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>退款审核 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .audit-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        .info-label { color: #999; }
+        .info-value { font-weight: bold; }
+        .amount { font-size: 24px; color: #f5222d; }
+        .status-0 { color: #fa8c16; }
+        .status-1 { color: #52c41a; }
+        .status-2 { color: #f5222d; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-8 am-u-sm-centered">
+        <h2>📋 退款审核</h2>
+        
+        <volist name="refund" id="vo">
+        <div class="audit-card">
+            <div class="info-row">
+                <span class="info-label">订单编号</span>
+                <span class="info-value">{$vo.order_no}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">学员姓名</span>
+                <span class="info-value">{$vo.student_name}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">课程名称</span>
+                <span class="info-value">{$vo.course_name}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">退款金额</span>
+                <span class="info-value amount">¥{$vo.amount}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">退款原因</span>
+                <span class="info-value">{$vo.reason|default='未填写'}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">申请时间</span>
+                <span class="info-value">{:date('Y-m-d H:i', $vo['add_time'])}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">当前状态</span>
+                <span class="info-value status-{$vo.status}">
+                    {$vo['status']==0?'待审核':($vo['status']==1?'已退款':'已拒绝')}
+                </span>
+            </div>
+            <volist name="vo.images" id="img">
+            <div class="info-row">
+                <span class="info-label">凭证图片</span>
+                <span class="info-value"><a href="{$img}" target="_blank">查看图片</a></span>
+            </div>
+            </volist>
+        </div>
+        </volist>
+        
+        <if condition="$vo['status'] eq 0">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">审核操作</div>
+            <div class="am-panel-bd">
+                <p class="am-text-warning"><i class="am-icon-warning"></i> 请确认退款信息无误后执行审核操作</p>
+                <div style="margin-top: 20px;">
+                    <a href="{:U('auditRefund', array('id'=>I('id'), 'status'=>1))}" class="am-btn am-btn-success am-radius" onclick="return confirm('确认通过退款？')">
+                        <i class="am-icon-check"></i> 通过退款
+                    </a>
+                    <a href="{:U('auditRefund', array('id'=>I('id'), 'status'=>2))}" class="am-btn am-btn-danger am-radius" onclick="return confirm('确认拒绝退款？')">
+                        <i class="am-icon-times"></i> 拒绝退款
+                    </a>
+                    <a href="{:U('refund')}" class="am-btn am-btn-default am-radius">返回列表</a>
+                </div>
+            </div>
+        </div>
+        </if>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

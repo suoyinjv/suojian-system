@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>招生数据报表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <script src="__PUBLIC__/echarts.min.js"></script>
+    <style>
+        .stat-card { padding: 20px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .stat-card.red { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #333; }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .chart-container { height: 300px; }
+        .rate-highlight { color: #52c41a; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>📊 招生数据报表</h2>
+        
+        <!-- 核心指标 -->
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$total_leads}</div>
+                    <div class="stat-label">线索总数</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card green">
+                    <div class="stat-number">{$month_leads}</div>
+                    <div class="stat-label">本月新增线索</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card orange">
+                    <div class="stat-number">{$converted}</div>
+                    <div class="stat-label">已成交</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card red">
+                    <div class="stat-number rate-highlight">{$conversion_rate}%</div>
+                    <div class="stat-label">线索转化率</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="am-g">
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">每月线索趋势（近12月）</div>
+                    <div class="am-panel-bd">
+                        <div id="trendChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">线索来源分布</div>
+                    <div class="am-panel-bd">
+                        <div id="sourceChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 状态分布 -->
+        <div class="am-panel am-panel-default" style="margin-top: 20px;">
+            <div class="am-panel-hd">线索状态分布</div>
+            <div class="am-panel-bd">
+                <div id="statusChart" style="height:250px;"></div>
+            </div>
+        </div>
+        
+        <!-- 线索列表 -->
+        <div class="am-panel am-panel-default" style="margin-top: 20px;">
+            <div class="am-panel-hd">近期线索列表</div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-bordered am-table-striped">
+                    <thead>
+                        <tr>
+                            <th>姓名</th><th>电话</th><th>来源</th><th>状态</th><th>意向课程</th><th>添加时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="recentLeads" id="vo">
+                        <tr>
+                            <td>{$vo.student_name}</td>
+                            <td>{$vo.phone}</td>
+                            <td>{$vo.source_text}</td>
+                            <td><span class="am-badge am-badge-{$vo.status_color}">{$vo.status_text}</span></td>
+                            <td>{$vo.interest_course}</td>
+                            <td>{:date('Y-m-d', $vo['add_time'])}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+                <p class="am-text-center"><a href="__CONTROLLER__/index" class="am-btn am-btn-default am-radius">查看全部线索</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var monthTrend = {$month_trend|default='[]'};
+var sourceData = {$source_data|default='[]'};
+var statusData = {$status_distribution|default='[]'};
+
+if (monthTrend.length) {
+    var trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+        xAxis: { type: 'category', data: monthTrend.map(function(d){return d.month;}) },
+        yAxis: { type: 'value' },
+        series: [{ type: 'line', data: monthTrend.map(function(d){return d.count;}), smooth: true, areaStyle: {color: 'rgba(102, 126, 234, 0.2)'} }]
+    });
+}
+
+if (sourceData.length) {
+    var sourceChart = echarts.init(document.getElementById('sourceChart'));
+    sourceChart.setOption({
+        tooltip: { trigger: 'item' },
+        series: [{ type: 'pie', radius: ['40%', '70%'], data: sourceData }]
+    });
+}
+
+if (statusData.length) {
+    var statusChart = echarts.init(document.getElementById('statusChart'));
+    statusChart.setOption({
+        tooltip: { trigger: 'item' },
+        legend: { bottom: 0 },
+        series: [{ type: 'pie', radius: ['35%', '60%'], data: statusData }]
+    });
+}
+</script>
+</body>
+</html>

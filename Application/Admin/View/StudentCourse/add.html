@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加课程 - 所以学教学系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <!-- 面包屑 -->
+                <div class="am-breadcrumb am-margin-bottom-sm">
+                    <a href="{:U('index')}"><i class="am-icon-home"></i> 首页</a>
+                    <a href="{:U('index')}">课时管理</a>
+                    <span class="am-active">添加课程</span>
+                </div>
+
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-plus"></i> 添加学员课程
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST" id="addForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">学员 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="student_id" class="am-form-field" required id="studentSelect">
+                                        <option value="">请选择学员</option>
+                                        <volist name="students" id="vo">
+                                        <option value="{$vo.id}">{$vo.name} ({$vo.phone|default=''})</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                                <div class="am-u-sm-2 am-text-left">
+                                    <a href="{:U('Student/add')}" class="am-btn am-btn-xs am-btn-default" target="_blank">
+                                        <i class="am-icon-plus"></i> 新增
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课程 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="course_id" class="am-form-field" required id="courseSelect">
+                                        <option value="">请选择课程</option>
+                                        <volist name="courses" id="vo">
+                                        <option value="{$vo.id}">{$vo.name} ({$vo.hours|default=0}课时)</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">购买课时数 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="total_hours" class="am-form-field" placeholder="请输入购买课时数" min="1" required value="{$course_info.hours|default=''}">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">单价(元/课时)</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="price_per_hour" class="am-form-field" placeholder="可选，默认为课程单价" step="0.01" min="0">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">总金额(元)</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="total_price" class="am-form-field" placeholder="可选，系统将自动计算" step="0.01" min="0">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">过期日期</label>
+                                <div class="am-u-sm-7">
+                                    <input type="date" name="expire_date" class="am-form-field" placeholder="留空表示永久有效">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">支付方式</label>
+                                <div class="am-u-sm-7">
+                                    <select name="payment_method" class="am-form-field">
+                                        <option value="cash">现金</option>
+                                        <option value="wechat">微信支付</option>
+                                        <option value="alipay">支付宝</option>
+                                        <option value="bank">银行转账</option>
+                                        <option value="other">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">备注</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="remark" class="am-form-field" rows="3" placeholder="可选备注信息"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-check"></i> 确认添加
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">
+                                        <i class="am-icon-arrow-left"></i> 返回列表
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    // 自动计算总金额
+    $('input[name="total_hours"], input[name="price_per_hour"]').on('input', function() {
+        var hours = parseFloat($('input[name="total_hours"]').val()) || 0;
+        var price = parseFloat($('input[name="price_per_hour"]').val()) || 0;
+        if (hours > 0 && price > 0) {
+            $('input[name="total_price"]').val((hours * price).toFixed(2));
+        }
+    });
+
+    // 课程选择后自动填充课时数
+    $('#courseSelect').change(function() {
+        var selected = $(this).find('option:selected');
+        var text = selected.text();
+        var match = text.match(/\((\d+)课时\)/);
+        if (match) {
+            $('input[name="total_hours"]').val(match[1]);
+        }
+    });
+
+    // 表单提交
+    $('#addForm').on('submit', function() {
+        var student_id = $('select[name="student_id"]').val();
+        var course_id = $('select[name="course_id"]').val();
+        var total_hours = $('input[name="total_hours"]').val();
+
+        if (!student_id) {
+            alert('请选择学员');
+            return false;
+        }
+        if (!course_id) {
+            alert('请选择课程');
+            return false;
+        }
+        if (!total_hours || total_hours <= 0) {
+            alert('请输入有效的课时数');
+            return false;
+        }
+        return true;
+    });
+});
+</script>
+</body>
+</html>

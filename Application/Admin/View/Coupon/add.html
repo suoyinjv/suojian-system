@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加优惠券</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+</head>
+<body>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">添加优惠券</h3>
+    </div>
+    <div class="panel-body">
+        <form action="__SELF__" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">优惠券名称 <span class="text-danger">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" name="name" class="form-control" placeholder="如: 新用户专享券" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">优惠券类型</label>
+                <div class="col-sm-6">
+                    <select name="type" class="form-control">
+                        <option value="1">折扣券</option>
+                        <option value="2">抵扣券</option>
+                    </select>
+                </div>
+                <div class="col-sm-4 help-block">折扣券按折扣率计算，抵扣券按金额抵扣</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">面值 <span class="text-danger">*</span></label>
+                <div class="col-sm-6">
+                    <input type="number" name="value" step="0.01" class="form-control" placeholder="折扣券填如: 0.8(8折)，抵扣券填金额" required>
+                </div>
+                <div class="col-sm-4 help-block">折扣券填折扣率(0-1)，抵扣券填金额</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">使用门槛</label>
+                <div class="col-sm-6">
+                    <input type="number" name="min_amount" step="0.01" class="form-control" placeholder="订单满多少可用，填0表示无门槛" value="0">
+                </div>
+                <div class="col-sm-4 help-block">订单金额达到此金额才可使用</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">最高抵扣</label>
+                <div class="col-sm-6">
+                    <input type="number" name="max_deduct" step="0.01" class="form-control" placeholder="最高抵扣金额，填0表示不限制" value="0">
+                </div>
+                <div class="col-sm-4 help-block">最高可抵扣的金额上限</div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">发放总量 <span class="text-danger">*</span></label>
+                <div class="col-sm-6">
+                    <input type="number" name="total_count" class="form-control" placeholder="可发放的优惠券总数量" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">有效期开始</label>
+                <div class="col-sm-6">
+                    <input type="date" name="valid_start" class="form-control" value="{:date('Y-m-d')}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">有效期结束</label>
+                <div class="col-sm-6">
+                    <input type="date" name="valid_end" class="form-control" value="{:date('Y-m-d', strtotime('+1 month'))}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-6">
+                    <select name="status" class="form-control">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-6">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <a href="{:U('index')}" class="btn btn-default">返回</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

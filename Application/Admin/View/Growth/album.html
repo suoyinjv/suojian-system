@@ -1,0 +1,101 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Growth/Album')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="请输入学员姓名搜索" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">查询</button>
+				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
+					更多筛选
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<i class="am-icon-angle-down"></i>
+				</label>
+
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+					<select name="student_id" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="0">选择学员</option>
+						<foreach name="student_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['student_id']) and $param['student_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						</foreach>
+					</select>
+					<div class="param-date param-where m-l-5">
+						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="开始日期" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
+						<span>~</span>
+						<input type="text" readonly="readonly" class="am-radius m-t-10" placeholder="结束日期" name="time_end" id="time_end" <if condition="isset($param['time_end'])">value="{{$param.time_end}}"</if>/>
+					</div>
+				</div>
+			</div>
+        </form>
+        <!-- form end -->
+
+        <!-- operation start -->
+        <div class="am-g m-t-15">
+            <a href="{{:U('Admin/Growth/UploadAlbum')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 上传相册</a>
+        </div>
+        <!-- operation end -->
+
+		<!-- album grid start -->
+		<div class="album-grid m-t-15">
+			<if condition="!empty($list)">
+				<div class="am-g">
+					<foreach name="list" item="v">
+						<div class="am-u-sm-6 am-u-md-4 am-u-lg-3 m-b-10">
+							<div class="album-item amthumbnail am-radius" data-am-modal="{target: '#album-popup-{{$v.id}}'}">
+								<img src="{{$v.thumb_url}}" class="am-img-thumbnail am-radius" alt="{{$v.student_name}}" />
+								<div class="album-info">
+									<p class="am-text-truncate"><i class="am-icon-user"></i> {{$v.student_name}}</p>
+									<p class="am-text-truncate am-text-muted"><i class="am-icon-clock-o"></i> {{$v.create_time}}</p>
+								</div>
+							</div>
+						</div>
+						<!-- album popup start -->
+						<div class="am-popup am-radius" id="album-popup-{{$v.id}}">
+							<div class="am-popup-inner">
+								<div class="am-popup-hd">
+									<h4 class="am-popup-title">成长相册 - {{$v.student_name}}</h4>
+									<span data-am-modal-close class="am-close">&times;</span>
+								</div>
+								<div class="am-popup-bd am-text-center">
+									<img src="{{$v.image_url}}" class="am-img-responsive am-center m-b-10" alt="{{$v.student_name}}" style="max-height:500px;" />
+									<dl class="dl-content am-text-left">
+										<dt>学员姓名</dt>
+										<dd>{{$v.student_name}}</dd>
+
+										<dt>照片描述</dt>
+										<dd><if condition="!empty($v['description'])">{{$v.description}}<else />无</if></dd>
+
+										<dt>上传时间</dt>
+										<dd>{{$v.create_time}}</dd>
+									</dl>
+									<div class="m-t-15 am-text-center">
+										<a href="{{:U('Admin/Growth/DeleteAlbum', array('id'=>$v['id']))}}" class="am-btn am-btn-danger am-radius am-btn-xs am-icon-trash-o submit-delete" data-id="{{$v.id}}" data-url="{{:U('Admin/Growth/DeleteAlbum')}}"> 删除</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- album popup end -->
+					</foreach>
+				</div>
+			<else />
+				<div class="am-alert am-alert-secondary am-radius" data-am-alert>
+					<p class="am-text-center"><i class="am-icon-picture-o am-icon-lg"></i><br/>暂无相册数据</p>
+				</div>
+			</if>
+		</div>
+		<!-- album grid end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+	
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

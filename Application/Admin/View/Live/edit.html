@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>编辑直播课程 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd"><i class="am-icon-edit"></i> 编辑直播课程</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('save')}" method="POST">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">课程名称 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <input type="text" name="title" class="am-form-field" value="{$info.title}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">主讲老师</label>
+                        <div class="am-u-sm-4">
+                            <select name="teacher_id" class="am-form-field">
+                                <volist name="teacherList" id="vo">
+                                <option value="{$vo.id}" {$info['teacher_id']==$vo['id']?'selected':''}>{$vo.teacher_name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <label class="am-u-sm-2">直播平台</label>
+                        <div class="am-u-sm-4">
+                            <select name="platform" class="am-form-field">
+                                <option value="1" {$info['platform']==1?'selected':''}>钉钉</option>
+                                <option value="2" {$info['platform']==2?'selected':''}>微信群直播</option>
+                                <option value="3" {$info['platform']==3?'selected':''}>小鹅通</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">上课时间</label>
+                        <div class="am-u-sm-4">
+                            <input type="datetime-local" name="start_time" class="am-form-field" value="{$info.start_time|default=''}">
+                        </div>
+                        <label class="am-u-sm-2">时长(分钟)</label>
+                        <div class="am-u-sm-4">
+                            <input type="number" name="duration" class="am-form-field" value="{$info.duration}" min="15">
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">直播链接</label>
+                        <div class="am-u-sm-10">
+                            <input type="url" name="live_url" class="am-form-field" value="{$info.live_url}">
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">课程简介</label>
+                        <div class="am-u-sm-10">
+                            <textarea name="description" class="am-form-field" rows="4">{$info.description}</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <div class="am-u-sm-10 am-u-sm-offset-2">
+                            <button type="submit" class="am-btn am-btn-primary">保存</button>
+                            <a href="{:U('index')}" class="am-btn am-btn-default">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

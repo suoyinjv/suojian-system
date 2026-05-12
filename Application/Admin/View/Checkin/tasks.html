@@ -1,0 +1,114 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16">打卡任务详情</span>
+            <a href="{:U('index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回列表</a>
+        </legend>
+
+        <!-- 任务信息 -->
+        <div class="am-panel am-panel-primary am-radius m-b-10">
+            <div class="am-panel-hd">任务信息</div>
+            <div class="am-panel-bd">
+                <dl class="dl-content">
+                    <dt>任务名称</dt><dd>{$data.name|default='-'}</dd>
+                    <dt>打卡类型</dt>
+                    <dd>
+                        <if condition="$data['type'] eq 'daily'">
+                            <span class="am-badge am-badge-primary">日常签到</span>
+                        <else />
+                            <span class="am-badge am-badge-success">课次打卡</span>
+                        </if>
+                    </dd>
+                    <dt>日期范围</dt><dd>{$data.start_date|default=''} 至 {$data.end_date|default=''}</dd>
+                    <dt>打卡周期</dt><dd>{$data.weekdays|default='-'}</dd>
+                    <dt>打卡奖励</dt><dd>{$data.reward_points|default=0} 积分/次</dd>
+                    <dt>连续奖励</dt><dd>{$data.streak_bonus|default=0} 积分</dd>
+                    <dt>创建时间</dt><dd>{$data.add_time|default='-'}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="am-g m-b-10">
+            <div class="am-u-sm-4">
+                <div class="am-panel am-panel-success am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$total_students|default=0}</div>
+                        <div class="am-text-sm">参与人数</div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-4">
+                <div class="am-panel am-panel-primary am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$today_count|default=0}</div>
+                        <div class="am-text-sm">今日打卡</div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-4">
+                <div class="am-panel am-panel-warning am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$completion_rate|default='0%'}</div>
+                        <div class="am-text-sm">完成率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="am-g m-b-10">
+            <a href="{:U('save?id='.$data['id'])}" class="am-btn am-btn-primary am-radius am-btn-sm">
+                <i class="am-icon-edit"></i> 编辑任务
+            </a>
+            <a href="{:U('statistics?task_id='.$data['id'])}" class="am-btn am-btn-secondary am-radius am-btn-sm">
+                <i class="am-icon-bar-chart"></i> 打卡统计
+            </a>
+            <a href="{:U('ranking?task_id='.$data['id'])}" class="am-btn am-btn-warning am-radius am-btn-sm">
+                <i class="am-icon-trophy"></i> 排行榜
+            </a>
+        </div>
+
+        <!-- 参与学员列表 -->
+        <table class="am-table am-table-bordered am-table-striped am-table-hover">
+            <thead>
+                <tr>
+                    <th>学员</th>
+                    <th>手机号</th>
+                    <th>加入时间</th>
+                    <th>连续打卡</th>
+                    <th>累计打卡</th>
+                    <th>获得积分</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="student_list" id="vo">
+                <tr>
+                    <td>{$vo.student_name}</td>
+                    <td>{$vo.phone}</td>
+                    <td>{$vo.join_time}</td>
+                    <td><span class="am-badge am-badge-warning">{$vo.streak_days|default=0}天</span></td>
+                    <td>{$vo.total_days|default=0}次</td>
+                    <td>{$vo.total_points|default=0}</td>
+                    <td>
+                        <a href="{:U('calendar?student_id='.$vo['student_id'])}" class="am-btn am-btn-xs am-btn-primary am-radius">打卡日历</a>
+                    </td>
+                </tr>
+                <else />
+                <tr>
+                    <td colspan="7" class="am-text-center">暂无参与学员</td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+
+        {$page}
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>

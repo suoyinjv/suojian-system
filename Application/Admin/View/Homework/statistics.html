@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>作业统计 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <h2>作业统计</h2>
+            
+            <div class="am-g" style="margin-bottom:20px;">
+                <div class="am-u-sm-3">
+                    <div class="am-panel am-panel-primary">
+                        <div class="am-panel-hd">作业总数</div>
+                        <div class="am-panel-bd am-text-center">
+                            <h1>{$total.homework_count|default=0}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="am-panel am-panel-success">
+                        <div class="am-panel-hd">提交人数</div>
+                        <div class="am-panel-bd am-text-center">
+                            <h1>{$total.submit_count|default=0}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="am-panel am-panel-warning">
+                        <div class="am-panel-hd">平均分</div>
+                        <div class="am-panel-bd am-text-center">
+                            <h1>{$total.avg_score|default='--'}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="am-panel am-panel-danger">
+                        <div class="am-panel-hd">完成率</div>
+                        <div class="am-panel-bd am-text-center">
+                            <h1>{$total.complete_rate|default='0%'}</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form class="am-form am-form-inline" method="get">
+                <div class="am-form-group">
+                    <select name="course_id">
+                        <option value="">全部课程</option>
+                        <volist name="courses" id="vo">
+                        <option value="{$key}" {:I('course_id')==$key?'selected':''}>{$vo}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="am-form-group">
+                    <input type="month" name="month" value="{:I('month')}" class="am-form-field">
+                </div>
+                <button type="submit" class="am-btn am-btn-default">筛选</button>
+            </form>
+            
+            <table class="am-table am-table-bordered am-table-striped am-table-hover" style="margin-top:20px;">
+                <thead>
+                    <tr>
+                        <th>作业标题</th>
+                        <th>课程</th>
+                        <th>截止时间</th>
+                        <th>应交人数</th>
+                        <th>实交人数</th>
+                        <th>完成率</th>
+                        <th>平均分</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="homeworkList" id="vo">
+                    <tr>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.course_name}</td>
+                        <td>{$vo.submit_deadline}</td>
+                        <td>{$vo.should_submit}</td>
+                        <td>{$vo.actual_submit}</td>
+                        <td>{$vo.complete_rate}%</td>
+                        <td>{$vo.avg_score}</td>
+                        <td>
+                            <a href="{:U('statisticsDetail', array('homework_id'=>$vo['id']))}">详情</a>
+                        </td>
+                    </tr>
+                    </volist>
+                </tbody>
+            </table>
+            <div class="am-pagination">{$page}</div>
+            
+            <div class="am-panel am-panel-default" style="margin-top:30px;">
+                <div class="am-panel-hd">完成率趋势图</div>
+                <div class="am-panel-bd">
+                    <div id="trend_chart" style="height:300px;line-height:300px;text-align:center;color:#999;">
+                        图表加载中...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/lib/echarts.min.js"></script>
+<script>
+// 趋势图初始化占位
+// 可接入 ECharts 实现
+console.log('Statistics page loaded');
+</script>
+</body>
+</html>

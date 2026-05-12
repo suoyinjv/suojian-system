@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>消课记录 - 所以学教学系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <!-- 面包屑 -->
+                <div class="am-breadcrumb am-margin-bottom-sm">
+                    <a href="{:U('index')}"><i class="am-icon-home"></i> 首页</a>
+                    <a href="{:U('index')}">课时管理</a>
+                    <span class="am-active">消课记录</span>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="am-g am-margin-bottom">
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-success">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-success">{$today_count|default=0}</p>
+                                <p class="am-text-sm">今日消课数</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-primary">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-primary">{$today_hours|default=0}</p>
+                                <p class="am-text-sm">今日消课课时</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-warning">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-warning">{$month_count|default=0}</p>
+                                <p class="am-text-sm">本月消课数</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-secondary">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl">{$month_hours|default=0}</p>
+                                <p class="am-text-sm">本月消课课时</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 消课记录列表 -->
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-history"></i> 消课记录
+                            <if condition="I('student_id')">
+                            <a href="{:U('index')}" class="am-btn am-btn-xs am-btn-default am-fr">
+                                <i class="am-icon-arrow-left"></i> 返回全部
+                            </a>
+                            </if>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <!-- 筛选表单 -->
+                        <form class="am-form am-form-inline am-margin-bottom" method="GET" action="__SELF__">
+                            <input type="hidden" name="m" value="Admin">
+                            <input type="hidden" name="c" value="StudentCourse">
+                            <input type="hidden" name="a" value="consumption">
+                            
+                            <div class="am-form-group">
+                                <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名/手机号" value="{:I('keyword')}">
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <select name="course_id" class="am-form-field">
+                                    <option value="">全部课程</option>
+                                    <volist name="courses" id="vo">
+                                    <option value="{$vo.id}" <if condition="I('course_id') eq $vo['id']">selected</if>>{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <select name="type" class="am-form-field">
+                                    <option value="">全部类型</option>
+                                    <option value="attendance" <if condition="I('type') eq 'attendance'">selected</if>>考勤</option>
+                                    <option value="gift" <if condition="I('type') eq 'gift'">selected</if>>赠送</option>
+                                    <option value="manual" <if condition="I('type') eq 'manual'">selected</if>>手动</option>
+                                </select>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <input type="date" name="start_date" class="am-form-field" value="{:I('start_date')}">
+                            </div>
+                            <div class="am-form-group">-</div>
+                            <div class="am-form-group">
+                                <input type="date" name="end_date" class="am-form-field" value="{:I('end_date')}">
+                            </div>
+                            
+                            <button type="submit" class="am-btn am-btn-primary">
+                                <i class="am-icon-search"></i> 筛选
+                            </button>
+                            <a href="__SELF__" class="am-btn am-btn-default">
+                                <i class="am-icon-refresh"></i> 重置
+                            </a>
+                        </form>
+
+                        <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>时间</th>
+                                    <th>学员</th>
+                                    <th>电话</th>
+                                    <th>课程</th>
+                                    <th>消耗课时</th>
+                                    <th>类型</th>
+                                    <th>操作人</th>
+                                    <th>备注</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <notpresent name="list">
+                                <tr><td colspan="9" class="am-text-center">暂无消课记录</td></tr>
+                                </notpresent>
+                                <volist name="list" id="vo">
+                                <tr>
+                                    <td>{$vo.id}</td>
+                                    <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                                    <td>{$vo.student_name|default='-'}</td>
+                                    <td>{$vo.phone|default='-'}</td>
+                                    <td>{$vo.course_name|default='-'}</td>
+                                    <td><strong class="am-text-danger">-{$vo.hours}</strong></td>
+                                    <td>
+                                        <switch name="vo.type">
+                                            <case value="attendance"><span class="am-badge am-badge-primary">考勤</span></case>
+                                            <case value="gift"><span class="am-badge am-badge-warning">赠送</span></case>
+                                            <case value="manual"><span class="am-badge am-badge-secondary">手动</span></case>
+                                            <case value="refund"><span class="am-badge am-badge-danger">退费</span></case>
+                                            <default/><span class="am-badge">其他</span>
+                                        </switch>
+                                    </td>
+                                    <td>{$vo.operator_name|default='-'}</td>
+                                    <td class="am-text-truncate" style="max-width: 150px;" title="{$vo.remark|default=''}">{$vo.remark|default='-'}</td>
+                                </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                        
+                        <div class="am-cf">
+                            <div class="am-fr">
+                                {$page}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="am-margin-top">
+                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回课时管理
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

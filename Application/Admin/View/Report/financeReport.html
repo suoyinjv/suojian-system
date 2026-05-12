@@ -1,0 +1,167 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- page title start -->
+		<div class="am-g">
+			<h3 class="page-title">财务报表</h3>
+		</div>
+		<!-- page title end -->
+
+		<!-- top cards start -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-money am-3x am-text-success"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalIncome}</p>
+							<p class="am-text-sm am-text-muted">总收入（元）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-credit-card am-3x am-text-warning"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalExpense}</p>
+							<p class="am-text-sm am-text-muted">总支出（元）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-line-chart am-3x am-text-primary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalProfit}</p>
+							<p class="am-text-sm am-text-muted">总利润（元）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-reorder am-3x am-text-secondary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalOrderCount}</p>
+							<p class="am-text-sm am-text-muted">订单总数（笔）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- top cards end -->
+
+		<!-- filter form start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-bd">
+				<form class="am-form" action="{{:U('Admin/Report/financeReport')}}" method="get">
+					<div class="am-g">
+						<div class="am-u-md-3">
+							<div class="am-input-group">
+								<span class="am-input-group-label"><i class="am-icon-calendar"></i></span>
+								<input type="text" class="am-form-field" name="start_date" placeholder="开始日期" value="{{$startDate}}" data-am-datepicker />
+							</div>
+						</div>
+						<div class="am-u-md-3">
+							<div class="am-input-group">
+								<span class="am-input-group-label"><i class="am-icon-calendar"></i></span>
+								<input type="text" class="am-form-field" name="end_date" placeholder="结束日期" value="{{$endDate}}" data-am-datepicker />
+							</div>
+						</div>
+						<div class="am-u-md-2">
+							<select name="campus_id" class="am-form-field">
+								<option value="">全部校区</option>
+								<volist name="campusList" id="campus">
+								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId eq $campus['id']">selected</if>>{{$campus.name}}</option>
+								</volist>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<select name="type" class="am-form-field">
+								<option value="">全部类型</option>
+								<option value="income" <if condition="isset($type) and $type eq 'income'">selected</if>>收入</option>
+								<option value="expense" <if condition="isset($type) and $type eq 'expense'">selected</if>>支出</option>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<button type="submit" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-search"></i> 查询</button>
+							<a href="{{:U('Admin/Report/exportFinance')}}" class="am-btn am-btn-success am-btn-sm"><i class="am-icon-download"></i> 导出</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- filter form end -->
+
+		<!-- chart area start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-hd"><i class="am-icon-bar-chart"></i> 收支趋势图</div>
+			<div class="am-panel-bd">
+				<div id="financeChart" style="width:100%;height:300px;"></div>
+			</div>
+		</div>
+		<!-- chart area end -->
+
+		<!-- table start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-hd"><i class="am-icon-list"></i> 收支明细</div>
+			<div class="am-panel-bd am-scrollable-horizontal">
+				<table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap">
+					<thead>
+						<tr>
+							<th>日期</th>
+							<th>校区</th>
+							<th>类型</th>
+							<th>科目</th>
+							<th>金额（元）</th>
+							<th>备注</th>
+							<th>操作人</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($list)">
+						<volist name="list" id="item">
+						<tr>
+							<td>{{$item.add_date}}</td>
+							<td>{{$item.campus_name}}</td>
+							<td>
+								<if condition="$item['type'] eq 'income'">
+								<span class="am-badge am-badge-success">收入</span>
+								<else />
+								<span class="am-badge am-badge-danger">支出</span>
+								</if>
+							</td>
+							<td>{{$item.subject_name}}</td>
+							<td class="am-text-right">{{$item.amount}}</td>
+							<td>{{$item.remark}}</td>
+							<td>{{$item.admin_name}}</td>
+						</tr>
+						</volist>
+						<else />
+						<tr><td colspan="7" class="am-text-center">暂无数据</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- table end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

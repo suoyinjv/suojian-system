@@ -1,0 +1,146 @@
+<include file="Public/Header" />
+
+<!-- right content start -->
+<div class="content-right">
+    <div class="content">
+        <!-- filter form start -->
+        <form class="am-form am-form-horizontal" action="{{:U('Admin/Leads/followup')}}" method="GET">
+            <div class="am-g">
+                <div class="am-u-sm-3">
+                    <input type="text" name="keyword" class="am-radius" placeholder="姓名/手机号" value="{{$param.keyword|default=''}}" />
+                </div>
+                <div class="am-u-sm-2">
+                    <select name="status" class="am-radius">
+                        <option value="">全部状态</option>
+                        <option value="1" {{$param.status|default=''|eq='1'?'selected':''}}>新线索</option>
+                        <option value="2" {{$param.status|default=''|eq='2'?'selected':''}}>已跟进</option>
+                        <option value="3" {{$param.status|default=''|eq='3'?'selected':''}}>已转化</option>
+                        <option value="4" {{$param.status|default=''|eq='4'?'selected':''}}>已流失</option>
+                    </select>
+                </div>
+                <div class="am-u-sm-2">
+                    <select name="follow_user_id" class="am-radius">
+                        <option value="">全部跟进人</option>
+                        <volist name="follow_users" id="vo">
+                            <option value="{{$vo.id}}" {{$param.follow_user_id|default=''|eq=$vo['id']?'selected':''}}>{{$vo.realname}}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="am-u-sm-2">
+                    <button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius">搜索</button>
+                    <a href="{{:U('Admin/Leads/followup')}}" class="am-btn am-btn-default am-btn-sm am-radius">重置</a>
+                </div>
+            </div>
+        </form>
+        <!-- filter form end -->
+        
+        <!-- timeline start -->
+        <div class="am-tabs m-t-15" data-am-tabs>
+            <ul class="am-tabs-nav am-nav am-nav-tabs">
+                <li class="am-active"><a href="#timeline-tab">跟进时间轴</a></li>
+                <li><a href="#list-tab">跟进列表</a></li>
+            </ul>
+            <div class="am-tabs-bd">
+                <!-- timeline tab -->
+                <div class="am-tab-panel am-active" id="timeline-tab">
+                    <volist name="leads_list" id="leads">
+                    <div class="am-panel am-panel-default m-t-15">
+                        <div class="am-panel-hd">
+                            <span class="am-badge am-badge-primary">{{$leads.name}}</span>
+                            <span class="m-l-10">{{$leads.phone}}</span>
+                            <span class="am-fr">
+                                <span class="am-badge am-badge-{{$leads.status|default='1'|getStatusClass}}">{{$leads.status_text|default='新线索'}}</span>
+                            </span>
+                        </div>
+                        <div class="am-panel-bd">
+                            <if condition="!empty($leads['follow_records'])">
+                            <ul class="am-comments-list admin-content-comment">
+                                <volist name="leads.follow_records" id="record">
+                                <li class="am-comment">
+                                    <div class="am-comment-main">
+                                        <header class="am-comment-hd">
+                                            <div class="am-comment-meta">
+                                                <a href="#" class="am-comment-author">{{$record.follow_user_name}}</a>
+                                                评论于 <time>{{$record.create_date}}</time>
+                                            </div>
+                                        </header>
+                                        <div class="am-comment-bd">
+                                            <p>{{$record.content}}</p>
+                                        </div>
+                                        <if condition="!empty($record['next_time'])">
+                                        <footer class="am-comment-footer">
+                                            <span class="am-icon-clock-o"> 下次跟进：{{$record.next_time}}</span>
+                                        </footer>
+                                        </if>
+                                    </div>
+                                </li>
+                                </volist>
+                            </ul>
+                            <else />
+                            <div class="am-alert am-alert-secondary">
+                                暂无跟进记录
+                            </div>
+                            </if>
+                            <div class="m-t-10">
+                                <a href="{{:U('Admin/Leads/addFollow', array('leads_id'=>$leads['id']))}}" class="am-btn am-btn-xs am-btn-primary am-radius am-icon-plus"> 添加跟进</a>
+                            </div>
+                        </div>
+                    </div>
+                    </volist>
+                    
+                    <if condition="empty($leads_list)">
+                    <div class="am-alert am-alert-secondary">
+                        暂无跟进记录
+                    </div>
+                    </if>
+                    
+                    <!-- page start -->
+                    <if condition="!empty($leads_list)">
+                        {{$page_html}}
+                    </if>
+                    <!-- page end -->
+                </div>
+                
+                <!-- list tab -->
+                <div class="am-tab-panel" id="list-tab">
+                    <table class="am-table am-table-striped am-table-hover">
+                        <thead>
+                            <tr>
+                                <th>线索</th>
+                                <th>跟进人</th>
+                                <th>跟进内容</th>
+                                <th>跟进时间</th>
+                                <th>下次跟进</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist name="follow_list" id="vo">
+                            <tr>
+                                <td>{{$vo.leads_name}} / {{$vo.leads_phone}}</td>
+                                <td>{{$vo.follow_user_name}}</td>
+                                <td>{{$vo.content|mb_substr=0,50}}...</td>
+                                <td>{{$vo.create_date}}</td>
+                                <td>{{$vo.next_time|default='-'}}</td>
+                                <td>
+                                    <a href="{{:U('Admin/Leads/followupDetail', array('id'=>$vo['id']))}}">查看</a>
+                                </td>
+                            </tr>
+                            </volist>
+                            <if condition="empty($follow_list)">
+                            <tr><td colspan="6" class="table-no">暂无数据</td></tr>
+                            </if>
+                        </tbody>
+                    </table>
+                    {{$follow_page_html}}
+                </div>
+            </div>
+        </div>
+        <!-- timeline end -->
+    </div>
+</div>
+<!-- right content end -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

@@ -1,89 +1,84 @@
-<include file="Public/Header" />
-
-<!-- right content start  -->
-<div class="content-right">
-	<div class="content">
-		<!-- form start -->
-		<form class="am-form form-validation view-save" action="{{:U('Admin/Growth/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Growth/Index')}}">
-			<legend>
-				<span class="fs-16">
-					<if condition="empty($data['id'])">
-						新增成长记录
-					<else />
-						编辑成长记录
-					</if>
-				</span>
-				<a href="{{:U('Admin/Growth/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回</a>
-			</legend>
-			<div class="am-form-group">
-				<label>学员姓名</label>
-				<input type="text" name="student_name" placeholder="请输入学员姓名" minlength="2" maxlength="20" data-validation-message="请输入正确的学员姓名" class="am-radius" <notempty name="data"> value="{{$data.student_name}}"</notempty> required />
-			</div>
-			<div class="am-form-group">
-				<label>记录类型</label>
-				<select name="type" class="am-radius c-p" data-validation-message="请选择记录类型" required>
-					<option value="">请选择记录类型</option>
-					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>课堂表现</option>
-					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>比赛获奖</option>
-					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>活动参与</option>
-					<option value="4" <if condition="isset($data['type']) and $data['type'] eq 4">selected</if>>日常记录</option>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>标题</label>
-				<input type="text" name="title" placeholder="请输入标题" maxlength="100" data-validation-message="请输入标题" class="am-radius" <notempty name="data"> value="{{$data.title}}"</notempty> required />
-			</div>
-			<div class="am-form-group">
-				<label>内容</label>
-				<textarea name="content" class="am-radius" placeholder="请输入内容" rows="6" data-validation-message="请输入内容" <notempty name="data">>{{$data.content}}</notempty> required></textarea>
-			</div>
-			<div class="am-form-group">
-				<label>图片上传</label>
-				<div class="am-form-group">
-					<input type="hidden" name="images" id="images" <notempty name="data"> value="{{$data.images}}"</notempty> />
-					<div class="am-u-sm-12">
-						<div class="am-form-group">
-							<ul class="am-avg-sm-4 am-thumbnails upload-img-list" id="upload-img-list">
-								<notempty name="data.images_list">
-									<foreach name="data.images_list" item="v">
-										<li class="upload-img-item">
-											<img src="{{$v}}" class="am-img-thumbnail" />
-											<a href="javascript:void(0);" class="am-icon-times am-btn-xs am-btn-danger am-radius delete-img-btn" onclick="deleteImg(this, '{{$v}}');"> 删除</a>
-										</li>
-									</foreach>
-								</notempty>
-							</ul>
-						</div>
-						<div class="am-form-group">
-							<input type="file" id="upload-img" multiple accept="image/*" />
-							<p class="am-text-warning">支持jpg、png格式，最多上传9张图片</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="am-form-group">
-				<label>教师</label>
-				<select name="teacher_id" class="am-radius c-p" data-validation-message="请选择教师" required>
-					<option value="">请选择教师</option>
-					<foreach name="teacher_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
-					</foreach>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>标签</label>
-				<input type="text" name="tags" placeholder="请输入标签，多个标签用逗号分隔" maxlength="200" data-validation-message="请输入标签" class="am-radius" <notempty name="data"> value="{{$data.tags}}"</notempty> />
-			</div>
-			<div class="am-form-group">
-				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
-				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'提交中...'}">保存</button>
-			</div>
-		</form>
-        <!-- form end -->
-	</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新增成长记录 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd"><i class="am-icon-plus"></i> 新增成长记录</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('save')}" method="POST" enctype="multipart/form-data">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">学员 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <select name="student_id" class="am-form-field" required>
+                                <option value="">选择学员</option>
+                                <volist name="studentList" id="vo">
+                                <option value="{$vo.id}">{$vo.student_name}（{$vo.phone}）</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">记录类型 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-4">
+                            <select name="type" class="am-form-field" required>
+                                <option value="1">课堂表现</option>
+                                <option value="2">作业完成</option>
+                                <option value="3">活动参与</option>
+                                <option value="4">进步表扬</option>
+                                <option value="5">其他</option>
+                            </select>
+                        </div>
+                        <label class="am-u-sm-2">关联课程</label>
+                        <div class="am-u-sm-4">
+                            <select name="course_id" class="am-form-field">
+                                <option value="">无</option>
+                                <volist name="courseList" id="vo">
+                                <option value="{$vo.id}">{$vo.course_name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">标题 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <input type="text" name="title" class="am-form-field" placeholder="如：今天表现得很好" required>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">记录内容 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <textarea name="content" class="am-form-field" rows="6" placeholder="详细描述..." required></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">上传图片</label>
+                        <div class="am-u-sm-10">
+                            <input type="file" name="images[]" multiple accept="image/*" class="am-form-field">
+                            <span class="am-form-caret">最多上传9张图片，支持jpg、png格式</span>
+                        </div>
+                    </div>
+                    
+                    <div class="am-form-group">
+                        <div class="am-u-sm-10 am-u-sm-offset-2">
+                            <button type="submit" class="am-btn am-btn-primary">保存</button>
+                            <a href="{:U('index')}" class="am-btn am-btn-default">取消</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- right content end  -->
-		
-<!-- footer start -->
-<include file="Public/Footer" />
-<!-- footer end -->
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

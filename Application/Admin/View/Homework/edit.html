@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>编辑作业 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd"><i class="am-icon-edit"></i> 编辑作业</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('save')}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="{$info.id}">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">班级</label>
+                        <div class="am-u-sm-4">
+                            <select name="class_id" class="am-form-field" id="classSelect">
+                                <option value="{$info.class_id}">{$info.class_name}</option>
+                            </select>
+                        </div>
+                        <label class="am-u-sm-2">课程</label>
+                        <div class="am-u-sm-4">
+                            <select name="course_id" class="am-form-field" id="courseSelect">
+                                <option value="{$info.course_id}">{$info.course_name}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">作业标题 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <input type="text" name="title" class="am-form-field" value="{$info.title}" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">截止日期</label>
+                        <div class="am-u-sm-4">
+                            <input type="date" name="deadline" class="am-form-field" value="{:date('Y-m-d', $info['deadline'])}">
+                        </div>
+                        <label class="am-u-sm-2">作业类型</label>
+                        <div class="am-u-sm-4">
+                            <select name="type" class="am-form-field">
+                                <option value="1" <eq name="info.type" value="1">selected</eq>>书面作业</option>
+                                <option value="2" <eq name="info.type" value="2">selected</eq>>口头作业</option>
+                                <option value="3" <eq name="info.type" value="3">selected</eq>>实践作业</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">作业内容 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <textarea name="content" class="am-form-field" rows="8" required>{$info.content}</textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">附件</label>
+                        <div class="am-u-sm-10">
+                            <if condition="$info['attachment']">
+                            <p class="am-text-muted">当前附件：<a href="{$info.attachment}" target="_blank">查看附件</a></p>
+                            </if>
+                            <input type="file" name="attachment" class="am-form-field">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-10 am-u-sm-offset-2">
+                            <button type="submit" class="am-btn am-btn-primary">保存修改</button>
+                            <a href="{:U('index')}" class="am-btn am-btn-default">取消</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

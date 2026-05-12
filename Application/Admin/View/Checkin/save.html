@@ -1,0 +1,125 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16"><if condition="isset($data)">编辑打卡任务<else />新增打卡任务</if></span>
+            <a href="{:U('index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回列表</a>
+        </legend>
+
+        <form class="am-form am-form-horizontal" method="post" action="{:U('save')}">
+            <input type="hidden" name="id" value="{$data.id|default=''}">
+            
+            <div class="am-panel am-panel-primary am-radius m-b-10">
+                <div class="am-panel-hd">基本信息</div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">任务名称</label>
+                        <div class="am-u-sm-10">
+                            <input type="text" name="name" class="am-form-field" placeholder="如：每日英语朗读" value="{$data.name|default=''}" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">打卡类型</label>
+                        <div class="am-u-sm-4">
+                            <select name="type" class="am-form-field">
+                                <option value="daily" <if condition="$data['type'] eq 'daily'">selected</if>>日常签到</option>
+                                <option value="lesson" <if condition="$data['type'] eq 'lesson'">selected</if>>课次打卡</option>
+                            </select>
+                        </div>
+                        <label class="am-u-sm-2 am-form-label">关联课程</label>
+                        <div class="am-u-sm-4">
+                            <select name="course_id" class="am-form-field">
+                                <option value="">不限定课程</option>
+                                <volist name="course_list" id="vo">
+                                <option value="{$vo.id}" <if condition="$data['course_id'] eq $vo['id']">selected</if>>{$vo.course_name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-panel am-panel-success am-radius m-b-10">
+                <div class="am-panel-hd">时间设置</div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">开始日期</label>
+                        <div class="am-u-sm-4">
+                            <input type="text" name="start_date" class="am-form-field" placeholder="开始日期" onfocus="WdatePicker()" value="{$data.start_date|default=''}" required>
+                        </div>
+                        <label class="am-u-sm-2 am-form-label">结束日期</label>
+                        <div class="am-u-sm-4">
+                            <input type="text" name="end_date" class="am-form-field" placeholder="结束日期" onfocus="WdatePicker()" value="{$data.end_date|default=''}" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">打卡周期</label>
+                        <div class="am-u-sm-10">
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="1" <if condition="strpos($data['weekdays']??'', '1') !== false">checked</if>> 周一
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="2" <if condition="strpos($data['weekdays']??'', '2') !== false">checked</if>> 周二
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="3" <if condition="strpos($data['weekdays']??'', '3') !== false">checked</if>> 周三
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="4" <if condition="strpos($data['weekdays']??'', '4') !== false">checked</if>> 周四
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="5" <if condition="strpos($data['weekdays']??'', '5') !== false">checked</if>> 周五
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="6" <if condition="strpos($data['weekdays']??'', '6') !== false">checked</if>> 周六
+                            </label>
+                            <label class="am-checkbox-inline">
+                                <input type="checkbox" name="weekdays[]" value="0" <if condition="strpos($data['weekdays']??'', '0') !== false">checked</if>> 周日
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-panel am-panel-warning am-radius m-b-10">
+                <div class="am-panel-hd">奖励规则</div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">打卡奖励积分</label>
+                        <div class="am-u-sm-4">
+                            <input type="number" name="reward_points" class="am-form-field" placeholder="每次打卡奖励积分" value="{$data.reward_points|default='5'}">
+                        </div>
+                        <label class="am-u-sm-2 am-form-label">连续打卡奖励</label>
+                        <div class="am-u-sm-4">
+                            <input type="number" name="streak_bonus" class="am-form-field" placeholder="连续N天额外奖励" value="{$data.streak_bonus|default='10'}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-panel am-panel-secondary am-radius m-b-10">
+                <div class="am-panel-hd">打卡要求</div>
+                <div class="am-panel-bd">
+                    <div class="am-form-group">
+                        <div class="am-u-sm-12">
+                            <textarea name="requirement" class="am-form-field" rows="4" placeholder="请输入打卡要求说明...">{$data.requirement|default=''}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-form-group">
+                <div class="am-u-sm-offset-2 am-u-sm-10">
+                    <button type="submit" class="am-btn am-btn-primary am-radius">保存</button>
+                    <a href="{:U('index')}" class="am-btn am-btn-default am-radius m-l-10">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/My97DatePicker/WdatePicker.js"></script>

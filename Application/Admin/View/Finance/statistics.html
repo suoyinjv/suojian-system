@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>财务统计 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .stat-card {
+            padding: 20px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+        }
+        .stat-card .stat-number { font-size: 32px; font-weight: bold; margin-bottom: 5px; }
+        .stat-card .stat-label { font-size: 14px; opacity: 0.9; }
+        .stat-income { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .stat-expense { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-profit { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stat-refund { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .chart-placeholder {
+            background: #f5f5f5;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .am-table .amount-in { color: #5eb95e; font-weight: bold; }
+        .am-table .amount-out { color: #dd514c; font-weight: bold; }
+        .export-btn { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-cf admin-main">
+        <div class="am-u-sm-12">
+            <div class="am-g">
+                <div class="am-u-sm-3">
+                    <div class="stat-card stat-income">
+                        <div class="stat-number">¥{$total_income|default='0.00'}</div>
+                        <div class="stat-label">总收入</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="stat-card stat-expense">
+                        <div class="stat-number">¥{$total_expense|default='0.00'}</div>
+                        <div class="stat-label">总支出</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="stat-card stat-profit">
+                        <div class="stat-number">¥{$total_profit|default='0.00'}</div>
+                        <div class="stat-label">净利润</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="stat-card stat-refund">
+                        <div class="stat-number">¥{$total_refund|default='0.00'}</div>
+                        <div class="stat-label">总退款</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-g" style="margin-bottom: 15px;">
+                <form class="am-form-inline" method="get" action="{:U('Finance/statistics')}">
+                    <div class="am-form-group">
+                        <select name="year" class="am-form-field">
+                            <volist name="year_list" id="y">
+                            <option value="{$y}" <if condition="$year eq $y">selected</if>>{$y}年</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="am-form-group">
+                        <select name="month" class="am-form-field">
+                            <option value="">全年</option>
+                            <volist name="month_list" id="m">
+                            <option value="{$m}" <if condition="$month eq $m">selected</if>>{$m}月</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="am-form-group">
+                        <select name="campus_id" class="am-form-field">
+                            <option value="">全部校区</option>
+                            <volist name="campus_list" id="c">
+                            <option value="{$c.id}" <if condition="$campus_id eq $c['id']">selected</if>>{$c.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <button type="submit" class="am-btn am-btn-primary">统计</button>
+                </form>
+            </div>
+
+            <div class="am-g">
+                <div class="am-u-sm-12">
+                    <div class="am-panel am-panel-default">
+                        <div class="am-panel-hd">收支趋势</div>
+                        <div class="am-panel-bd">
+                            <div class="chart-placeholder">
+                                <i class="am-icon-bar-chart" style="font-size:48px;margin-right:10px;"></i>
+                                ECharts 趋势图表区域（请在后台配置图表数据）
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-g">
+                <div class="am-u-sm-6">
+                    <div class="am-panel am-panel-default">
+                        <div class="am-panel-hd am-cf">
+                            <span class="am-fl">收入分类统计</span>
+                        </div>
+                        <div class="am-panel-bd">
+                            <table class="am-table">
+                                <thead>
+                                    <tr>
+                                        <th>类别</th>
+                                        <th>笔数</th>
+                                        <th>金额</th>
+                                        <th>占比</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="income_by_category" id="vo">
+                                    <tr>
+                                        <td>{$vo.category}</td>
+                                        <td>{$vo.count}</td>
+                                        <td class="amount-in">¥{$vo.amount}</td>
+                                        <td>{$vo.percent}%</td>
+                                    </tr>
+                                    </volist>
+                                    <if condition="empty($income_by_category)">
+                                    <tr><td colspan="4" class="am-text-center">暂无数据</td></tr>
+                                    </if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="am-u-sm-6">
+                    <div class="am-panel am-panel-default">
+                        <div class="am-panel-hd am-cf">
+                            <span class="am-fl">支出分类统计</span>
+                        </div>
+                        <div class="am-panel-bd">
+                            <table class="am-table">
+                                <thead>
+                                    <tr>
+                                        <th>类别</th>
+                                        <th>笔数</th>
+                                        <th>金额</th>
+                                        <th>占比</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="expense_by_category" id="vo">
+                                    <tr>
+                                        <td>{$vo.category}</td>
+                                        <td>{$vo.count}</td>
+                                        <td class="amount-out">¥{$vo.amount}</td>
+                                        <td>{$vo.percent}%</td>
+                                    </tr>
+                                    </volist>
+                                    <if condition="empty($expense_by_category)">
+                                    <tr><td colspan="4" class="am-text-center">暂无数据</td></tr>
+                                    </if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-g">
+                <div class="am-u-sm-12">
+                    <div class="am-panel am-panel-default">
+                        <div class="am-panel-hd am-cf">
+                            <span class="am-fl">月度收支汇总</span>
+                            <div class="am-fr">
+                                <a href="{:U('Finance/export_statistics', array('year'=>$year,'month'=>$month,'campus_id'=>$campus_id))}" class="am-btn am-btn-sm am-btn-success">
+                                    <i class="am-icon-download"></i> 导出报表
+                                </a>
+                            </div>
+                        </div>
+                        <div class="am-panel-bd">
+                            <table class="am-table am-table-bordered am-table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>月份</th>
+                                        <th>收入</th>
+                                        <th>支出</th>
+                                        <th>退款</th>
+                                        <th>利润</th>
+                                        <th>收入笔数</th>
+                                        <th>支出笔数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <volist name="monthly_stats" id="vo">
+                                    <tr>
+                                        <td>{$vo.month}</td>
+                                        <td class="amount-in">¥{$vo.income}</td>
+                                        <td class="amount-out">¥{$vo.expense}</td>
+                                        <td class="amount-out">¥{$vo.refund}</td>
+                                        <td class="{$vo.profit_class}">¥{$vo.profit}</td>
+                                        <td>{$vo.income_count}</td>
+                                        <td>{$vo.expense_count}</td>
+                                    </tr>
+                                    </volist>
+                                    <if condition="empty($monthly_stats)">
+                                    <tr><td colspan="7" class="am-text-center">暂无数据</td></tr>
+                                    </if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

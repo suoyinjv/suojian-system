@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>退款记录 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .summary-box {
+            padding: 15px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-number { font-size: 28px; font-weight: bold; }
+        .am-table .amount { font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-cf admin-main">
+        <div class="am-u-sm-12">
+            <div class="am-g">
+                <div class="am-u-sm-3">
+                    <div class="summary-box">
+                        <div class="summary-number">¥{$total_refund}</div>
+                        <div>本月退款总额</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+                        <div class="summary-number">{$refund_count}</div>
+                        <div>退款笔数</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #fad0c4 0%, #fd1d1d 100%);">
+                        <div class="summary-number">¥{$refund_rate}</div>
+                        <div>退款率</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="summary-number">{$pending_count}</div>
+                        <div>待处理</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-g" style="margin-bottom: 15px;">
+                <form class="am-form-inline" method="get" action="{:U('Finance/refund')}">
+                    <div class="am-form-group">
+                        <input type="text" name="start_time" placeholder="开始日期" value="{$start_time}" onfocus="WdatePicker()">
+                    </div>
+                    <div class="am-form-group">
+                        <input type="text" name="end_time" placeholder="结束日期" value="{$end_time}" onfocus="WdatePicker()">
+                    </div>
+                    <div class="am-form-group">
+                        <select name="status" class="am-form-field">
+                            <option value="">全部状态</option>
+                            <option value="1" <if condition="$status eq 1">selected</if>>处理中</option>
+                            <option value="2" <if condition="$status eq 2">selected</if>>已完成</option>
+                            <option value="3" <if condition="$status eq 3">selected</if>>已拒绝</option>
+                        </select>
+                    </div>
+                    <div class="am-form-group">
+                        <input type="text" name="keyword" placeholder="订单号/学员姓名" value="{$keyword}">
+                    </div>
+                    <button type="submit" class="am-btn am-btn-default">查询</button>
+                </form>
+            </div>
+
+            <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>原订单号</th>
+                        <th>学员姓名</th>
+                        <th>课程</th>
+                        <th>原金额</th>
+                        <th>退款金额</th>
+                        <th>退款原因</th>
+                        <th>状态</th>
+                        <th>申请时间</th>
+                        <th>处理时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.order_no}</td>
+                        <td>{$vo.student_name}</td>
+                        <td>{$vo.course_name}</td>
+                        <td class="amount">¥{$vo.original_amount}</td>
+                        <td class="amount am-text-danger">¥{$vo.refund_amount}</td>
+                        <td>{$vo.reason}</td>
+                        <td>
+                            <if condition="$vo['status'] eq 1">
+                            <span class="am-badge am-badge-warning">处理中</span>
+                            <elseif condition="$vo['status'] eq 2"/>
+                            <span class="am-badge am-badge-success">已完成</span>
+                            <else/>
+                            <span class="am-badge am-badge-danger">已拒绝</span>
+                            </if>
+                        </td>
+                        <td>{:date('Y-m-d H:i', $vo['add_time'])}</td>
+                        <td><if condition="$vo['handle_time']">{:date('Y-m-d H:i', $vo['handle_time'])}<else/>-</if></td>
+                        <td>
+                            <if condition="$vo['status'] eq 1">
+                            <a href="{:U('Finance/refund_edit', array('id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-primary">处理</a>
+                            </if>
+                            <a href="{:U('Finance/refund_view', array('id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-default">详情</a>
+                        </td>
+                    </tr>
+                    </volist>
+                    <if condition="empty($list)">
+                    <tr><td colspan="11" class="am-text-center">暂无数据</td></tr>
+                    </if>
+                </tbody>
+            </table>
+
+            <div class="am-pagination">
+                {$page}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/Admin/js/datepicker/WdatePicker.js"></script>
+</body>
+</html>

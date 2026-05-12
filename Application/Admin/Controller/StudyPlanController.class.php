@@ -76,6 +76,14 @@ class StudyPlanController extends AdminController {
                 $this->error('添加失败');
             }
         } else {
+            // 获取学生列表
+            $students = M('student')->where(array('status' => 1))->select();
+            $this->assign('students', $students);
+            
+            // 获取课程列表
+            $courses = M('course')->where(array('status' => 1))->select();
+            $this->assign('courses', $courses);
+            
             $this->display();
         }
     }
@@ -105,6 +113,15 @@ class StudyPlanController extends AdminController {
         } else {
             $info = M('study_plan')->find($id);
             $this->assign('info', $info);
+            
+            // 获取学生列表
+            $students = M('student')->where(array('status' => 1))->select();
+            $this->assign('students', $students);
+            
+            // 获取课程列表
+            $courses = M('course')->where(array('status' => 1))->select();
+            $this->assign('courses', $courses);
+            
             $this->display();
         }
     }
@@ -128,15 +145,21 @@ class StudyPlanController extends AdminController {
     public function complete() {
         $id = I('id', 0, 'intval');
         
-        $data = array(
-            'status' => 1,
-            'update_time' => time()
-        );
-        
-        if (M('study_plan')->where(array('id' => $id))->save($data)) {
-            $this->success('设置完成成功');
+        if (IS_POST) {
+            $data = array(
+                'status' => 1,
+                'update_time' => time()
+            );
+            
+            if (M('study_plan')->where(array('id' => $id))->save($data)) {
+                $this->success('设置完成成功');
+            } else {
+                $this->error('设置失败');
+            }
         } else {
-            $this->error('设置失败');
+            $info = M('study_plan')->find($id);
+            $this->assign('info', $info);
+            $this->display();
         }
     }
     

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单统计</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <!-- 筛选条件 -->
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-filter"></i> 统计筛选</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline" id="statsForm">
+                            <div class="am-form-group">
+                                <input type="date" name="start_date" class="am-form-field" value="{:date('Y-m-01')}">
+                            </div>
+                            <div class="am-form-group">-</div>
+                            <div class="am-form-group">
+                                <input type="date" name="end_date" class="am-form-field" value="{:date('Y-m-d')}">
+                            </div>
+                            <button type="button" class="am-btn am-btn-primary" onclick="loadStats()">
+                                <i class="am-icon-search"></i> 查询
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 概览数据 -->
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-primary">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-shopping-cart am-3x am-text-primary"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="totalOrders">-</p>
+                                    <p class="am-text-muted">订单总数</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-success">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-rmb am-3x am-text-success"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="totalAmount">-</p>
+                                    <p class="am-text-muted">营收总额</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-warning">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-rotate-left am-3x am-text-warning"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="refundAmount">-</p>
+                                    <p class="am-text-muted">退款总额</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-info">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-check-circle am-3x am-text-info"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="netAmount">-</p>
+                                    <p class="am-text-muted">净收入</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 支付方式统计 -->
+                <div class="am-panel am-panel-default am-margin-top">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-pie-chart"></i> 支付方式统计</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-g" id="payTypeStats">
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-success am-margin-bottom-xs">
+                                    <div class="am-panel-bd">
+                                        <p><i class="am-icon-weixin am-text-success"></i> 微信支付</p>
+                                        <p class="am-text-xl"><span id="wechatCount">-</span> 笔</p>
+                                        <p class="am-text-success">¥<span id="wechatAmount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-primary am-margin-bottom-xs">
+                                    <div class="am-panel-bd">
+                                        <p><i class="am-icon-credit-card am-text-primary"></i> 支付宝</p>
+                                        <p class="am-text-xl"><span id="alipayCount">-</span> 笔</p>
+                                        <p class="am-text-primary">¥<span id="alipayAmount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-secondary am-margin-bottom-xs">
+                                    <div class="am-panel-bd">
+                                        <p><i class="am-icon-money am-text-secondary"></i> 现金</p>
+                                        <p class="am-text-xl"><span id="cashCount">-</span> 笔</p>
+                                        <p class="am-text-secondary">¥<span id="cashAmount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-warning am-margin-bottom-xs">
+                                    <div class="am-panel-bd">
+                                        <p><i class="am-icon-university am-text-warning"></i> 银行转账</p>
+                                        <p class="am-text-xl"><span id="bankCount">-</span> 笔</p>
+                                        <p class="am-text-warning">¥<span id="bankAmount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 订单状态统计 -->
+                <div class="am-panel am-panel-info am-margin-top">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-bar-chart"></i> 订单状态分布</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-g" id="statusStats">
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-default am-margin-bottom-xs">
+                                    <div class="am-panel-bd am-text-center">
+                                        <p class="am-text-muted">待支付</p>
+                                        <p class="am-text-xl am-text-bold"><span id="pendingCount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-success am-margin-bottom-xs">
+                                    <div class="am-panel-bd am-text-center">
+                                        <p class="am-text-success">已支付</p>
+                                        <p class="am-text-xl am-text-bold"><span id="paidCount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-secondary am-margin-bottom-xs">
+                                    <div class="am-panel-bd am-text-center">
+                                        <p class="am-text-secondary">已取消</p>
+                                        <p class="am-text-xl am-text-bold"><span id="cancelledCount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="am-panel am-panel-danger am-margin-bottom-xs">
+                                    <div class="am-panel-bd am-text-center">
+                                        <p class="am-text-danger">已退款</p>
+                                        <p class="am-text-xl am-text-bold"><span id="refundedCount">-</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="am-text-center am-margin-top">
+                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadStats();
+});
+
+function loadStats() {
+    var params = $('#statsForm').serialize();
+    $.get('__CONTROLLER__/statistics?' + params + '&json=1', function(res) {
+        if (res.code && res.data) {
+            var data = res.data;
+            $('#totalOrders').text(data.total_orders);
+            $('#totalAmount').text(data.total_amount);
+            $('#refundAmount').text(data.refund_amount);
+            $('#netAmount').text(data.net_amount);
+            
+            // 支付方式
+            var payTypes = data.pay_type_stats || {};
+            $('#wechatCount').text(payTypes.wechat ? payTypes.wechat.count : 0);
+            $('#wechatAmount').text(payTypes.wechat ? payTypes.wechat.amount : 0);
+            $('#alipayCount').text(payTypes.alipay ? payTypes.alipay.count : 0);
+            $('#alipayAmount').text(payTypes.alipay ? payTypes.alipay.amount : 0);
+            $('#cashCount').text(payTypes.cash ? payTypes.cash.count : 0);
+            $('#cashAmount').text(payTypes.cash ? payTypes.cash.amount : 0);
+            $('#bankCount').text(payTypes.bank ? payTypes.bank.count : 0);
+            $('#bankAmount').text(payTypes.bank ? payTypes.bank.amount : 0);
+            
+            // 订单状态
+            var statuses = data.status_stats || {};
+            $('#pendingCount').text(statuses[0] || 0);
+            $('#paidCount').text(statuses[1] || 0);
+            $('#cancelledCount').text(statuses[2] || 0);
+            $('#refundedCount').text(statuses[3] || 0);
+        }
+    });
+}
+</script>
+</body>
+</html>

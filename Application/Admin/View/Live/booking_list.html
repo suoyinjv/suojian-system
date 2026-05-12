@@ -1,0 +1,184 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- statistics cards start -->
+		<div class="am-g m-b-md">
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<span class="am-icon-calendar-check-o am-icon-lg am-text-primary am-fl"></span>
+						<div class="am-fr">
+							<p class="am-text-xl am-text-bold m-b-xs">{{$statistics.total|default=0}}</p>
+							<p class="am-text-sm am-margin-0">预约总数</p>
+						</div>
+					</div>
+					<a href="{{:U('Admin/Live/BookingList')}}" class="am-panel-footer"><span class="am-icon-pie-chart"></span> 查看全部</a>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<span class="am-icon-clock-o am-icon-lg am-text-warning am-fl"></span>
+						<div class="am-fr">
+							<p class="am-text-xl am-text-bold m-b-xs">{{$statistics.pending|default=0}}</p>
+							<p class="am-text-sm am-margin-0">待审核</p>
+						</div>
+					</div>
+					<a href="{{:U('Admin/Live/BookingList', array('status'=>0))}}" class="am-panel-footer"><span class="am-icon-pie-chart"></span> 查看待审核</a>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3 am-hide-sm-only">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<span class="am-icon-check-circle am-icon-lg am-text-success am-fl"></span>
+						<div class="am-fr">
+							<p class="am-text-xl am-text-bold m-b-xs">{{$statistics.approved|default=0}}</p>
+							<p class="am-text-sm am-margin-0">已通过</p>
+						</div>
+					</div>
+					<a href="{{:U('Admin/Live/BookingList', array('status'=>1))}}" class="am-panel-footer"><span class="am-icon-pie-chart"></span> 查看已通过</a>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3 am-hide-sm-only">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<span class="am-icon-times-circle am-icon-lg am-text-danger am-fl"></span>
+						<div class="am-fr">
+							<p class="am-text-xl am-text-bold m-b-xs">{{$statistics.rejected|default=0}}</p>
+							<p class="am-text-sm am-margin-0">已拒绝</p>
+						</div>
+					</div>
+					<a href="{{:U('Admin/Live/BookingList', array('status'=>2))}}" class="am-panel-footer"><span class="am-icon-pie-chart"></span> 查看已拒绝</a>
+				</div>
+			</div>
+		</div>
+		<!-- statistics cards end -->
+
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Live/BookingList')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="学生姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
+					{{:L('common_more_screening')}}
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<i class="am-icon-angle-down"></i>
+				</label>
+
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+					<select name="live_id" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="0">所属直播课</option>
+						<foreach name="live_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['live_id']) and $param['live_id'] eq $v['id']">selected</if>>{{$v.title}}</option>
+						</foreach>
+					</select>
+					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1">预约状态</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审核</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已通过</option>
+						<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
+					</select>
+					<div class="param-date param-where m-l-5">
+						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="预约时间开始" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
+						<span>~</span>
+						<input type="text" readonly="readonly" class="am-radius m-t-10" placeholder="预约时间结束" name="time_end" id="time_end" <if condition="isset($param['time_end'])">value="{{$param.time_end}}"</if>/>
+					</div>
+				</div>
+			</div>
+        </form>
+        <!-- form end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10 m-l-5">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>学生姓名</th>
+					<th>手机号</th>
+					<th class="am-hide-sm-only">直播课程</th>
+					<th>预约时间</th>
+					<th>状态</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.student_name}}</td>
+							<td>{{$v.mobile}}</td>
+							<td class="am-hide-sm-only">{{$v.live_title}}</td>
+							<td>{{$v.create_time}}</td>
+							<td>
+								<switch name="v.status">
+									<case value="0"><span class="am-badge am-badge-warning">待审核</span></case>
+									<case value="1"><span class="am-badge am-badge-success">已通过</span></case>
+									<case value="2"><span class="am-badge am-badge-danger">已拒绝</span></case>
+								</switch>
+							</td>
+							<td class="view-operation">
+								<if condition="$v['status'] eq 0">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-check submit-audit" data-url="{{:U('Admin/Live/BookingAudit')}}" data-status="1" data-id="{{$v.id}}" data-am-popover="{content: '通过', trigger: 'hover focus'}"></button>
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-times submit-audit" data-url="{{:U('Admin/Live/BookingAudit')}}" data-status="2" data-id="{{$v.id}}" data-am-popover="{content: '拒绝', trigger: 'hover focus'}"></button>
+								</if>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Live/BookingDelete')}}" data-am-popover="{content: '{{:L('common_operation_delete')}}', trigger: 'hover focus'}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="7" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<script type="text/javascript">
+$(function(){
+	// 审核操作
+	$(document).on('click', '.submit-audit', function(){
+		var url = $(this).data('url');
+		var id = $(this).data('id');
+		var status = $(this).data('status');
+		var statusText = status == 1 ? '通过' : '拒绝';
+		
+		layer.confirm('确定要' + statusText + '该预约吗？', function(index){
+			$.ajax({
+				url: url,
+				type: 'POST',
+				dataType: 'json',
+				data: {id: id, status: status},
+				success: function(res){
+					if(res.code == 1){
+						layer.msg(res.msg, {icon: 1});
+						setTimeout(function(){
+							location.reload();
+						}, 1000);
+					}else{
+						layer.msg(res.msg, {icon: 2});
+					}
+				},
+				error: function(){
+					layer.msg('网络错误', {icon: 2});
+				}
+			});
+			layer.close(index);
+		});
+	});
+});
+</script>
+	
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

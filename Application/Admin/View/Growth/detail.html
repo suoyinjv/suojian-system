@@ -1,71 +1,83 @@
-<include file="Public/Header" />
-
-<!-- right content start  -->
-<div class="content-right">
-	<div class="content">
-		<legend>
-			<span class="fs-16">成长记录详情</span>
-			<a href="{{:U('Admin/Growth/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回</a>
-		</legend>
-
-		<!-- 基本信息 -->
-		<div class="am-panel am-panel-primary am-radius m-t-10">
-			<div class="am-panel-hd">基本信息</div>
-			<div class="am-panel-bd">
-				<dl class="dl-content">
-					<dt>学员姓名</dt>
-					<dd>{{$data.student_name}}</dd>
-
-					<dt>记录类型</dt>
-					<dd>
-						<if condition="$data['type'] eq 1"><span class="am-badge am-badge-primary">课堂表现</span>
-						<elseif condition="$data['type'] eq 2" /><span class="am-badge am-badge-success">比赛获奖</span>
-						<elseif condition="$data['type'] eq 3" /><span class="am-badge am-badge-warning">活动参与</span>
-						<else /><span class="am-badge">日常记录</span>
-						</if>
-					</dd>
-
-					<dt>标题</dt>
-					<dd>{{$data.title}}</dd>
-
-					<dt>内容</dt>
-					<dd>{{$data.content}}</dd>
-
-					<dt>图片</dt>
-					<dd>
-						<if condition="!empty($data['images_list'])">
-							<foreach name="data.images_list" item="v">
-								<img src="{{$v}}" class="am-img-thumbnail m-r-5 m-b-5" style="max-width:200px;max-height:200px;" />
-							</foreach>
-						<else />
-							无
-						</if>
-					</dd>
-
-					<dt>教师</dt>
-					<dd>{{$data.teacher_name}}</dd>
-
-					<dt>标签</dt>
-					<dd>{{$data.tags}}</dd>
-
-					<dt>发布时间</dt>
-					<dd>{{$data.add_time}}</dd>
-
-					<dt>更新时间</dt>
-					<dd>{{$data.upd_time}}</dd>
-				</dl>
-			</div>
-		</div>
-
-		<!-- 操作按钮 -->
-		<div class="am-g m-t-15">
-			<a href="{{:U('Admin/Growth/SaveInfo', array('id'=>$data['id']))}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-edit"> 编辑</a>
-			<button class="am-btn am-btn-danger am-btn-xs m-l-10 am-icon-trash-o am-radius submit-delete" data-url="{{:U('Admin/Growth/Delete')}}" data-id="{{$data.id}}"> 删除</button>
-		</div>
-	</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>成长记录详情 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .gallery img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; }
+        .info-row { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-label { color: #999; }
+        .share-qr { text-align: center; padding: 20px; background: #f8f8f8; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <volist name="info" id="vo">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">
+                {$vo.title}
+                <span class="am-fr am-text-sm">{:date('Y-m-d H:i', $vo['add_time'])}</span>
+            </div>
+            <div class="am-panel-bd">
+                <div class="info-row">
+                    <span class="info-label">学员：</span>
+                    <span>{$vo.student_name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">类型：</span>
+                    <span>
+                        <switch name="vo.type">
+                            <case value="1">课堂表现</case>
+                            <case value="2">作业完成</case>
+                            <case value="3">活动参与</case>
+                            <case value="4">进步表扬</case>
+                            <case value="5">其他</case>
+                        </switch>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">关联课程：</span>
+                    <span>{$vo.course_name|default='无'}</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <span class="info-label">记录内容：</span>
+                    <p style="margin-top: 8px; line-height: 1.8;">{$vo.content}</p>
+                </div>
+                
+                <if condition="$vo['images']">
+                <div style="margin-top: 15px;">
+                    <span class="info-label">图片：</span>
+                    <div class="gallery">
+                        <volist name="vo.images" id="img">
+                        <img src="{$img}" onclick="preview(this.src)">
+                        </volist>
+                    </div>
+                </div>
+                </if>
+                
+                <div class="share-qr">
+                    <p class="am-text-muted">分享给家长</p>
+                    <a href="{:U('share', array('id'=>$vo['id']))}" class="am-btn am-btn-primary am-radius">
+                        <i class="am-icon-share-alt"></i> 生成分享链接
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-text-center">
+            <a href="{:U('index')}" class="am-btn am-btn-default am-radius">返回列表</a>
+        </div>
+        </volist>
+    </div>
 </div>
-<!-- right content end  -->
-
-<!-- footer start -->
-<include file="Public/Footer" />
-<!-- footer end -->
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function preview(src) {
+    window.open(src);
+}
+</script>
+</body>
+</html>

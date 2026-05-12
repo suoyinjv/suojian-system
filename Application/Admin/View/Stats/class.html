@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>班级数据报表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .stat-card { padding: 15px; margin-bottom: 15px; border-radius: 8px; text-align: center; }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .stat-number { font-size: 28px; font-weight: bold; }
+        .stat-label { font-size: 13px; opacity: 0.9; }
+        .rate-bar { height: 8px; border-radius: 4px; background: #f0f0f0; margin-top: 5px; }
+        .rate-bar-fill { height: 100%; border-radius: 4px; background: #52c41a; }
+        .attendance-high { color: #52c41a; }
+        .attendance-mid { color: #fa8c16; }
+        .attendance-low { color: #f5222d; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>🏫 班级数据报表</h2>
+        
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$total_classes|default=0}</div>
+                    <div class="stat-label">班级总数</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card green">
+                    <div class="stat-number">{$total_students|default=0}</div>
+                    <div class="stat-label">在读学员</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$avg_attendance|default=0}%</div>
+                    <div class="stat-label">平均出勤率</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card green">
+                    <div class="stat-number">{$month_total_hours|default=0}</div>
+                    <div class="stat-label">本月总课消(时)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">班级明细</div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-bordered am-table-striped">
+                    <thead>
+                        <tr>
+                            <th>班级名称</th>
+                            <th>校区</th>
+                            <th>任课老师</th>
+                            <th>学员数</th>
+                            <th>出勤率</th>
+                            <th>本月课消</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <php>
+                            $rate_class = $vo['attendance_rate'] >= 80 ? 'attendance-high' : ($vo['attendance_rate'] >= 60 ? 'attendance-mid' : 'attendance-low');
+                        </php>
+                        <tr>
+                            <td>{$vo.class_name}</td>
+                            <td>{$vo.campus_name}</td>
+                            <td>{$vo.teacher_name}</td>
+                            <td>{$vo.student_count}</td>
+                            <td>
+                                <span class="{$rate_class}">{$vo.attendance_rate}%</span>
+                                <div class="rate-bar"><div class="rate-bar-fill" style="width:{$vo.attendance_rate}%;"></div></div>
+                            </td>
+                            <td>{$vo.month_consumption}时</td>
+                            <td>
+                                <a href="{:U('Class/detail', array('id'=>$vo['id']))}">详情</a>
+                                <a href="{:U('Class/edit', array('id'=>$vo['id']))}">编辑</a>
+                            </td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+                <div class="am-pagination">{$page}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

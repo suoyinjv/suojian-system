@@ -1,0 +1,113 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16">闯关阶段管理</span>
+            <a href="{:U('index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回列表</a>
+        </legend>
+
+        <div class="am-g m-b-10">
+            <button class="am-btn am-btn-success am-radius" onclick="showAddStageModal()">
+                <i class="am-icon-plus"></i> 添加阶段
+            </button>
+        </div>
+
+        <table class="am-table am-table-bordered am-table-striped am-table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>阶段名称</th>
+                    <th>开始等级</th>
+                    <th>结束等级</th>
+                    <th>奖励积分</th>
+                    <th>奖励徽章</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.stage_name}</td>
+                    <td>第{$vo.start_level}关</td>
+                    <td>第{$vo.end_level}关</td>
+                    <td>{$vo.reward_points}分</td>
+                    <td>{$vo.badge|default='无'}</td>
+                    <td>
+                        <if condition="$vo['status'] eq 1">
+                            <span class="am-badge am-badge-success">启用</span>
+                        <else />
+                            <span class="am-badge am-badge-default">禁用</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a href="{:U('editStage?id='.$vo['id'])}" class="am-btn am-btn-xs am-btn-primary am-radius">编辑</a>
+                        <a href="{:U('deleteStage?id='.$vo['id'])}" class="am-btn am-btn-xs am-btn-danger am-radius" onclick="return confirm('确定删除？')">删除</a>
+                    </td>
+                </tr>
+                <else />
+                <tr>
+                    <td colspan="8" class="am-text-center">暂无闯关阶段</td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+
+        {$page}
+    </div>
+</div>
+
+<!-- 添加阶段模态框 -->
+<div class="am-modal am-modal-prompt" id="stageModal">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">添加闯关阶段</div>
+        <div class="am-modal-bd">
+            <form id="stageForm" class="am-form">
+                <div class="am-form-group">
+                    <label>阶段名称</label>
+                    <input type="text" name="stage_name" class="am-form-field" placeholder="如：青铜阶段" required>
+                </div>
+                <div class="am-form-group">
+                    <label>开始等级</label>
+                    <input type="number" name="start_level" class="am-form-field" placeholder="开始等级" min="1" required>
+                </div>
+                <div class="am-form-group">
+                    <label>结束等级</label>
+                    <input type="number" name="end_level" class="am-form-field" placeholder="结束等级" min="1" required>
+                </div>
+                <div class="am-form-group">
+                    <label>奖励积分</label>
+                    <input type="number" name="reward_points" class="am-form-field" placeholder="奖励积分" min="0" required>
+                </div>
+                <div class="am-form-group">
+                    <label>奖励徽章</label>
+                    <input type="text" name="badge" class="am-form-field" placeholder="徽章名称（如：铜牌）">
+                </div>
+            </form>
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-confirm>保存</span>
+            <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+        </div>
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script>
+function showAddStageModal() {
+    $('#stageModal').modal({relatedTarget: this, onConfirm: function() {
+        var data = $('#stageForm').serialize();
+        $.post('{:U("saveStage")}', data, function(res) {
+            if(res.code == 1) {
+                location.reload();
+            } else {
+                alert(res.msg);
+            }
+        }, 'json');
+    }});
+}
+</script>

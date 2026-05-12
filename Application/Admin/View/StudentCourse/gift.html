@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>赠送课时 - 所以学教学系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <!-- 面包屑 -->
+                <div class="am-breadcrumb am-margin-bottom-sm">
+                    <a href="{:U('index')}"><i class="am-icon-home"></i> 首页</a>
+                    <a href="{:U('index')}">课时管理</a>
+                    <span class="am-active">赠送课时</span>
+                </div>
+
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-gift"></i> 赠送课时
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <!-- 学员课程信息 -->
+                        <if condition="$student_course">
+                        <div class="am-alert am-alert-secondary am-margin-bottom">
+                            <p>
+                                <strong>学员：</strong>{$student_course.student_name|default='-'} &nbsp;&nbsp;
+                                <strong>课程：</strong>{$student_course.course_name|default='-'} &nbsp;&nbsp;
+                                <strong>剩余课时：</strong><span class="am-text-danger">{$student_course.remaining_hours|default=0}</span>
+                            </p>
+                        </div>
+                        </if>
+
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST" id="giftForm">
+                            <input type="hidden" name="student_course_id" value="{$student_course.id|default=''}">
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">学员 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="student_id" class="am-form-field" required id="studentSelect">
+                                        <option value="">请选择学员</option>
+                                        <volist name="students" id="vo">
+                                        <option value="{$vo.id}" <if condition="$student_course['student_id'] eq $vo['id']">selected</if>>{$vo.name} ({$vo.phone|default=''})</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课程 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="course_id" class="am-form-field" required id="courseSelect">
+                                        <option value="">请选择课程</option>
+                                        <volist name="courses" id="vo">
+                                        <option value="{$vo.id}" <if condition="$student_course['course_id'] eq $vo['id']">selected</if>>{$vo.name} (剩余: {$vo.remaining_hours|default=0}课时)</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">赠送课时数 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="hours" class="am-form-field" placeholder="请输入赠送的课时数" min="0.5" step="0.5" required>
+                                    <span class="am-form-help">支持小数，如 0.5 课时</span>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">赠送原因</label>
+                                <div class="am-u-sm-7">
+                                    <select name="reason" class="am-form-field">
+                                        <option value="promotion">活动赠送</option>
+                                        <option value="compensation">补偿赠送</option>
+                                        <option value="trial">试听转化</option>
+                                        <option value="holiday">节日赠送</option>
+                                        <option value="birthday">生日赠送</option>
+                                        <option value="other">其他原因</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">过期日期</label>
+                                <div class="am-u-sm-7">
+                                    <input type="date" name="expire_date" class="am-form-field" value="{$student_course.expire_date|date='Y-m-d',###}">
+                                    <span class="am-form-help">留空则使用原过期日期</span>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">备注</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="remark" class="am-form-field" rows="3" placeholder="请输入赠送原因或备注信息"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- 赠送预览 -->
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <div class="am-alert am-alert-success" id="previewBox" style="display: none;">
+                                        <i class="am-icon-gift"></i> 赠送预览：
+                                        <span id="previewText"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-warning am-btn-block">
+                                        <i class="am-icon-gift"></i> 确认赠送
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">
+                                        <i class="am-icon-arrow-left"></i> 返回列表
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 最近赠送记录 -->
+                <div class="am-panel am-panel-secondary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-history"></i> 最近赠送记录
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>学员</th>
+                                    <th>课程</th>
+                                    <th>赠送课时</th>
+                                    <th>原因</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <notpresent name="gift_records">
+                                <tr><td colspan="5" class="am-text-center">暂无赠送记录</td></tr>
+                                </notpresent>
+                                <volist name="gift_records" id="vo">
+                                <tr>
+                                    <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                                    <td>{$vo.student_name|default='-'}</td>
+                                    <td>{$vo.course_name|default='-'}</td>
+                                    <td><strong class="am-text-warning">+{$vo.hours}</strong></td>
+                                    <td>
+                                        <switch name="vo.reason">
+                                            <case value="promotion">活动赠送</case>
+                                            <case value="compensation">补偿赠送</case>
+                                            <case value="trial">试听转化</case>
+                                            <case value="holiday">节日赠送</case>
+                                            <case value="birthday">生日赠送</case>
+                                            <default/>其他原因
+                                        </switch>
+                                    </td>
+                                </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    var studentName = '';
+    var courseName = '';
+    var remainingHours = 0;
+
+    // 获取选中的学员和课程信息
+    function updatePreview() {
+        var studentId = $('#studentSelect').val();
+        var courseId = $('#courseSelect').val();
+        var hours = parseFloat($('input[name="hours"]').val()) || 0;
+        
+        if (studentId && courseId && hours > 0) {
+            var studentText = $('#studentSelect option:selected').text();
+            var courseText = $('#courseSelect option:selected').text();
+            
+            var match = courseText.match(/剩余:\s*(\d+(?:\.\d+)?)/);
+            var remaining = match ? parseFloat(match[1]) : 0;
+            
+            var previewText = '将向学员 【' + studentText.split('(')[0] + '】 的课程 【' + courseText.split('(')[0] + '】 赠送 ' + hours + ' 课时';
+            if (remaining > 0) {
+                previewText += '，赠送后剩余 ' + (remaining + hours) + ' 课时';
+            }
+            
+            $('#previewText').text(previewText);
+            $('#previewBox').show();
+        } else {
+            $('#previewBox').hide();
+        }
+    }
+
+    $('#studentSelect, #courseSelect, input[name="hours"]').on('change input', updatePreview);
+
+    // 表单提交
+    $('#giftForm').on('submit', function() {
+        var studentId = $('#studentSelect').val();
+        var courseId = $('#courseSelect').val();
+        var hours = parseFloat($('input[name="hours"]').val()) || 0;
+        var remark = $('textarea[name="remark"]').val();
+
+        if (!studentId) {
+            alert('请选择学员');
+            return false;
+        }
+        if (!courseId) {
+            alert('请选择课程');
+            return false;
+        }
+        if (!hours || hours <= 0) {
+            alert('请输入有效的赠送课时数');
+            return false;
+        }
+        if (!remark) {
+            if (!confirm('确定不填写赠送原因吗？')) {
+                return false;
+            }
+        }
+        
+        if (!confirm('确认要赠送 ' + hours + ' 课时吗？')) {
+            return false;
+        }
+        
+        return true;
+    });
+});
+</script>
+</body>
+</html>

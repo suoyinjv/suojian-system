@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>活动详情 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <!-- 基本信息卡片 -->
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">活动基本信息</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-g">
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>活动名称：</strong>{$info.title}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>活动类型：</strong>{$info.type_text}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>状态：</strong>{$info.status_text}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>开始时间：</strong>{$info.start_time}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>结束时间：</strong>{$info.end_time}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>参与人数：</strong>{$info.used_count}/{$info.total_count}</p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>关联课程：</strong><?php echo $info['course_id'] ? $course_name : '无'; ?></p>
+                            </div>
+                            <div class="am-u-sm-6 am-u-md-4">
+                                <p><strong>优惠券：</strong><?php echo $info['coupon_id'] ? $coupon_name : '无'; ?></p>
+                            </div>
+                            <div class="am-u-sm-12">
+                                <p><strong>活动描述：</strong></p>
+                                <p>{$info.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="am-btn-toolbar am-margin-bottom">
+                    <a href="{:U('edit', array('id'=>$info['id']))}" class="am-btn am-btn-primary am-radius">
+                        <i class="am-icon-edit"></i> 编辑
+                    </a>
+                    <a href="{:U('records', array('activity_id'=>$info['id']))}" class="am-btn am-btn-secondary am-radius">
+                        <i class="am-icon-list"></i> 报名记录
+                    </a>
+                    <a href="{:U('index')}" class="am-btn am-btn-default am-radius">
+                        <i class="am-icon-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+                
+                <!-- 参与学员表格 -->
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">参与学员列表</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>学员姓名</th>
+                                    <th>联系电话</th>
+                                    <th>报名时间</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist name="member_list" id="vo">
+                                <tr>
+                                    <td>{$vo.user_name}</td>
+                                    <td>{$vo.mobile}</td>
+                                    <td>{$vo.create_time}</td>
+                                    <td>{$vo.status_text}</td>
+                                </tr>
+                                </volist>
+                                <if condition="empty($member_list)">
+                                <tr>
+                                    <td colspan="4" class="am-text-center">暂无报名记录</td>
+                                </tr>
+                                </if>
+                            </tbody>
+                        </table>
+                        <div class="am-pagination">
+                            {$page}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

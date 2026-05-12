@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加跟进记录</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-edit"></i> 添加跟进记录 - {$info.student_name}</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <!-- 线索基本信息 -->
+                        <div class="am-alert am-alert-secondary">
+                            <p><strong>电话：</strong>{$info.phone}</p>
+                            <p><strong>来源：</strong>{$info.source}</p>
+                            <p><strong>意向课程：</strong>{$info.interest_course|default='-'}</p>
+                        </div>
+                        
+                        <form class="am-form am-form-horizontal" id="followForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">跟进内容 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-8">
+                                    <textarea name="content" class="am-form-field" rows="5" placeholder="请输入本次跟进内容" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">下次跟进时间</label>
+                                <div class="am-u-sm-6">
+                                    <input type="datetime-local" name="next_time" class="am-form-field">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">意向程度</label>
+                                <div class="am-u-sm-6">
+                                    <select name="interest_level" class="am-form-field">
+                                        <option value="">保持不变</option>
+                                        <option value="1">低</option>
+                                        <option value="2">中</option>
+                                        <option value="3">高</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- 历史跟进记录 -->
+                            <notempty name="info.follow_logs">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">历史跟进</label>
+                                <div class="am-u-sm-8">
+                                    <div class="am-scrollable-vertical" style="max-height:200px;">
+                                        <volist name="info.follow_logs" id="log" name="logs">
+                                        <div class="am-panel am-panel-default am-margin-bottom-xs">
+                                            <div class="am-panel-bd">
+                                                <p><small class="am-text-muted">{:date('Y-m-d H:i', $log['create_time'])}</small></p>
+                                                <p>{$log.content}</p>
+                                            </div>
+                                        </div>
+                                        </volist>
+                                    </div>
+                                </div>
+                            </div>
+                            </notempty>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-8 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-check"></i> 提交跟进
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-8 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#followForm').submit(function() {
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if(res.code) {
+            location.href = '__CONTROLLER__/index';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

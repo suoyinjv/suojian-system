@@ -1,0 +1,156 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16">打卡日历</span>
+            <a href="{:U('records')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回列表</a>
+        </legend>
+
+        <!-- 学生选择 -->
+        <form class="am-form am-form-horizontal" method="get">
+            <div class="am-form-group">
+                <div class="am-u-sm-4">
+                    <select name="student_id" class="am-form-field" onchange="this.form.submit()">
+                        <option value="">请选择学生</option>
+                        <volist name="student_list" id="vo">
+                        <option value="{$vo.id}" <if condition="I('student_id') eq $vo['id']">selected</if>>{$vo.student_name} - {$vo.phone}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="am-u-sm-4">
+                    <input type="text" name="month" class="am-form-field" placeholder="选择月份" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" value="{:I('month')}">
+                </div>
+                <div class="am-u-sm-4">
+                    <button type="submit" class="am-btn am-btn-primary am-radius">查询</button>
+                </div>
+            </div>
+        </form>
+
+        <if condition="I('student_id') neq ''">
+        <!-- 打卡统计 -->
+        <div class="am-g m-b-10">
+            <div class="am-u-sm-3">
+                <div class="am-panel am-panel-success am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$checkin_count|default=0}</div>
+                        <div class="am-text-sm">本月打卡次数</div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="am-panel am-panel-warning am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$streak_days|default=0}</div>
+                        <div class="am-text-sm">当前连续天数</div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="am-panel am-panel-primary am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$total_points|default=0}</div>
+                        <div class="am-text-sm">获得积分</div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="am-panel am-panel-secondary am-radius">
+                    <div class="am-panel-bd am-text-center">
+                        <div class="am-text-xxl">{$completion_rate|default='0%'}</div>
+                        <div class="am-text-sm">完成率</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 日历 -->
+        <div class="am-panel am-panel-primary am-radius m-b-10">
+            <div class="am-panel-hd am-text-center">
+                <span class="am-text-lg">{$current_month|default=date('Y-m')}</span> 打卡日历
+            </div>
+            <div class="am-panel-bd">
+                <!-- 星期标题 -->
+                <div class="am-g m-b-5">
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周一</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周二</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周三</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周四</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周五</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周六</div>
+                    <div class="am-u-sm-1 am-text-center am-text-bold">周日</div>
+                </div>
+                <!-- 日历网格 -->
+                <div class="am-g">
+                    <volist name="calendar_data" id="day">
+                    <div class="am-u-sm-1 am-text-center m-b-5">
+                        <if condition="$day.date neq ''">
+                            <div class="calendar-day <if condition='$day.status eq 1'>am-btn-success am-radius<elseif condition="$day.status eq 0' />am-btn-danger am-radius<else />am-btn-default am-radius</if>" 
+                                 style="padding:8px 0;cursor:pointer;" onclick="showDayDetail('{$day.date}')">
+                                <div class="am-text-lg">{$day.day}</div>
+                                <if condition="$day.status eq 1">
+                                    <div class="am-text-xs">✓</div>
+                                <elseif condition="$day.status eq 0" />
+                                    <div class="am-text-xs">✗</div>
+                                </if>
+                            </div>
+                        </if>
+                    </div>
+                    </volist>
+                </div>
+            </div>
+            <div class="am-panel-bd am-text-center">
+                <span class="am-badge am-badge-success">✓ 已打卡</span>
+                <span class="am-badge am-badge-danger">✗ 未打卡</span>
+                <span class="am-badge am-badge-default">无任务</span>
+            </div>
+        </div>
+
+        <!-- 图例说明 -->
+        <else />
+        <div class="am-alert am-alert-secondary am-text-center">
+            请选择学生查看打卡日历
+        </div>
+        </if>
+    </div>
+</div>
+
+<!-- 打卡详情弹窗 -->
+<div class="am-modal am-modal-prompt" id="dayDetailModal">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd" id="detailDate">打卡详情</div>
+        <div class="am-modal-bd" id="detailContent">
+            加载中...
+        </div>
+        <div class="am-modal-footer">
+            <span class="am-modal-btn" data-am-modal-cancel>关闭</span>
+        </div>
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/My97DatePicker/WdatePicker.js"></script>
+<script>
+function showDayDetail(date) {
+    $('#detailDate').text(date + ' 打卡详情');
+    $('#detailContent').html('加载中...');
+    $('#dayDetailModal').modal({relatedTarget: this});
+    
+    $.get('{:U("getDayDetail")}?student_id={:I(\'student_id\')}&date='+date, function(res) {
+        if(res.code == 1) {
+            var html = '<p>打卡时间：' + res.data.checkin_time + '</p>';
+            html += '<p>打卡类型：' + res.data.type + '</p>';
+            html += '<p>获得积分：' + res.data.points + '</p>';
+            html += '<p>打卡内容：' + (res.data.content || '无') + '</p>';
+            if(res.data.image) {
+                html += '<p><img src="' + res.data.image + '" style="max-width:100%;"></p>';
+            }
+            $('#detailContent').html(html);
+        } else {
+            $('#detailContent').html('<p class="am-text-danger">' + res.msg + '</p>');
+        }
+    }, 'json');
+}
+</script>

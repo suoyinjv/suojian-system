@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>跨校区老师查询 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <!-- 导航 -->
+                <div class="am-btn-toolbar am-margin-bottom">
+                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-radius">
+                        <i class="am-icon-arrow-left"></i> 返回校区管理
+                    </a>
+                    <a href="__CONTROLLER__/crossCampusStudent" class="am-btn am-btn-success am-radius">
+                        <i class="am-icon-users"></i> 跨校学员查询
+                    </a>
+                </div>
+                
+                <!-- 搜索 -->
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="fa fa-search"></i> 跨校区老师查询</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline" action="__SELF__" method="GET">
+                            <div class="am-form-group">
+                                <input type="text" name="keyword" class="am-form-field" placeholder="姓名/手机号" value="{:I('keyword')}">
+                            </div>
+                            <button type="submit" class="am-btn am-btn-primary">
+                                <i class="am-icon-search"></i> 搜索
+                            </button>
+                            <a href="__SELF__" class="am-btn am-btn-default">清空</a>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 结果表格 -->
+                <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>姓名</th>
+                            <th>手机号</th>
+                            <th>性别</th>
+                            <th>所属校区</th>
+                            <th>教授课程</th>
+                            <th>入职时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="list">
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.phone}</td>
+                            <td><if condition="$vo['sex'] eq 1">男<else/>女</if></td>
+                            <td><span class="am-badge am-badge-primary">{$vo.campus_name}</span></td>
+                            <td><span class="am-badge am-badge-success">{$vo.course_count}</span> 门</td>
+                            <td>{$vo.add_time|date='Y-m-d',###}</td>
+                            <td>
+                                <a href="{:U('Teacher/view/id/'.$vo['id'])}">详情</a>
+                                <a href="{:U('Teacher/edit/id/'.$vo['id'])}">编辑</a>
+                            </td>
+                        </tr>
+                        </volist>
+                        <else/>
+                        <tr>
+                            <td colspan="8" class="am-text-center">暂无数据</td>
+                        </tr>
+                        </notempty>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

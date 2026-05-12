@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>提交列表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <h2>学生提交列表</h2>
+            
+            <div class="am-btn-toolbar am-fl" style="margin-bottom:10px;">
+                <div class="am-btn-group">
+                    <a href="{:U('batchCorrect')}" class="am-btn am-btn-sm am-btn-secondary" id="batch_correct_btn">
+                        <i class="am-icon-check"></i> 批量批改
+                    </a>
+                    <a href="{:U('exportSubmitList', array('homework_id'=>I('homework_id')))}" class="am-btn am-btn-sm am-btn-default">
+                        <i class="am-icon-download"></i> 导出Excel
+                    </a>
+                </div>
+            </div>
+            
+            <form class="am-form am-form-horizontal" method="get">
+                <input type="hidden" name="homework_id" value="{$homework_id}">
+                <div class="am-form-group">
+                    <div class="am-u-sm-3">
+                        <select name="status">
+                            <option value="-1" {:I('status', '-1')=='-1'?'selected':''}>全部状态</option>
+                            <option value="0" {:I('status')==='0'?'selected':''}>待批改</option>
+                            <option value="1" {:I('status')==='1'?'selected':''}>已批改</option>
+                        </select>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <input type="text" name="student_name" class="am-form-field" placeholder="学生姓名" value="{:I('student_name')}">
+                    </div>
+                    <div class="am-u-sm-2">
+                        <button type="submit" class="am-btn am-btn-default">筛选</button>
+                    </div>
+                </div>
+            </form>
+            
+            <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="check_all"></th>
+                        <th>作业标题</th>
+                        <th>学生姓名</th>
+                        <th>提交时间</th>
+                        <th>状态</th>
+                        <th>得分</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="list" id="vo">
+                    <tr>
+                        <td><input type="checkbox" name="ids[]" value="{$vo.id}"></td>
+                        <td>{$vo.homework_title}</td>
+                        <td>{$vo.student_name}</td>
+                        <td>{$vo.submit_time}</td>
+                        <td>
+                            <if condition="$vo['status'] eq 0">
+                            <span class="am-badge am-badge-warning">待批改</span>
+                            <else/>
+                            <span class="am-badge am-badge-success">已批改</span>
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo['status'] eq 1">
+                            {$vo.score|default='-'}/{$vo.total_score|default=100}
+                            <else/>
+                            -
+                            </if>
+                        </td>
+                        <td>
+                            <a href="{:U('correct', array('id'=>$vo['id']))}">批改</a>
+                            <a href="{:U('viewSubmit', array('id'=>$vo['id']))}">查看</a>
+                        </td>
+                    </tr>
+                    </volist>
+                </tbody>
+            </table>
+            <div class="am-pagination">{$page}</div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function(){
+    $('#check_all').click(function(){
+        $('input[name="ids[]"]').prop('checked', this.checked);
+    });
+    
+    $('#batch_correct_btn').click(function(){
+        var ids = [];
+        $('input[name="ids[]"]:checked').each(function(){
+            ids.push(this.value);
+        });
+        if(ids.length === 0) {
+            alert('请选择要批改的学生');
+            return false;
+        }
+        $(this).attr('href', $(this).attr('href') + '?ids=' + ids.join(','));
+    });
+});
+</script>
+</body>
+</html>

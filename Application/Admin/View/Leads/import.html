@@ -1,0 +1,205 @@
+<include file="Public/Header" />
+
+<!-- right content start -->
+<div class="content-right">
+    <div class="content">
+        <!-- import form start -->
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">
+                <i class="am-icon-upload"></i> 批量导入线索
+            </div>
+            <div class="am-panel-bd">
+                <div class="am-g">
+                    <div class="am-u-sm-8">
+                        <form class="am-form am-form-horizontal" action="{{:U('Admin/Leads/import')}}" method="post" enctype="multipart/form-data" id="importForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-form-label">选择文件：</label>
+                                <div class="am-u-sm-6">
+                                    <input type="file" name="file" id="file" accept=".xls,.xlsx" required class="am-input-sm" />
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-radius">
+                                        <i class="am-icon-upload"></i> 开始导入
+                                    </button>
+                                    <a href="{{:U('Admin/Leads/downloadTemplate')}}" class="am-btn am-btn-success am-radius">
+                                        <i class="am-icon-download"></i> 下载模板
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                        
+                        <div class="am-alert am-alert-secondary m-t-15">
+                            <p><i class="am-icon-info-circle"></i> <strong>导入说明：</strong></p>
+                            <ul class="m-l-20 m-t-5">
+                                <li>请先下载导入模板，按模板格式填写数据</li>
+                                <li>支持 .xls 或 .xlsx 格式的 Excel 文件</li>
+                                <li>手机号为必填项，姓名、来源渠道等为选填项</li>
+                                <li>导入过程中会自动跳过格式错误的数据行</li>
+                                <li>导入完成后可在下方查看导入历史记录</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-4">
+                        <div class="am-panel am-panel-warning">
+                            <div class="am-panel-hd">导入模板示例</div>
+                            <div class="am-panel-bd">
+                                <table class="am-table am-table-bordered am-table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>手机号*</th>
+                                            <th>微信</th>
+                                            <th>来源</th>
+                                            <th>意向课程</th>
+                                            <th>备注</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>张三</td>
+                                            <td>13800138000</td>
+                                            <td>zhangsan</td>
+                                            <td>线上推广</td>
+                                            <td>Python</td>
+                                            <td>有兴趣</td>
+                                        </tr>
+                                        <tr>
+                                            <td>李四</td>
+                                            <td>13900139000</td>
+                                            <td>lisi123</td>
+                                            <td>转介绍</td>
+                                            <td>Java</td>
+                                            <td>朋友推荐</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- import form end -->
+        
+        <!-- import history start -->
+        <div class="am-panel am-panel-default m-t-15">
+            <div class="am-panel-hd">
+                <i class="am-icon-history"></i> 导入历史记录
+                <div class="am-fr">
+                    <button class="am-btn am-btn-xs am-btn-default" onclick="location.reload()">
+                        <i class="am-icon-refresh"></i> 刷新
+                    </button>
+                </div>
+            </div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-striped am-table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>文件名</th>
+                            <th>导入数量</th>
+                            <th>成功数量</th>
+                            <th>失败数量</th>
+                            <th>操作人</th>
+                            <th>导入时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="import_history" id="vo">
+                        <tr id="import-{{$vo.id}}">
+                            <td>{{$vo.id}}</td>
+                            <td>{{$vo.filename}}</td>
+                            <td>{{$vo.total_count}}</td>
+                            <td class="am-text-success">{{$vo.success_count}}</td>
+                            <td class="am-text-danger">{{$vo.fail_count}}</td>
+                            <td>{{$vo.operator_name}}</td>
+                            <td>{{$vo.create_date}}</td>
+                            <td>
+                                <if condition="$vo['status'] eq 1">
+                                    <span class="am-badge am-badge-success">成功</span>
+                                <elseif condition="$vo['status'] eq 0" />
+                                    <span class="am-badge am-badge-warning">进行中</span>
+                                <else />
+                                    <span class="am-badge am-badge-danger">失败</span>
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo['fail_count'] gt 0">
+                                    <a href="{{:U('Admin/Leads/downloadError', array('id'=>$vo['id']))}}" class="am-btn am-btn-xs am-btn-warning am-radius">
+                                        <i class="am-icon-download"></i> 错误日志
+                                    </a>
+                                </if>
+                            </td>
+                        </tr>
+                        </volist>
+                        <if condition="empty($import_history)">
+                        <tr>
+                            <td colspan="9" class="table-no">暂无导入记录</td>
+                        </tr>
+                        </if>
+                    </tbody>
+                </table>
+                
+                <!-- page start -->
+                <if condition="!empty($import_history)">
+                    {{$page_html}}
+                </if>
+                <!-- page end -->
+            </div>
+        </div>
+        <!-- import history end -->
+        
+        <!-- import result message -->
+        <if condition="!empty($import_result)">
+        <div class="am-alert am-alert-{{$import_result.code|default='success'|eq='1'?'success':'danger'}}">
+            <button type="button" class="am-close">&times;</button>
+            <p><strong>{{$import_result.code|default='1'|eq='1'?'导入成功':'导入失败'}}</strong></p>
+            <p>总记录数：{{$import_result.total|default=0}}</p>
+            <p>成功数量：{{$import_result.success|default=0}}</p>
+            <p>失败数量：{{$import_result.fail|default=0}}</p>
+            <if condition="$import_result.fail|default=0 gt 0">
+            <p><a href="{{:U('Admin/Leads/downloadError', array('batch_id'=>$import_result.batch_id))}}">点击下载错误日志</a></p>
+            </if>
+        </div>
+        </if>
+    </div>
+</div>
+<!-- right content end -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<!-- page level scripts -->
+<script src="__PUBLIC__/Common/Lib/uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/Common/Lib/uploadify/uploadify.css" />
+<style>
+.required { color: #dd514c; }
+</style>
+<script>
+$(function(){
+    // 文件上传表单验证
+    $('#importForm').on('submit', function(){
+        var file = $('#file').val();
+        if(!file){
+            alert('请选择要导入的文件');
+            return false;
+        }
+        var ext = file.substring(file.lastIndexOf('.')).toLowerCase();
+        if(ext != '.xls' && ext != '.xlsx'){
+            alert('请上传 .xls 或 .xlsx 格式的文件');
+            return false;
+        }
+        return true;
+    });
+    
+    // 关闭提示框
+    $('.am-alert .am-close').on('click', function(){
+        $(this).parent('.am-alert').hide();
+    });
+});
+</script>

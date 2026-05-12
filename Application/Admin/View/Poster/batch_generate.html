@@ -1,0 +1,270 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">批量生成海报</span>
+			<a href="{{:U('Admin/Poster/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- form start -->
+		<form class="am-form" id="batch-form">
+			<div class="am-form-group">
+				<label>选择模板<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<select name="template_id" class="am-radius c-p" id="template-select" required>
+					<option value="">请选择海报模板</option>
+					<foreach name="template_list" item="v">
+						<option value="{{$v.id}}">{{$v.title}}</option>
+					</foreach>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>学员范围<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<div class="am-g">
+					<div class="am-u-sm-4">
+						<select name="grade_id" class="am-radius c-p" id="grade-select">
+							<option value="0">全部年级</option>
+							<foreach name="grade_list" item="v">
+								<option value="{{$v.id}}">{{$v.name}}</option>
+							</foreach>
+						</select>
+					</div>
+					<div class="am-u-sm-4">
+						<select name="class_id" class="am-radius c-p" id="class-select">
+							<option value="0">全部班级</option>
+						</select>
+					</div>
+					<div class="am-u-sm-4">
+						<select name="student_status" class="am-radius c-p">
+							<option value="0">全部学员</option>
+							<option value="1">在读学员</option>
+							<option value="2">已毕业学员</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="am-form-group">
+				<label>生成数量预览</label>
+				<div class="am-alert am-alert-secondary am-radius">
+					<p>符合条件的学员共 <strong id="student-count">0</strong> 人，将生成 <strong id="gen-count">0</strong> 张海报</p>
+				</div>
+			</div>
+			<div class="am-form-group">
+				<button type="button" class="am-btn am-btn-primary am-radius" id="btn-preview-count">
+					<i class="am-icon-search"></i> 预览数量
+				</button>
+				<button type="button" class="am-btn am-btn-secondary am-radius m-l-10" id="btn-start-generate" disabled>
+					<i class="am-icon-bolt"></i> 开始生成
+				</button>
+				<button type="button" class="am-btn am-btn-default am-radius m-l-10" id="btn-cancel-generate" style="display:none;">
+					<i class="am-icon-ban"></i> 取消生成
+				</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- progress section start -->
+		<div id="progress-section" style="display:none;">
+			<hr />
+			<legend><span class="fs-14">生成进度</span></legend>
+			<div class="am-progress am-progress-striped am-active am-margin-bottom">
+				<div class="am-progress-bar am-progress-bar-secondary" id="progress-bar" style="width: 0%">0%</div>
+			</div>
+			<div class="am-g">
+				<div class="am-u-sm-3">
+					<p class="am-text-center fs-12 cr-999">总数量</p>
+					<p class="am-text-center fs-20 fw-bold" id="total-count">0</p>
+				</div>
+				<div class="am-u-sm-3">
+					<p class="am-text-center fs-12 cr-999">已生成</p>
+					<p class="am-text-center fs-20 fw-bold am-text-success" id="done-count">0</p>
+				</div>
+				<div class="am-u-sm-3">
+					<p class="am-text-center fs-12 cr-999">失败数</p>
+					<p class="am-text-center fs-20 fw-bold am-text-danger" id="fail-count">0</p>
+				</div>
+				<div class="am-u-sm-3">
+					<p class="am-text-center fs-12 cr-999">耗时</p>
+					<p class="am-text-center fs-20 fw-bold" id="elapsed-time">0s</p>
+				</div>
+			</div>
+		</div>
+		<!-- progress section end -->
+
+		<!-- result section start -->
+		<div id="result-section" style="display:none;">
+			<hr />
+			<legend><span class="fs-14">生成结果</span></legend>
+			<div class="am-alert am-alert-secondary am-radius m-b-10">
+				<i class="am-icon-check-circle am-text-success"></i> 批量生成完成！
+				成功 <strong class="am-text-success" id="result-success">0</strong> 张，失败 <strong class="am-text-danger" id="result-fail">0</strong> 张
+			</div>
+			<div class="am-g">
+				<div class="am-u-sm-6">
+					<a href="{{:U('Admin/Poster/Records')}}" class="am-btn am-btn-secondary am-radius am-btn-sm am-icon-list"> 查看生成记录</a>
+				</div>
+				<div class="am-u-sm-6">
+					<button type="button" class="am-btn am-btn-default am-radius am-btn-sm am-icon-download" id="btn-download-all"> 下载全部</button>
+				</div>
+			</div>
+			<div id="result-list" class="m-t-15"></div>
+		</div>
+		<!-- result section end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script type="text/javascript">
+$(function(){
+	var generating = false;
+
+	// 年级切换加载班级
+	$('#grade-select').change(function(){
+		var grade_id = $(this).val();
+		$.get('{{:U("Admin/Poster/getClassList")}}', {grade_id: grade_id}, function(res){
+			var html = '<option value="0">全部班级</option>';
+			if(res.code == 1) {
+				$.each(res.data, function(i, v){
+					html += '<option value="'+v.id+'">'+v.name+'</option>';
+				});
+			}
+			$('#class-select').html(html);
+		}, 'json');
+	});
+
+	// 预览数量
+	$('#btn-preview-count').click(function(){
+		var template_id = $('#template-select').val();
+		var grade_id = $('#grade-select').val();
+		var class_id = $('#class-select').val();
+		var student_status = $('select[name=student_status]').val();
+		if(!template_id) {
+			alert('请选择海报模板'); return;
+		}
+		$.get('{{:U("Admin/Poster/previewStudentCount")}}', {
+			template_id: template_id, grade_id: grade_id, class_id: class_id, student_status: student_status
+		}, function(res){
+			$('#student-count').text(res.count || 0);
+			$('#gen-count').text(res.count || 0);
+			$('#btn-start-generate').prop('disabled', false);
+		}, 'json');
+	});
+
+	// 开始生成
+	$('#btn-start-generate').click(function(){
+		if(generating) return;
+		generating = true;
+		$('#progress-section').show();
+		$('#result-section').hide();
+		$('#btn-start-generate').hide();
+		$('#btn-cancel-generate').show();
+
+		var total = parseInt($('#gen-count').text()) || 0;
+		var done = 0, fail = 0;
+		var startTime = Date.now();
+		var template_id = $('#template-select').val();
+		var grade_id = $('#grade-select').val();
+		var class_id = $('#class-select').val();
+		var student_status = $('select[name=student_status]').val();
+
+		$('#total-count').text(total);
+
+		function doGenerate() {
+			$.post('{{:U("Admin/Poster/doBatchGenerate")}}', {
+				template_id: template_id, grade_id: grade_id, class_id: class_id, student_status: student_status
+			}, function(res){
+				done++;
+				if(res.code == 1) {
+					$('#done-count').text(done);
+				} else {
+					fail++;
+					$('#fail-count').text(fail);
+				}
+				var pct = total > 0 ? Math.round(done / total * 100) : 100;
+				$('#progress-bar').css('width', pct+'%').text(pct+'%');
+				var elapsed = Math.round((Date.now() - startTime) / 1000);
+				$('#elapsed-time').text(elapsed + 's');
+
+				if(done >= total || generating === false) {
+					finishGenerate(total, done, fail);
+				}
+			}, 'json');
+		}
+
+		// 并发控制，每次最多3个
+		var concurrent = 0, maxConcurrent = 3, idx = 0;
+		var results = [];
+
+		function processNext() {
+			while(concurrent < maxConcurrent && idx < total) {
+				concurrent++;
+				idx++;
+				$.post('{{:U("Admin/Poster/doBatchGenerate")}}', {
+					template_id: template_id, grade_id: grade_id, class_id: class_id, student_status: student_status
+				}, function(res){
+					concurrent--;
+					done++;
+					if(res.code == 1) {
+						$('#done-count').text(done);
+						results.push(res.data);
+					} else {
+						fail++;
+						$('#fail-count').text(fail);
+					}
+					var pct = total > 0 ? Math.round(done / total * 100) : 100;
+					$('#progress-bar').css('width', pct+'%').text(pct+'%');
+					var elapsed = Math.round((Date.now() - startTime) / 1000);
+					$('#elapsed-time').text(elapsed + 's');
+
+					if(done >= total) {
+						finishGenerate(total, done, fail, results);
+					} else {
+						processNext();
+					}
+				}, 'json');
+			}
+		}
+
+		if(total == 0) {
+			$('#progress-bar').css('width', '100%').text('100%');
+			finishGenerate(0, 0, 0);
+			return;
+		}
+
+		processNext();
+
+		function finishGenerate(total, done, fail, results) {
+			generating = false;
+			$('#btn-start-generate').show();
+			$('#btn-cancel-generate').hide();
+			$('#result-section').show();
+			$('#result-success').text(done);
+			$('#result-fail').text(fail);
+			var html = '<table class="am-table am-table-striped am-table-hover"><thead><tr><th>学员</th><th>海报</th><th>状态</th><th>操作</th></tr></thead><tbody>';
+			$.each(results || [], function(i, v){
+				html += '<tr><td>'+(v.student_name||'')+'</td><td>'+(v.poster_name||'')+'</td><td><span class="am-text-success">成功</span></td>';
+				html += '<td><a href="'+v.download_url+'" class="am-btn am-btn-xs am-btn-default am-radius am-icon-download"> 下载</a></td></tr>';
+			});
+			html += '</tbody></table>';
+			$('#result-list').html(results && results.length ? html : '<p class="am-text-center cr-999">无生成结果</p>');
+		}
+	});
+
+	// 取消生成
+	$('#btn-cancel-generate').click(function(){
+		generating = false;
+		$('#btn-start-generate').show();
+		$('#btn-cancel-generate').hide();
+	});
+
+	// 下载全部
+	$('#btn-download-all').click(function(){
+		window.location.href = '{{:U("Admin/Poster/downloadAllBatch")}}';
+	});
+});
+</script>

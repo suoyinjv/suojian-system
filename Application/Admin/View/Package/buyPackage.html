@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>购买课程包</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-10 am-u-sm-centered">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-shopping-cart"></i> 选择课程包</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form" action="__SELF__" method="POST" id="buyForm">
+                            <input type="hidden" name="student_id" value="{:I('student_id')}">
+                            
+                            <div class="am-g">
+                                <volist name="packages" id="pkg">
+                                <div class="am-u-sm-4 am-margin-bottom">
+                                    <div class="am-panel am-panel-warning">
+                                        <div class="am-panel-hd">
+                                            <h4 class="am-panel-title">{$pkg.name}</h4>
+                                        </div>
+                                        <div class="am-panel-bd">
+                                            <p class="am-text-xl am-text-danger">¥{$pkg.price}</p>
+                                            <p class="am-text-muted"><del>¥{$pkg.original_price}</del></p>
+                                            <p><span class="am-badge am-badge-primary">{$pkg.hours}课时</span></p>
+                                            <if condition="$pkg.validity_days gt 0">
+                                            <p class="am-text-sm">有效期: {$pkg.validity_days}天</p>
+                                            </if>
+                                            <p class="am-text-truncate">{$pkg.description}</p>
+                                            <label class="am-radio">
+                                                <input type="radio" name="package_id" value="{$pkg.id}" required>
+                                                选择此课程包
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                </volist>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">购买数量</label>
+                                <div class="am-u-sm-4">
+                                    <input type="number" name="quantity" class="am-form-field" value="1" min="1">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">备注</label>
+                                <div class="am-u-sm-6">
+                                    <textarea name="remark" class="am-form-field" rows="2"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-2">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-check"></i> 确认购买
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-2">
+                                    <a href="javascript:history.back()" class="am-btn am-btn-default am-btn-block">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#buyForm').submit(function() {
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if(res.code) {
+            location.href = '__CONTROLLER__/studentPackage?student_id={:I("student_id")}';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

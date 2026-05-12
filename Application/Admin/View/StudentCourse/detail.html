@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>学员课程详情 - 所以学教学系统</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+    <style>
+        .info-card { background: #fff; border-radius: 4px; padding: 20px; margin-bottom: 15px; }
+        .stat-box { text-align: center; padding: 15px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #0e90d2; }
+        .stat-label { font-size: 12px; color: #999; margin-top: 5px; }
+        .progress { height: 12px; margin-bottom: 0; }
+        .progress-bar { line-height: 12px; font-size: 11px; }
+    </style>
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <!-- 面包屑 -->
+                <div class="am-breadcrumb am-margin-bottom-sm">
+                    <a href="{:U('index')}"><i class="am-icon-home"></i> 首页</a>
+                    <a href="{:U('index')}">课时管理</a>
+                    <span class="am-active">学员课程详情</span>
+                </div>
+
+                <!-- 学员信息卡片 -->
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-user"></i> 学员信息
+                            <a href="{:U('consumption')}?student_id={$student_id}" class="am-btn am-btn-xs am-btn-default am-fr">
+                                <i class="am-icon-list"></i> 消课记录
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-g">
+                            <div class="am-u-sm-3">
+                                <div class="info-card">
+                                    <div class="stat-box">
+                                        <div class="stat-number">{$student_info.name|default='-'}</div>
+                                        <div class="stat-label">学员姓名</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="info-card">
+                                    <div class="stat-box">
+                                        <div class="stat-number">{$student_info.phone|default='-'}</div>
+                                        <div class="stat-label">联系电话</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="info-card">
+                                    <div class="stat-box">
+                                        <div class="stat-number">{$total_courses|default=0}</div>
+                                        <div class="stat-label">购买课程数</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-3">
+                                <div class="info-card">
+                                    <div class="stat-box">
+                                        <div class="stat-number">{$total_remaining|default=0}</div>
+                                        <div class="stat-label">总剩余课时</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 课程列表 -->
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-book"></i> 课程详情
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>课程名称</th>
+                                    <th>总课时</th>
+                                    <th>已消耗</th>
+                                    <th>剩余课时</th>
+                                    <th>消耗进度</th>
+                                    <th>过期日期</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <notpresent name="courses">
+                                <tr><td colspan="8" class="am-text-center">暂无课程记录</td></tr>
+                                </notpresent>
+                                <volist name="courses" id="vo">
+                                <tr>
+                                    <td>{$vo.course_name|default='-'}</td>
+                                    <td>{$vo.total_hours|default=0}</td>
+                                    <td>{$vo.used_hours|default=0}</td>
+                                    <td><strong>{$vo.remaining_hours|default=0}</strong></td>
+                                    <td>
+                                        <?php 
+                                            $percent = isset($vo['used_percent']) ? $vo['used_percent'] : 0;
+                                            $barClass = $percent > 80 ? 'am-progress-bar-danger' : ($percent > 50 ? 'am-progress-bar-warning' : 'am-progress-bar-success');
+                                        ?>
+                                        <div class="am-progress">
+                                            <div class="am-progress-bar <?php echo $barClass; ?>" style="width: <?php echo $percent; ?>%"><?php echo $percent; ?>%</div>
+                                        </div>
+                                    </td>
+                                    <td>{$vo.expire_date|default='永久'|date='Y-m-d',###}</td>
+                                    <td>
+                                        <if condition="$vo['remaining_hours'] gt 0">
+                                            <span class="am-badge am-badge-success">正常</span>
+                                        <else/>
+                                            <span class="am-badge am-badge-danger">已耗尽</span>
+                                        </if>
+                                    </td>
+                                    <td>
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a href="{:U('gift')}?student_course_id={$vo.id}" class="am-btn am-btn-xs am-btn-warning">
+                                                <i class="am-icon-gift"></i> 赠送
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 最近消课记录 -->
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-history"></i> 最近消课记录
+                            <a href="{:U('consumption')}?student_id={$student_id}" class="am-btn am-btn-xs am-btn-default am-fr">
+                                查看全部 <i class="am-icon-arrow-right"></i>
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>时间</th>
+                                    <th>课程</th>
+                                    <th>消耗课时</th>
+                                    <th>类型</th>
+                                    <th>操作人</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <notpresent name="consumptions">
+                                <tr><td colspan="5" class="am-text-center">暂无消课记录</td></tr>
+                                </notpresent>
+                                <volist name="consumptions" id="vo">
+                                <tr>
+                                    <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                                    <td>{$vo.course_name|default='-'}</td>
+                                    <td>{$vo.hours}</td>
+                                    <td>
+                                        <switch name="vo.type">
+                                            <case value="attendance"><span class="am-badge am-badge-primary">考勤</span></case>
+                                            <case value="gift"><span class="am-badge am-badge-warning">赠送</span></case>
+                                            <case value="manual"><span class="am-badge am-badge-secondary">手动</span></case>
+                                            <default/><span class="am-badge">其他</span>
+                                        </switch>
+                                    </td>
+                                    <td>{$vo.operator_name|default='-'}</td>
+                                </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="am-margin-top">
+                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

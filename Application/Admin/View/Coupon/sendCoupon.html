@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>发放优惠券</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-g am-g-fixed am-margin-top">
+    <div class="am-panel am-panel-success">
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title"><i class="am-icon-gift"></i> 发放优惠券</h3>
+        </div>
+        <div class="am-panel-bd">
+            <form action="__SELF__" method="POST" class="am-form am-form-horizontal" id="sendForm">
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">选择优惠券</label>
+                    <div class="am-u-sm-6">
+                        <select name="coupon_id" class="am-form-field" required>
+                            <option value="">请选择优惠券</option>
+                            <volist name="couponList" id="vo">
+                            <option value="{$vo.id}" <if condition="I('coupon_id') eq $vo['id']">selected</if>>
+                                {$vo.name} (剩余: {$vo.remain_count})
+                            </option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">选择学员</label>
+                    <div class="am-u-sm-10">
+                        <div class="am-alert am-alert-secondary" id="selectedInfo">
+                            请在下方搜索选择学员
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">搜索学员</label>
+                    <div class="am-u-sm-6">
+                        <input type="text" id="keyword" class="am-form-field" placeholder="输入姓名或手机号搜索">
+                    </div>
+                    <div class="am-u-sm-4">
+                        <button type="button" class="am-btn am-btn-secondary" onclick="searchStudent()">
+                            <i class="am-icon-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">搜索结果</label>
+                    <div class="am-u-sm-10">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="60">选择</th>
+                                    <th>姓名</th>
+                                    <th>手机号</th>
+                                    <th>校区</th>
+                                </tr>
+                            </thead>
+                            <tbody id="searchResult">
+                                <tr><td colspan="4" class="text-center">请搜索学员</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">已选学员</label>
+                    <div class="am-u-sm-10">
+                        <div id="selectedStudents" class="am-selected-list" style="min-height:60px;border:1px solid #ddd;padding:10px;">
+                            暂无选择
+                        </div>
+                    </div>
+                </div>
+                
+                <input type="hidden" name="student_ids" id="studentIds">
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-6">
+                        <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                            <i class="am-icon-send"></i> 确认发放
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-6">
+                        <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var selectedStudents = [];
+
+function searchStudent() {
+    var keyword = $('#keyword').val();
+    if (!keyword) {
+        alert('请输入搜索关键字');
+        return;
+    }
+    
+    $.get('/index.php?m=Admin&c=Student&a=search&keyword=' + encodeURIComponent(keyword) + '&json=1', function(res) {
+        var html = '';
+        if (res.data && res.data.length > 0) {
+            $.each(res.data, function(i, v) {
+                var checked = selectedStudents.indexOf(v.id) >= 0 ? 'checked' : '';
+                html += '<tr>';
+                html += '<td><input type="checkbox" ' + checked + ' onchange="toggleStudent(' + v.id + ', \'' + v.name + '\')"></td>';
+                html += '<td>' + v.name + '</td>';
+                html += '<td>' + v.phone + '</td>';
+                html += '<td>' + (v.campus_name || '-') + '</td>';
+                html += '</tr>';
+            });
+        } else {
+            html = '<tr><td colspan="4" class="text-center">未找到相关学员</td></tr>';
+        }
+        $('#searchResult').html(html);
+    });
+}
+
+function toggleStudent(id, name) {
+    var idx = selectedStudents.indexOf(id);
+    if (idx >= 0) {
+        selectedStudents.splice(idx, 1);
+    } else {
+        selectedStudents.push(id);
+    }
+    updateSelectedDisplay();
+}
+
+function updateSelectedDisplay() {
+    if (selectedStudents.length > 0) {
+        $('#selectedStudents').html('已选择 <strong>' + selectedStudents.length + '</strong> 名学员');
+        $('#studentIds').val(selectedStudents.join(','));
+    } else {
+        $('#selectedStudents').html('暂无选择');
+        $('#studentIds').val('');
+    }
+}
+
+$('#sendForm').submit(function() {
+    if (selectedStudents.length === 0) {
+        alert('请选择学员');
+        return false;
+    }
+    return true;
+});
+</script>
+</body>
+</html>

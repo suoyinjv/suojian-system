@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>积分规则管理 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .rule-item { padding: 15px; border-bottom: 1px solid #eee; }
+        .rule-item:hover { background: #f8f8f8; }
+        .rule-name { font-weight: bold; color: #333; font-size: 16px; }
+        .rule-value { color: #52c41a; font-size: 18px; font-weight: bold; }
+        .rule-desc { color: #999; font-size: 13px; margin-top: 5px; }
+        .status-on { color: #52c41a; }
+        .status-off { color: #f5222d; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>⚙️ 积分规则管理</h2>
+        
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-12">
+                <a href="__CONTROLLER__/addRule" class="am-btn am-btn-primary am-radius">
+                    <i class="am-icon-plus"></i> 添加规则
+                </a>
+                <a href="__CONTROLLER__/statistics" class="am-btn am-btn-default am-radius">
+                    <i class="am-icon-bar-chart"></i> 积分统计
+                </a>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">规则列表</div>
+            <div class="am-panel-bd">
+                <volist name="list" id="vo">
+                <div class="rule-item">
+                    <div class="am-g">
+                        <div class="am-u-sm-6">
+                            <div class="rule-name">{$vo.name}</div>
+                            <div class="rule-desc">{$vo.remark|default='无备注'}</div>
+                            <div class="rule-desc">创建时间：{:date('Y-m-d H:i', $vo['create_time'])}</div>
+                        </div>
+                        <div class="am-u-sm-3">
+                            <span class="rule-value">+{$vo.value} 积分</span>
+                        </div>
+                        <div class="am-u-sm-3 am-text-right">
+                            <span class="{$vo['status']==1?'status-on':'status-off'}">
+                                {$vo['status']==1?'启用中':'已禁用'}
+                            </span>
+                            <a href="{:U('editRule', array('id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-primary am-radius" style="margin-left:10px;">编辑</a>
+                            <a href="javascript:;" onclick="deleteRule({$vo.id})" class="am-btn am-btn-xs am-btn-danger am-radius" style="margin-left:5px;">删除</a>
+                        </div>
+                    </div>
+                </div>
+                </volist>
+                <div class="am-pagination">{$page}</div>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">💡 常用规则参考</div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-bordered">
+                    <thead><tr><th>行为</th><th>积分</th><th>说明</th></tr></thead>
+                    <tbody>
+                        <tr><td>每日签到</td><td>+5</td><td>每天签到一次</td></tr>
+                        <tr><td>完成作业</td><td>+10</td><td>每次作业提交后</td></tr>
+                        <tr><td>出勤满勤</td><td>+50</td><td>整月无请假/旷课</td></tr>
+                        <tr><td>课堂表现优秀</td><td>+5</td><td>老师评分后发放</td></tr>
+                        <tr><td>推荐新学员</td><td>+100</td><td>新学员成功报名</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function deleteRule(id) {
+    if(confirm('确定要删除此规则吗？')) {
+        location.href = '__CONTROLLER__/deleteRule/id/' + id;
+    }
+}
+</script>
+</body>
+</html>

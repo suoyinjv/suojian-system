@@ -1,0 +1,92 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16">打卡记录</span>
+            <a href="{:U('index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回任务列表</a>
+        </legend>
+
+        <!-- 筛选表单 -->
+        <form class="am-form am-form-horizontal" method="get">
+            <div class="am-form-group">
+                <div class="am-u-sm-3">
+                    <input type="text" name="student_name" class="am-form-field" placeholder="学生姓名" value="{:I('student_name')}">
+                </div>
+                <div class="am-u-sm-3">
+                    <select name="type" class="am-form-field">
+                        <option value="">全部类型</option>
+                        <option value="daily" <if condition="I('type') eq 'daily'">selected</if>>日常签到</option>
+                        <option value="lesson" <if condition="I('type') eq 'lesson'">selected</if>>课次打卡</option>
+                    </select>
+                </div>
+                <div class="am-u-sm-2">
+                    <input type="text" name="start_date" class="am-form-field" placeholder="开始日期" onfocus="WdatePicker()" value="{:I('start_date')}">
+                </div>
+                <div class="am-u-sm-2">
+                    <input type="text" name="end_date" class="am-form-field" placeholder="结束日期" onfocus="WdatePicker()" value="{:I('end_date')}">
+                </div>
+                <div class="am-u-sm-2">
+                    <button type="submit" class="am-btn am-btn-primary am-radius">搜索</button>
+                    <a href="{:U('records')}" class="am-btn am-btn-default am-radius">重置</a>
+                </div>
+            </div>
+        </form>
+
+        <table class="am-table am-table-bordered am-table-striped am-table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学生姓名</th>
+                    <th>手机号</th>
+                    <th>打卡类型</th>
+                    <th>打卡日期</th>
+                    <th>打卡时间</th>
+                    <th>打卡位置</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.student_name}</td>
+                    <td>{$vo.student_phone}</td>
+                    <td>
+                        <if condition="$vo['type'] eq 'daily'">
+                            <span class="am-badge am-badge-primary">日常签到</span>
+                        <else />
+                            <span class="am-badge am-badge-success">课次打卡</span>
+                        </if>
+                    </td>
+                    <td>{$vo.record_date}</td>
+                    <td>{$vo.checkin_time}</td>
+                    <td>{$vo.location|default='-'}</td>
+                    <td>
+                        <if condition="$vo['status'] eq 1">
+                            <span class="am-badge am-badge-success">正常</span>
+                        <else />
+                            <span class="am-badge am-badge-warning">异常</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a href="{:U('deleteRecord?id='.$vo['id'])}" class="am-btn am-btn-xs am-btn-danger am-radius" onclick="return confirm('确定删除该记录？')">删除</a>
+                    </td>
+                </tr>
+                <else />
+                <tr>
+                    <td colspan="9" class="am-text-center">暂无打卡记录</td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+
+        {$page}
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/My97DatePicker/WdatePicker.js"></script>

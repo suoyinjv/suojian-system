@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>支出记录 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .summary-box {
+            padding: 15px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-number { font-size: 28px; font-weight: bold; }
+        .am-table .expense-type { font-weight: 500; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-cf admin-main">
+        <div class="am-u-sm-12">
+            <div class="am-g">
+                <div class="am-u-sm-3">
+                    <div class="summary-box">
+                        <div class="summary-number">¥{$total_expense}</div>
+                        <div>本月支出</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="summary-number">¥{$total_count}</div>
+                        <div>支出笔数</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <div class="summary-number">¥{$avg_expense}</div>
+                        <div>平均每笔</div>
+                    </div>
+                </div>
+                <div class="am-u-sm-3">
+                    <div class="summary-box" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="summary-number">{$type_count}</div>
+                        <div>支出类型</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="am-g" style="margin-bottom: 15px;">
+                <div class="am-u-sm-6">
+                    <form class="am-form-inline" method="get" action="{:U('Finance/expense')}">
+                        <div class="am-form-group">
+                            <input type="text" name="start_time" placeholder="开始日期" value="{$start_time}" onfocus="WdatePicker()">
+                        </div>
+                        <div class="am-form-group">
+                            <input type="text" name="end_time" placeholder="结束日期" value="{$end_time}" onfocus="WdatePicker()">
+                        </div>
+                        <div class="am-form-group">
+                            <select name="type" class="am-form-field">
+                                <option value="">全部类型</option>
+                                <volist name="type_list" id="t">
+                                <option value="{$t.id}" <if condition="$type eq $t['id']">selected</if>>{$t.name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <button type="submit" class="am-btn am-btn-default">查询</button>
+                    </form>
+                </div>
+                <div class="am-u-sm-6 am-text-right">
+                    <button class="am-btn am-btn-primary" data-am-modal="{target: '#add-expense-modal'}">
+                        <i class="am-icon-plus"></i> 添加支出
+                    </button>
+                </div>
+            </div>
+
+            <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>日期</th>
+                        <th>类型</th>
+                        <th>金额</th>
+                        <th>付款方式</th>
+                        <th>收款人</th>
+                        <th>备注</th>
+                        <th>操作人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{:date('Y-m-d', $vo['expense_date'])}</td>
+                        <td class="expense-type">{$vo.type_name}</td>
+                        <td class="am-text-danger">¥{$vo.amount}</td>
+                        <td>{$vo.pay_method_text}</td>
+                        <td>{$vo.payee}</td>
+                        <td>{$vo.remark}</td>
+                        <td>{$vo.admin_name}</td>
+                        <td>
+                            <a href="{:U('Finance/expense_edit', array('id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-default am-btn-xs">编辑</a>
+                            <a href="{:U('Finance/expense_del', array('id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-danger" onclick="return confirm('确定删除？')">删除</a>
+                        </td>
+                    </tr>
+                    </volist>
+                    <if condition="empty($list)">
+                    <tr><td colspan="9" class="am-text-center">暂无数据</td></tr>
+                    </if>
+                </tbody>
+            </table>
+
+            <div class="am-pagination">
+                {$page}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加支出模态框 -->
+<div class="am-modal am-modal-prompt" tabindex="-1" id="add-expense-modal">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">添加支出</div>
+        <div class="am-modal-bd">
+            <form class="am-form am-form-horizontal" action="{:U('Finance/expense_add')}" method="post" enctype="multipart/form-data">
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">支出日期</label>
+                    <div class="am-u-sm-9">
+                        <input type="text" name="expense_date" required onfocus="WdatePicker()">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">支出类型</label>
+                    <div class="am-u-sm-9">
+                        <select name="type_id" required>
+                            <option value="">请选择</option>
+                            <volist name="type_list" id="t">
+                            <option value="{$t.id}">{$t.name}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">金额</label>
+                    <div class="am-u-sm-9">
+                        <input type="number" name="amount" step="0.01" required placeholder="0.00">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">付款方式</label>
+                    <div class="am-u-sm-9">
+                        <select name="pay_method">
+                            <option value="1">现金</option>
+                            <option value="2">银行转账</option>
+                            <option value="3">微信支付</option>
+                            <option value="4">支付宝</option>
+                            <option value="5">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">收款人</label>
+                    <div class="am-u-sm-9">
+                        <input type="text" name="payee" placeholder="收款方名称">
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <label class="am-u-sm-3 am-form-label">备注</label>
+                    <div class="am-u-sm-9">
+                        <textarea name="remark" rows="3" placeholder="支出说明"></textarea>
+                    </div>
+                </div>
+                <div class="am-form-group">
+                    <div class="am-u-sm-9 am-u-sm-offset-3">
+                        <button type="submit" class="am-btn am-btn-primary">提交</button>
+                        <button type="button" class="am-btn am-btn-default" data-am-modal-close>取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/Admin/js/datepicker/WdatePicker.js"></script>
+</body>
+</html>

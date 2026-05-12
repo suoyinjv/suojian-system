@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>布置作业 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd"><i class="am-icon-plus"></i> 布置作业</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('save')}" method="POST" enctype="multipart/form-data">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">班级 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-4">
+                            <select name="class_id" class="am-form-field" id="classSelect" required>
+                                <option value="">选择班级</option>
+                                <volist name="classList" id="vo">
+                                <option value="{$vo.id}">{$vo.class_name}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <label class="am-u-sm-2">课程 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-4">
+                            <select name="course_id" class="am-form-field" id="courseSelect" required>
+                                <option value="">先选班级</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">作业标题 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <input type="text" name="title" class="am-form-field" placeholder="如：第三课课后练习" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">截止日期</label>
+                        <div class="am-u-sm-4">
+                            <input type="date" name="deadline" class="am-form-field" value="{:date('Y-m-d', strtotime('+7 days'))}">
+                        </div>
+                        <label class="am-u-sm-2">作业类型</label>
+                        <div class="am-u-sm-4">
+                            <select name="type" class="am-form-field">
+                                <option value="1">书面作业</option>
+                                <option value="2">口头作业</option>
+                                <option value="3">实践作业</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">作业内容 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-10">
+                            <textarea name="content" class="am-form-field" rows="8" placeholder="详细描述作业内容" required></textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2">附件</label>
+                        <div class="am-u-sm-10">
+                            <input type="file" name="attachment" class="am-form-field">
+                            <span class="am-form-caret">支持 jpg、png、pdf、doc 格式，单个文件不超过 10MB</span>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-10 am-u-sm-offset-2">
+                            <button type="submit" class="am-btn am-btn-primary">发布作业</button>
+                            <a href="{:U('index')}" class="am-btn am-btn-default">取消</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#classSelect').change(function(){
+    var classId = $(this).val();
+    if(classId) {
+        $.get('{:U("getCourses")}?class_id=' + classId, function(res){
+            var html = '<option value="">选择课程</option>';
+            if(res.length) {
+                $.each(res, function(i, v){
+                    html += '<option value="'+v.id+'">'+v.course_name+'</option>';
+                });
+            }
+            $('#courseSelect').html(html);
+        });
+    }
+});
+</script>
+</body>
+</html>

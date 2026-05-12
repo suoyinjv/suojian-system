@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>线索统计</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <!-- 筛选条件 -->
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-filter"></i> 统计筛选</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline" id="statsForm">
+                            <div class="am-form-group">
+                                <input type="date" name="start_date" class="am-form-field" value="{:date('Y-m-01')}">
+                            </div>
+                            <div class="am-form-group">-</div>
+                            <div class="am-form-group">
+                                <input type="date" name="end_date" class="am-form-field" value="{:date('Y-m-d')}">
+                            </div>
+                            <div class="am-form-group">
+                                <select name="assigned_to" class="am-form-field">
+                                    <option value="">全部顾问</option>
+                                    <volist name="admins" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <button type="button" class="am-btn am-btn-primary" onclick="loadStats()">
+                                <i class="am-icon-search"></i> 查询
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 概览数据 -->
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-primary">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-users am-3x am-text-primary"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="totalCount">-</p>
+                                    <p class="am-text-muted">线索总数</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-success">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-check-circle am-3x am-text-success"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="convertedCount">-</p>
+                                    <p class="am-text-muted">已转化</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-warning">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-tachometer am-3x am-text-warning"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="conversionRate">-</p>
+                                    <p class="am-text-muted">转化率</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-3">
+                        <div class="am-panel am-panel-danger">
+                            <div class="am-panel-bd am-cf">
+                                <div class="am-fl">
+                                    <i class="am-icon-clock-o am-3x am-text-danger"></i>
+                                </div>
+                                <div class="am-fr">
+                                    <p class="am-text-xl am-text-bold" id="pendingCount">-</p>
+                                    <p class="am-text-muted">待跟进</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 状态分布 -->
+                <div class="am-g am-margin-top">
+                    <div class="am-u-sm-6">
+                        <div class="am-panel am-panel-default">
+                            <div class="am-panel-hd">
+                                <h4 class="am-panel-title">状态分布</h4>
+                            </div>
+                            <div class="am-panel-bd">
+                                <div id="statusChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-6">
+                        <div class="am-panel am-panel-default">
+                            <div class="am-panel-hd">
+                                <h4 class="am-panel-title">来源分布</h4>
+                            </div>
+                            <div class="am-panel-bd">
+                                <div id="sourceChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 顾问排名 -->
+                <div class="am-panel am-panel-info am-margin-top">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-trophy"></i> 顾问排名</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>顾问</th>
+                                    <th>线索总数</th>
+                                    <th>已转化</th>
+                                    <th>转化率</th>
+                                </tr>
+                            </thead>
+                            <tbody id="advisorTable">
+                                <tr><td colspan="5" class="text-center">加载中...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="am-text-center am-margin-top">
+                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadStats();
+});
+
+function loadStats() {
+    var params = $('#statsForm').serialize();
+    $.get('__CONTROLLER__/leadsStats?' + params + '&json=1', function(res) {
+        if (res.code && res.data) {
+            var data = res.data;
+            $('#totalCount').text(data.total);
+            $('#convertedCount').text(data.converted);
+            $('#conversionRate').text(data.conversion_rate + '%');
+            
+            // 计算待跟进
+            var pending = 0;
+            var statusMap = {};
+            if (data.status_stats) {
+                $.each(data.status_stats, function(i, v) {
+                    statusMap[v.status] = v.cnt;
+                    if (v.status == 1) pending = v.cnt;
+                });
+            }
+            $('#pendingCount').text(pending);
+            
+            // 状态分布
+            var statusHtml = '';
+            var statusNames = {1: '新线索', 2: '已跟进', 3: '已转化', 4: '已流失'};
+            var statusColors = {1: 'primary', 2: 'success', 3: 'warning', 4: 'danger'};
+            if (data.status_stats) {
+                $.each(data.status_stats, function(i, v) {
+                    var rate = data.total > 0 ? Math.round(v.cnt / data.total * 100) : 0;
+                    statusHtml += '<p>' + statusNames[v.status] + ': <span class="am-badge am-badge-' + statusColors[v.status] + '">' + v.cnt + '</span> (' + rate + '%)</p>';
+                });
+            }
+            $('#statusChart').html(statusHtml || '<p class="text-muted">暂无数据</p>');
+            
+            // 来源分布
+            var sourceHtml = '';
+            var sourceNames = {website: '网站', offline: '地推', viral: '裂变', tel: '电话', referral: '转介绍'};
+            if (data.source_stats) {
+                $.each(data.source_stats, function(i, v) {
+                    sourceHtml += '<p>' + sourceNames[v.source] + ': <span class="am-badge am-badge-primary">' + v.cnt + '</span></p>';
+                });
+            }
+            $('#sourceChart').html(sourceHtml || '<p class="text-muted">暂无数据</p>');
+            
+            // 顾问排名
+            var advisorHtml = '';
+            if (data.advisor_stats && data.advisor_stats.length > 0) {
+                $.each(data.advisor_stats, function(i, v) {
+                    var rate = v.total > 0 ? Math.round(v.converted / v.total * 100) : 0;
+                    advisorHtml += '<tr>';
+                    advisorHtml += '<td>' + (i + 1) + '</td>';
+                    advisorHtml += '<td>' + (v.assigned_name || '-') + '</td>';
+                    advisorHtml += '<td>' + v.total + '</td>';
+                    advisorHtml += '<td>' + v.converted + '</td>';
+                    advisorHtml += '<td>' + rate + '%</td>';
+                    advisorHtml += '</tr>';
+                });
+            } else {
+                advisorHtml = '<tr><td colspan="5" class="text-center">暂无数据</td></tr>';
+            }
+            $('#advisorTable').html(advisorHtml);
+        }
+    });
+}
+</script>
+</body>
+</html>

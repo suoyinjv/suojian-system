@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>营销活动数据报表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <script src="__PUBLIC__/echarts.min.js"></script>
+    <style>
+        .stat-card { padding: 20px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .chart-container { height: 280px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>📈 营销数据报表</h2>
+        
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$total_activity|default=0}</div>
+                    <div class="stat-label">活动总数</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card green">
+                    <div class="stat-number">{$total_join|default=0}</div>
+                    <div class="stat-label">参与人次</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card orange">
+                    <div class="stat-number">{$total_convert|default=0}</div>
+                    <div class="stat-label">成功转化</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$conversion_rate|default=0}%</div>
+                    <div class="stat-label">平均转化率</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-g">
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">活动类型效果对比</div>
+                    <div class="am-panel-bd">
+                        <div id="typeChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">每月活动效果趋势</div>
+                    <div class="am-panel-bd">
+                        <div id="trendChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-default" style="margin-top: 20px;">
+            <div class="am-panel-hd">活动明细</div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-bordered am-table-striped">
+                    <thead>
+                        <tr><th>活动名称</th><th>类型</th><th>时间</th><th>状态</th><th>参与</th><th>转化</th><th>转化率</th></tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.type_text}</td>
+                            <td>{:date('m-d', $vo['start_time'])} ~ {:date('m-d', $vo['end_time'])}</td>
+                            <td>{$vo.status_text}</td>
+                            <td>{$vo.join_count|default=0}</td>
+                            <td>{$vo.convert_count|default=0}</td>
+                            <td>{$vo.rate|default='0%'}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+                <div class="am-pagination">{$page}</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var typeData = {$type_data|default='[]'};
+var trendData = {$trend_data|default='[]'};
+
+if(typeData.length) {
+    var typeChart = echarts.init(document.getElementById('typeChart'));
+    typeChart.setOption({
+        tooltip: { trigger: 'axis' },
+        legend: { data: ['参与人数', '转化人数'] },
+        xAxis: { type: 'category', data: typeData.map(function(d){return d.name;}) },
+        yAxis: { type: 'value' },
+        series: [
+            { name: '参与人数', type: 'bar', data: typeData.map(function(d){return d.join;}) },
+            { name: '转化人数', type: 'bar', data: typeData.map(function(d){return d.convert;}) }
+        ]
+    });
+}
+
+if(trendData.length) {
+    var trendChart = echarts.init(document.getElementById('trendChart'));
+    trendChart.setOption({
+        xAxis: { type: 'category', data: trendData.map(function(d){return d.month;}) },
+        yAxis: { type: 'value' },
+        series: [{ type: 'line', data: trendData.map(function(d){return d.count;}), smooth: true, areaStyle: {color: 'rgba(102, 126, 234, 0.2)'} }]
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>导出线索</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-download"></i> 导出线索</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-alert am-alert-success" data-am-alert>
+                            <i class="am-icon-info-circle"></i> 点击下方按钮开始导出，将生成Excel文件下载
+                        </div>
+                        
+                        <form class="am-form am-form-horizontal" action="__CONTROLLER__/export" method="post">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">导出格式</label>
+                                <div class="am-u-sm-7">
+                                    <select name="format" class="am-form-field">
+                                        <option value="xls">Excel 97-2003 (.xls)</option>
+                                        <option value="xlsx">Excel 2007+ (.xlsx)</option>
+                                        <option value="csv">CSV (.csv)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">状态筛选</label>
+                                <div class="am-u-sm-7">
+                                    <select name="status" class="am-form-field">
+                                        <option value="">全部</option>
+                                        <option value="1">新线索</option>
+                                        <option value="2">已跟进</option>
+                                        <option value="3">已转化</option>
+                                        <option value="4">已流失</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">来源筛选</label>
+                                <div class="am-u-sm-7">
+                                    <select name="source" class="am-form-field">
+                                        <option value="">全部</option>
+                                        <option value="website">网站表单</option>
+                                        <option value="offline">线下地推</option>
+                                        <option value="viral">裂变海报</option>
+                                        <option value="tel">电话咨询</option>
+                                        <option value="referral">转介绍</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-success am-btn-block">
+                                        <i class="am-icon-download"></i> 开始导出
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

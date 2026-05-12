@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>刷卡考勤 - 所以学教学系统</title>
+    <link rel="stylesheet" type="text/css" href="./Public/bootstrap-3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./Public/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./Public/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-g am-g-fixed am-margin-top">
+    <div class="am-panel am-panel-success">
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title"><i class="fa fa-credit-card"></i> 刷卡考勤</h3>
+        </div>
+        <div class="am-panel-bd am-padding">
+            <div class="am-alert am-alert-warning" data-am-alert>
+                <i class="fa fa-info-circle"></i> 请连接刷卡设备或将学员手机号输入下方进行考勤
+            </div>
+            
+            <form class="am-form am-form-horizontal" id="scanForm">
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">刷卡/手机号</label>
+                    <div class="am-u-sm-6">
+                        <input type="text" name="phone" class="am-form-field" id="scanInput" placeholder="刷卡或输入手机号" autofocus required>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">选择课程</label>
+                    <div class="am-u-sm-6">
+                        <select name="schedule_id" class="am-form-field" id="scheduleSelect" required>
+                            <option value="">请选择课程</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-6">
+                        <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                            <i class="fa fa-check-circle"></i> 确认签到
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- 最近刷卡记录 -->
+            <div class="am-panel am-panel-default am-margin-top">
+                <div class="am-panel-hd">
+                    <h4 class="am-panel-title">今日刷卡记录</h4>
+                </div>
+                <div class="am-panel-bd">
+                    <table class="am-table am-table-bordered am-table-striped">
+                        <thead>
+                            <tr>
+                                <th>时间</th>
+                                <th>学员</th>
+                                <th>手机号</th>
+                                <th>课程</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentRecords">
+                            <tr><td colspan="5" class="text-center">加载中...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="./Public/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="./Public/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function(){
+    loadTodayRecords();
+    
+    // 自动加载当日课程
+    loadTodaySchedules();
+    
+    // 扫码枪监听
+    var scanBuffer = '';
+    var scanTimer = null;
+    
+    $('#scanInput').keypress(function(e){
+        if(e.which == 13) { // Enter键
+            e.preventDefault();
+            processScan(scanBuffer);
+            scanBuffer = '';
+        } else {
+            scanBuffer += String.fromCharCode(e.which);
+        }
+        
+        // 300ms内无输入则清空缓冲区
+        clearTimeout(scanTimer);
+        scanTimer = setTimeout(function(){
+            if(scanBuffer.length > 0) {
+                processScan(scanBuffer);
+                scanBuffer = '';
+            }
+        }, 300);
+    });
+});
+
+function loadTodaySchedules() {
+    $.get('/index.php?m=Admin&c=Schedule&a=todayCourses&json=1', function(res){
+        var html = '<option value="">请选择课程</option>';
+        if(res.data && res.data.length > 0) {
+            $.each(res.data, function(i, v){
+                html += '<option value="'+v.id+'">'+v.course_name+' - '+v.class_name+' ('+v.start_time+')</option>';
+            });
+        }
+        $('#scheduleSelect').html(html);
+    });
+}
+
+function processScan(phone) {
+    if(!phone) return;
+    
+    var scheduleId = $('#scheduleSelect').val();
+    if(!scheduleId) {
+        alert('请先选择课程');
+        $('#scanInput').focus();
+        return;
+    }
+    
+    $.get('/index.php?m=Admin&c=Attendance&a=scanCard&phone='+phone+'&schedule_id='+scheduleId+'&json=1', function(res){
+        alert(res.msg);
+        if(res.code) {
+            loadTodayRecords();
+        }
+        $('#scanInput').val('').focus();
+    });
+}
+
+function loadTodayRecords() {
+    $.get('/index.php?m=Admin&c=Attendance&a=todayRecords&json=1', function(res){
+        var html = '';
+        if(res.rows && res.rows.length > 0) {
+            var statusClass = {1:'success',2:'info',3:'danger',4:'warning'};
+            $.each(res.rows, function(i, v){
+                html += '<tr>';
+                html += '<td>'+v.create_time_text+'</td>';
+                html += '<td>'+(v.student_name||'-')+'</td>';
+                html += '<td>'+(v.phone||'-')+'</td>';
+                html += '<td>'+(v.course_name||'-')+'</td>';
+                html += '<td><span class="am-badge am-badge-'+statusClass[v.status]+'">'+v.status_text+'</span></td>';
+                html += '</tr>';
+            });
+        } else {
+            html = '<tr><td colspan="5" class="text-center">今日暂无刷卡记录</td></tr>';
+        }
+        $('#recentRecords').html(html);
+    });
+}
+
+$('#scanForm').submit(function(){
+    var phone = $('#scanInput').val();
+    processScan(phone);
+    return false;
+});
+</script>
+</body>
+</html>

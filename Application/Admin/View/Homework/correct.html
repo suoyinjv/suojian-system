@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>批改作业 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <h2>批改作业</h2>
+            
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd">学生信息</div>
+                <div class="am-panel-bd">
+                    <p><strong>学生姓名：</strong>{$student.name|default='未知'}</p>
+                    <p><strong>学号：</strong>{$student.student_no|default='未知'}</p>
+                    <p><strong>班级：</strong>{$student.class_name|default='未知'}</p>
+                    <p><strong>提交时间：</strong>{$submit.submit_time|default='未知'}</p>
+                </div>
+            </div>
+            
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd">作业内容</div>
+                <div class="am-panel-bd">
+                    <p><strong>作业标题：</strong>{$homework.title|default='未知'}</p>
+                    <p><strong>课程：</strong>{$homework.course_name|default='未知'}</p>
+                    <p><strong>满分分值：</strong>{$homework.total_score|default=100}分</p>
+                    <p><strong>作业内容：</strong></p>
+                    <div class="am-g am-g-collapse" style="background:#f9f9f9;padding:10px;">
+                        {$homework.content|htmlspecialchars_decode|default='无'}
+                    </div>
+                    <if condition="!empty($submit['attachment'])">
+                    <p style="margin-top:10px;"><strong>学生附件：</strong><a href="{$submit.attachment}" target="_blank">下载查看</a></p>
+                    </if>
+                </div>
+            </div>
+            
+            <form class="am-form am-form-horizontal" action="{:U('correct')}" method="post">
+                <input type="hidden" name="id" value="{$submit.id}">
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">得分</label>
+                    <div class="am-u-sm-3">
+                        <input type="number" name="score" class="am-form-field" min="0" max="{$homework.total_score|default=100}" placeholder="请输入得分" required>
+                    </div>
+                    <div class="am-u-sm-2 am-form-label am-text-left">/ {$homework.total_score|default=100}分</div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">评语</label>
+                    <div class="am-u-sm-8">
+                        <textarea name="comment" rows="4" class="am-form-field" placeholder="请输入评语"></textarea>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">错题标记</label>
+                    <div class="am-u-sm-8">
+                        <textarea name="wrong_questions" rows="3" class="am-form-field" placeholder="请输入错题编号，如：1,3,5"></textarea>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-10">
+                        <button type="submit" class="am-btn am-btn-primary">提交批改</button>
+                        <a href="{:U('submitList', array('homework_id'=>$submit.homework_id))}" class="am-btn am-btn-default">返回列表</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>
