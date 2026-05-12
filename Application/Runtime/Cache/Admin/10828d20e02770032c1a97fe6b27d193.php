@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -134,8 +134,7 @@
                                     <td><strong class="am-text-danger">-<?php echo $vo['hours']; ?></strong></td>
                                     <td>
                                         <?php
-                                        $t = $vo['type'] ?? '';
-                                        if ($t == 'attendance'): ?>
+ $t = $vo['type'] ?? ''; if ($t == 'attendance'): ?>
                                             <span class="am-badge am-badge-primary">考勤</span>
                                         <?php elseif ($t == 'gift'): ?>
                                             <span class="am-badge am-badge-warning">赠送</span>
