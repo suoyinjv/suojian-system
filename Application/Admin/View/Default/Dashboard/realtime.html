@@ -1,0 +1,131 @@
+<include file="Public/Header" />
+
+<div class="admin-content am-padding">
+    <div class="am-cf am-margin-bottom">
+        <strong class="am-text-primary am-text-lg">经营概览</strong>
+        <span class="am-fr">更新时间：{{:date('Y-m-d H:i')}}</span>
+    </div>
+
+    <!-- 今日数据 -->
+    <div class="am-g">
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-2">
+            <div class="admin-stat am-panel am-panel-default am-radius">
+                <div class="am-panel-bd am-text-center">
+                    <h3 class="am-text-xl am-text-warning">{{$today_attendance}}</h3>
+                    <p class="am-text-muted">今日考勤</p>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-2">
+            <div class="admin-stat am-panel am-panel-default am-radius">
+                <div class="am-panel-bd am-text-center">
+                    <h3 class="am-text-xl am-text-danger">{{$today_consumption}}</h3>
+                    <p class="am-text-muted">今日课消(时)</p>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-2">
+            <div class="admin-stat am-panel am-panel-default am-radius">
+                <div class="am-panel-bd am-text-center">
+                    <h3 class="am-text-xl am-text-success">{{$today_new_students}}</h3>
+                    <p class="am-text-muted">今日新增学员</p>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-2">
+            <div class="admin-stat am-panel am-panel-default am-radius">
+                <div class="am-panel-bd am-text-center">
+                    <h3 class="am-text-xl am-text-primary">{{$today_orders}}</h3>
+                    <p class="am-text-muted">今日订单</p>
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6 am-u-lg-2">
+            <div class="admin-stat am-panel am-panel-default am-radius">
+                <div class="am-panel-bd am-text-center">
+                    <h3 class="am-text-xl am-text-secondary">¥{{$today_revenue|number_format=2}}</h3>
+                    <p class="am-text-muted">今日收入</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 本月数据 -->
+    <div class="am-g am-margin-top">
+        <div class="am-u-sm-12">
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd"><strong>本月数据</strong></div>
+                <div class="am-panel-bd">
+                    <table class="am-table am-table-bordered am-text-center">
+                        <thead>
+                            <tr>
+                                <th>本月收入</th>
+                                <th>本月订单</th>
+                                <th>本月新增学员</th>
+                                <th>本月考勤</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="am-text-success am-text-lg">¥{{$month_revenue|number_format=2}}</td>
+                                <td class="am-text-primary am-text-lg">{{$month_orders}}</td>
+                                <td class="am-text-warning am-text-lg">{{$month_new}}</td>
+                                <td class="am-text-danger am-text-lg">{{$month_attendance}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 累计数据 -->
+    <div class="am-g am-margin-top">
+        <div class="am-u-sm-12">
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-hd"><strong>累计数据</strong></div>
+                <div class="am-panel-bd">
+                    <table class="am-table am-table-bordered am-text-center">
+                        <thead>
+                            <tr>
+                                <th>总学员</th>
+                                <th>在读学员</th>
+                                <th>教师总数</th>
+                                <th>剩余课时</th>
+                                <th>总订单</th>
+                                <th>总收入</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="am-text-lg">{{$total_students}}</td>
+                                <td class="am-text-lg">{{$active_students}}</td>
+                                <td class="am-text-lg">{{$total_teachers}}</td>
+                                <td class="am-text-lg">{{$total_remaining}}</td>
+                                <td class="am-text-lg">{{$total_orders}}</td>
+                                <td class="am-text-success am-text-lg">¥{{$total_revenue|number_format=2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待处理事项 -->
+    <div class="am-g am-margin-top">
+        <div class="am-u-sm-12 am-u-md-6">
+            <div class="am-panel am-panel-warning">
+                <div class="am-panel-hd"><strong>待处理事项</strong></div>
+                <div class="am-panel-bd">
+                    <ul class="am-list am-list-static">
+                        <li>即将过期课程：<span class="am-badge am-badge-danger">{{$expire_courses}}</span> 个</li>
+                        <li>待跟进线索：<span class="am-badge am-badge-warning">{{$pending_leads}}</span> 条</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<include file="Public/Footer" />

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>模板发送</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-file-text"></i> 使用模板发送短信</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="templateForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">选择模板</label>
+                                <div class="am-u-sm-7">
+                                    <select name="template_id" class="am-form-field" id="templateSelect" required>
+                                        <option value="">请选择模板</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">接收人手机号</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="phone" class="am-form-field" placeholder="手机号" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">模板内容预览</label>
+                                <div class="am-u-sm-7">
+                                    <div class="am-alert am-alert-secondary" id="templatePreview">
+                                        选择模板后显示内容
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">替换变量</label>
+                                <div class="am-u-sm-7" id="variables">
+                                    <p class="am-text-muted">选择模板后显示需要替换的变量</p>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-send"></i> 发送
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadTemplates();
+    
+    $('#templateSelect').change(function() {
+        var id = $(this).val();
+        if (id) {
+            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+                if (res.data) {
+                    $('#templatePreview').text(res.data.content);
+                    // 显示变量输入
+                    var vars = res.data.content.match(/\{(\w+)\}/g) || [];
+                    var html = '';
+                    $.each(vars, function(i, v) {
+                        var name = v.replace(/[{}]/g, '');
+                        html += '<div class="am-form-group"><label class="am-u-sm-3">' + name + '</label><div class="am-u-sm-6"><input type="text" name="vars[' + name + ']" class="am-form-field" placeholder="请输入' + name + '"></div></div>';
+                    });
+                    $('#variables').html(html || '<p class="am-text-muted">无需替换变量</p>');
+                }
+            });
+        }
+    });
+});
+
+function loadTemplates() {
+    $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+        var html = '<option value="">请选择模板</option>';
+        if (res.data) {
+            $.each(res.data, function(i, v) {
+                html += '<option value="' + v.id + '">' + v.name + '</option>';
+            });
+        }
+        $('#templateSelect').html(html);
+    });
+}
+
+$('#templateForm').submit(function() {
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if (res.code) {
+            location.href = '__CONTROLLER__/log';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

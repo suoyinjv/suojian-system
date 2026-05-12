@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>批量通知家长</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-10 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-bullhorn"></i> 批量通知家长
+                            <a href="{:U('notifyParent')}" class="am-btn am-btn-xs am-btn-default am-fr">
+                                <i class="am-icon-user"></i> 单个通知
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="batchNotifyForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">选择方式</label>
+                                <div class="am-u-sm-8">
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="scope_type" value="class" checked> 按班级
+                                    </label>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="scope_type" value="course"> 按课程
+                                    </label>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="scope_type" value="custom"> 自定义选择
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 按班级选择 -->
+                            <div class="am-form-group scope-group" id="classGroup">
+                                <label class="am-u-sm-2 am-text-right">选择班级 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-8">
+                                    <select name="class_id" class="am-form-field" id="classSelect">
+                                        <option value="">请选择班级</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 按课程选择 -->
+                            <div class="am-form-group scope-group" id="courseGroup" style="display:none;">
+                                <label class="am-u-sm-2 am-text-right">选择课程 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-8">
+                                    <select name="course_id" class="am-form-field" id="courseSelect">
+                                        <option value="">请选择课程</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 自定义选择 -->
+                            <div class="am-form-group scope-group" id="customGroup" style="display:none;">
+                                <label class="am-u-sm-2 am-text-right">选择学生 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-8">
+                                    <select name="student_ids" class="am-form-field" id="studentSelect" multiple data-am-selected="{maxHeight: 200}">
+                                    </select>
+                                    <p class="am-text-muted">按住 Ctrl 可多选</p>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">接收人数</label>
+                                <div class="am-u-sm-8">
+                                    <div class="am-badge am-badge-warning" id="receiverCount">0</div> 人
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">选择模板</label>
+                                <div class="am-u-sm-8">
+                                    <select name="template_id" class="am-form-field" id="templateSelect">
+                                        <option value="">不使用模板</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-text-right">短信内容 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-8">
+                                    <textarea name="content" class="am-form-field" rows="5" id="smsContent" placeholder="请输入短信内容" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group" id="variablesArea" style="display:none;">
+                                <label class="am-u-sm-2 am-text-right">替换变量</label>
+                                <div class="am-u-sm-8" id="variables"></div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-8 am-u-sm-offset-2">
+                                    <button type="submit" class="am-btn am-btn-primary">
+                                        <i class="am-icon-send"></i> 批量发送
+                                    </button>
+                                    <a href="{:U('send')}" class="am-btn am-btn-default">返回</a>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- 接收人预览 -->
+                        <div class="am-panel am-panel-default am-margin-top" id="previewPanel">
+                            <div class="am-panel-hd">接收人预览</div>
+                            <div class="am-panel-bd" id="receiverPreview">
+                                <span class="am-text-muted">请先选择班级/课程</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadClasses();
+    loadCourses();
+    loadStudents();
+    loadTemplates();
+
+    // 加载班级列表
+    function loadClasses() {
+        $.get('__CONTROLLER__/getClassList?json=1', function(res) {
+            var html = '<option value="">请选择班级</option>';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '">' + v.class_name + '</option>';
+                });
+            }
+            $('#classSelect').html(html);
+        });
+    }
+
+    // 加载课程列表
+    function loadCourses() {
+        $.get('__CONTROLLER__/getCourseList?json=1', function(res) {
+            var html = '<option value="">请选择课程</option>';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '">' + v.course_name + '</option>';
+                });
+            }
+            $('#courseSelect').html(html);
+        });
+    }
+
+    // 加载学生列表
+    function loadStudents() {
+        $.get('__CONTROLLER__/getStudentList?json=1', function(res) {
+            var html = '';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '">' + v.student_name + ' - ' + (v.parent_phone || '无手机号') + '</option>';
+                });
+            }
+            $('#studentSelect').html(html);
+        });
+    }
+
+    // 加载模板列表
+    function loadTemplates() {
+        $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+            var html = '<option value="">不使用模板</option>';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '">' + v.name + '</option>';
+                });
+            }
+            $('#templateSelect').html(html);
+        });
+    }
+
+    // 切换选择方式
+    $('input[name="scope_type"]').change(function() {
+        var type = $(this).val();
+        $('.scope-group').hide();
+        if (type == 'class') $('#classGroup').show();
+        else if (type == 'course') $('#courseGroup').show();
+        else $('#customGroup').show();
+        $('#receiverCount').text('0');
+        $('#receiverPreview').html('<span class="am-text-muted">请先选择班级/课程</span>');
+    });
+
+    // 班级选择后获取学生
+    $('#classSelect').change(function() {
+        var classId = $(this).val();
+        if (classId) {
+            $.get('__CONTROLLER__/getClassStudents?class_id=' + classId + '&json=1', function(res) {
+                updateReceiverPreview(res.data || []);
+            });
+        } else {
+            updateReceiverPreview([]);
+        }
+    });
+
+    // 课程选择后获取学生
+    $('#courseSelect').change(function() {
+        var courseId = $(this).val();
+        if (courseId) {
+            $.get('__CONTROLLER__/getCourseStudents?course_id=' + courseId + '&json=1', function(res) {
+                updateReceiverPreview(res.data || []);
+            });
+        } else {
+            updateReceiverPreview([]);
+        }
+    });
+
+    // 自定义多选变化
+    $('#studentSelect').change(function() {
+        var selected = $(this).val() || [];
+        var names = [];
+        $('option:selected', this).each(function() {
+            names.push($(this).text());
+        });
+        updateReceiverPreviewByNames(names);
+    });
+
+    function updateReceiverPreview(students) {
+        $('#receiverCount').text(students.length);
+        if (students.length > 0) {
+            var html = '';
+            $.each(students.slice(0, 20), function(i, v) {
+                html += '<span class="am-badge am-badge-primary am-margin-right-xs">' + v.student_name + '</span> ';
+            });
+            if (students.length > 20) html += '... 共 ' + students.length + ' 人';
+            $('#receiverPreview').html(html);
+        } else {
+            $('#receiverPreview').html('<span class="am-text-muted">暂无接收人</span>');
+        }
+    }
+
+    function updateReceiverPreviewByNames(names) {
+        $('#receiverCount').text(names.length);
+        if (names.length > 0) {
+            var html = '';
+            $.each(names.slice(0, 20), function(i, name) {
+                html += '<span class="am-badge am-badge-primary am-margin-right-xs">' + name + '</span> ';
+            });
+            if (names.length > 20) html += '... 共 ' + names.length + ' 人';
+            $('#receiverPreview').html(html);
+        } else {
+            $('#receiverPreview').html('<span class="am-text-muted">请选择学生</span>');
+        }
+    }
+
+    // 选择模板后填充内容
+    $('#templateSelect').change(function() {
+        var id = $(this).val();
+        if (id) {
+            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+                if (res.data) {
+                    $('#smsContent').val(res.data.content);
+                    var vars = res.data.content.match(/\{(\w+)\}/g) || [];
+                    var html = '';
+                    $.each(vars, function(i, v) {
+                        var name = v.replace(/[{}]/g, '');
+                        html += '<div class="am-form-group"><label class="am-u-sm-2">' + name + '</label><div class="am-u-sm-6"><input type="text" name="vars[' + name + ']" class="am-form-field" placeholder="请输入' + name + '"></div></div>';
+                    });
+                    $('#variables').html(html || '<p class="am-text-muted">无需替换变量</p>');
+                    $('#variablesArea').show();
+                }
+            });
+        } else {
+            $('#smsContent').val('');
+            $('#variables').html('');
+            $('#variablesArea').hide();
+        }
+    });
+
+    // 提交表单
+    $('#batchNotifyForm').submit(function() {
+        var count = parseInt($('#receiverCount').text());
+        if (count == 0) {
+            alert('请先选择接收人');
+            return false;
+        }
+        if (!confirm('即将向 ' + count + ' 位家长发送短信，确定继续?')) return false;
+
+        var formData = $(this).serialize();
+        $.post('__SELF__', formData, function(res) {
+            alert(res.msg);
+            if (res.code) {
+                location.href = '__CONTROLLER__/log';
+            }
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

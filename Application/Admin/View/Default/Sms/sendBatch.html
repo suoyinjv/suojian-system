@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>批量发送短信</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-10 am-u-sm-centered">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-send"></i> 批量发送短信</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form" id="batchForm">
+                            <div class="am-form-group">
+                                <label>选择接收人</label>
+                                <div class="am-g">
+                                    <div class="am-u-sm-4">
+                                        <select name="receiver_type" id="receiverType" class="am-form-field">
+                                            <option value="student">学员</option>
+                                            <option value="parent">家长</option>
+                                            <option value="custom">自定义</option>
+                                        </select>
+                                    </div>
+                                    <div class="am-u-sm-8" id="customReceivers" style="display:none;">
+                                        <input type="text" name="phones" class="am-form-field" placeholder="手机号，多个用逗号分隔">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label>选择班级(可选)</label>
+                                <select name="class_id" class="am-form-field" id="classSelect">
+                                    <option value="">全部学员</option>
+                                </select>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label>短信模板(可选)</label>
+                                <select id="templateSelect" class="am-form-field">
+                                    <option value="">不使用模板</option>
+                                </select>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label>短信内容 <span class="am-text-danger">*</span></label>
+                                <textarea name="content" class="am-form-field" rows="5" id="smsContent" placeholder="请输入短信内容" required></textarea>
+                                <p class="am-text-sm am-text-muted">当前字数: <span id="charCount">0</span> / 70</p>
+                            </div>
+                            
+                            <div class="am-alert am-alert-warning" data-am-alert>
+                                <i class="am-icon-info-circle"></i> 短信按条计费，每70个字为一条短信
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                    <i class="am-icon-send"></i> 发送短信
+                                </button>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadTemplates();
+    loadClasses();
+    
+    $('#receiverType').change(function() {
+        if ($(this).val() == 'custom') {
+            $('#customReceivers').show();
+        } else {
+            $('#customReceivers').hide();
+        }
+    });
+    
+    $('#smsContent').on('input', function() {
+        $('#charCount').text($(this).val().length);
+    });
+    
+    $('#templateSelect').change(function() {
+        if ($(this).val()) {
+            $.get('__CONTROLLER__/getTemplate?id=' + $(this).val(), function(res) {
+                if (res.data) {
+                    $('#smsContent').val(res.data.content);
+                    $('#charCount').text(res.data.content.length);
+                }
+            });
+        }
+    });
+});
+
+function loadTemplates() {
+    $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+        var html = '<option value="">不使用模板</option>';
+        if (res.data) {
+            $.each(res.data, function(i, v) {
+                html += '<option value="' + v.id + '">' + v.name + '</option>';
+            });
+        }
+        $('#templateSelect').html(html);
+    });
+}
+
+function loadClasses() {
+    $.get('__CONTROLLER__/getClasses?json=1', function(res) {
+        var html = '<option value="">全部学员</option>';
+        if (res.data) {
+            $.each(res.data, function(i, v) {
+                html += '<option value="' + v.id + '">' + v.name + '</option>';
+            });
+        }
+        $('#classSelect').html(html);
+    });
+}
+
+$('#batchForm').submit(function() {
+    if (!confirm('确认发送短信？')) return false;
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if (res.code) {
+            location.href = '__CONTROLLER__/log';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

@@ -327,5 +327,27 @@ class CommonController extends Controller
 			$this->ajaxReturn(L('common_operation_edit_error'), -100);
 		}
 	}
+
+	/**
+	 * [ShowPage 分页处理]
+	 * @param  int    $count [总数]
+	 * @param  int    $rows  [每页条数]
+	 * @return array         [limit和html]
+	 */
+	protected function showPage($count, $rows = 20)
+	{
+		if ($count <= 0) {
+			return array('limit' => '0,' . $rows, 'html' => '');
+		}
+		$page = new \Think\Page($count, $rows);
+		$page->setConfig('header', '<span class="rows">共 %TOTAL_ROW% 条</span>');
+		$page->setConfig('prev', '上一页');
+		$page->setConfig('next', '下一页');
+		$page->setConfig('first', '首页');
+		$page->setConfig('last', '末页');
+		$page->setConfig('theme', '%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+		$limit = $page->firstRow . ',' . $page->listRows;
+		return array('limit' => $limit, 'html' => $page->show());
+	}
 }
 ?>
