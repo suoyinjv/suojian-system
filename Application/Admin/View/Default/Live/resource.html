@@ -1,0 +1,173 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- 页面标题 -->
+		<div class="am-g" style="margin-bottom:15px;">
+			<div class="am-u-sm-6">
+				<span class="fs-16 fw-700">📁 备课资源管理</span>
+			</div>
+			<div class="am-u-sm-6 tr">
+				<button type="button" class="am-btn am-btn-primary am-radius am-btn-sm" onclick="$('#uploadModal').modal('open');">
+					<i class="am-icon-upload"></i> 上传资源
+				</button>
+			</div>
+		</div>
+
+		<!-- 筛选 -->
+		<form class="am-form am-form-inline" method="get" style="margin-bottom:15px;">
+			<div class="am-form-group">
+				<select name="live_id" class="am-radius" onchange="this.form.submit()">
+					<option value="0">全部课程</option>
+					<foreach name="live_list" item="v">
+						<option value="{{$v.id}}" <if condition="$live_id eq $v['id']">selected</if>>{{$v.title}}</option>
+					</foreach>
+				</select>
+			</div>
+		</form>
+
+		<!-- 资源列表 -->
+		<div class="am-panel am-panel-default">
+			<div class="am-panel-bd">
+				<table class="am-table am-table-bordered am-table-striped">
+					<thead>
+						<tr>
+							<th>资源名称</th>
+							<th>类型</th>
+							<th>关联课程</th>
+							<th>上传教师</th>
+							<th>文件大小</th>
+							<th>上传时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<volist name="list" id="vo">
+						<tr>
+							<td>
+								<if condition="$vo['type'] eq 'img'">
+									<a href="{$vo.file_url}" target="_blank"><img src="{$vo.file_url}" style="width:40px;height:40px;vertical-align:middle;margin-right:5px;object-fit:cover;"></a>
+								</if>
+								{$vo.title}
+							</td>
+							<td><span class="am-badge am-badge-secondary am-radius">{$vo.type_text}</span></td>
+							<td>{$vo.course_title}</td>
+							<td>{$vo.teacher_name}</td>
+							<td>{$vo.file_size_text}</td>
+							<td>{$vo.create_time}</td>
+							<td>
+								<if condition="$vo['file_url']">
+									<a href="{$vo.file_url}" target="_blank" class="am-btn am-btn-default am-btn-xs am-radius">下载</a>
+								</if>
+								<a href="javascript:;" onclick="delResource({$vo.id})" class="am-btn am-btn-danger am-btn-xs am-radius">删除</a>
+							</td>
+						</tr>
+						</volist>
+						<if condition="count($list) eq 0">
+						<tr><td colspan="7" class="am-text-center cr-999">暂无资源数据</td></tr>
+						</if>
+					</tbody>
+				</table>
+				<div class="am-pagination">{{$page}}</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 上传弹窗 -->
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="uploadModal">
+	<div class="am-modal-dialog">
+		<div class="am-modal-hd">
+			上传备课资源
+			<a href="javascript:;" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+		</div>
+		<div class="am-modal-bd">
+			<form class="am-form" id="uploadForm" enctype="multipart/form-data">
+				<div class="am-form-group">
+					<label>资源名称 <span class="cr-red">*</span></label>
+					<input type="text" name="title" placeholder="请输入资源名称" required>
+				</div>
+				<div class="am-form-group">
+					<label>关联课程 <span class="cr-red">*</span></label>
+					<select name="course_id" class="am-radius" required>
+						<option value="">请选择课程</option>
+						<foreach name="live_list" item="v">
+							<option value="{{$v.id}}">{{$v.title}}</option>
+						</foreach>
+					</select>
+				</div>
+				<div class="am-form-group">
+					<label>选择文件 <span class="cr-red">*</span></label>
+					<input type="file" name="file" id="resourceFile" required>
+					<span class="fs-12 cr-999">支持文档、PPT、图片、视频、音频，最大50MB</span>
+				</div>
+				<div class="am-form-group">
+					<button type="button" class="am-btn am-btn-primary am-radius w100" onclick="doUpload()">开始上传</button>
+				</div>
+			</form>
+			<div id="uploadProgress" class="am-progress am-progress-striped am-active" style="display:none;">
+				<div class="am-progress-bar" style="width: 0%"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- right content end -->
+
+<include file="Public/Footer" />
+
+<script>
+function delResource(id) {
+    if (!confirm('确定删除此资源？')) return;
+    $.ajax({
+        url: '{:U("Admin/Live/resourceDelete")}',
+        type: 'POST',
+        data: {id: id},
+        dataType: 'json',
+        success: function(res) {
+            if (res.code == 1) {
+                location.reload();
+            } else {
+                alert(res.msg);
+            }
+        }
+    });
+}
+
+function doUpload() {
+    var formData = new FormData($('#uploadForm')[0]);
+    var file = $('#resourceFile')[0].files[0];
+    if (!file) { alert('请选择文件'); return; }
+
+    $('#uploadProgress').show();
+    $.ajax({
+        url: '{:U("Admin/Live/resourceUpload")}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function() {
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    var pct = Math.round(e.loaded / e.total * 100);
+                    $('.am-progress-bar').css('width', pct + '%');
+                }
+            });
+            return xhr;
+        },
+        success: function(res) {
+            if (res.code == 1) {
+                $('#uploadModal').modal('close');
+                location.reload();
+            } else {
+                alert(res.msg);
+            }
+        },
+        error: function() {
+            alert('上传失败，请重试');
+        }
+    });
+}
+</script>

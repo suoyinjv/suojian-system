@@ -9,6 +9,28 @@
  */
 
 /**
+ * 获取分页HTML
+ * @param int $count 总数
+ * @param int $rows  每页条数
+ * @param string $parameter URL参数
+ * @return string
+ */
+function getPage($count, $rows = 20, $parameter = '')
+{
+    if ($count <= 0) {
+        return '';
+    }
+    $page = new \Think\Page($count, $rows, $parameter);
+    $page->setConfig('header', '<span class="rows">共 %TOTAL_ROW% 条</span>');
+    $page->setConfig('prev', '上一页');
+    $page->setConfig('next', '下一页');
+    $page->setConfig('first', '首页');
+    $page->setConfig('last', '末页');
+    $page->setConfig('theme', '%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+    return $page->show();
+}
+
+/**
  * [LayoutLink 布局-友情链接]
  * @author   Devil
  * @blog     http://gong.gg/
