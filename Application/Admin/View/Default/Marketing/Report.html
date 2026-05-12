@@ -1,0 +1,195 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">招生数据看板</span>
+			<a href="{{:U('Admin/Marketing/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 顶部统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$today_leads}}</p>
+						<p class="am-text-default">今日线索</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$week_leads}}</p>
+						<p class="am-text-default">本周线索</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$pending_leads}}</p>
+						<p class="am-text-default">待跟进</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$month_conversion}}%</p>
+						<p class="am-text-default">本月转化</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 漏斗图 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">线索转化漏斗</div>
+			<div class="am-panel-bd">
+				<div id="funnelChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 趋势图 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">线索趋势</div>
+			<div class="am-panel-bd">
+				<div id="trendChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 顾问排名 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">顾问排名</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>排名</th>
+							<th>顾问名称</th>
+							<th>分配线索</th>
+							<th>成功报名</th>
+							<th>转化率</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($advisor_list)">
+							<foreach name="advisor_list" key="k" item="v">
+								<tr>
+									<td>
+										<if condition="$k eq 0"><span class="am-badge am-badge-warning">1</span>
+										<elseif condition="$k eq 1" /><span class="am-badge am-badge-secondary">2</span>
+										<elseif condition="$k eq 2" /><span class="am-badge am-badge-primary">3</span>
+										<else />{{$k+1}}
+										</if>
+									</td>
+									<td>{{$v.name}}</td>
+									<td>{{$v.assigned_count}}</td>
+									<td>{{$v.success_count}}</td>
+									<td>{{$v.conversion_rate}}%</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="5" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 漏斗图
+	var funnelChart = echarts.init(document.getElementById('funnelChart'));
+	funnelChart.setOption({
+		tooltip: {
+			trigger: 'item',
+			formatter: "{b}: {c}"
+		},
+		series: [{
+			name: '线索转化漏斗',
+			type: 'funnel',
+			left: '10%',
+			top: 20,
+			bottom: 20,
+			width: '80%',
+			min: 0,
+			max: {{$total_leads}},
+			minSize: '0%',
+			maxSize: '100%',
+			sort: 'descending',
+			gap: 2,
+			label: {
+				show: true,
+				position: 'inside'
+			},
+			labelLine: {
+				show: false
+			},
+			itemStyle: {
+				borderColor: '#fff',
+				borderWidth: 1
+			},
+			emphasis: {
+				label: {
+					fontSize: 20
+				}
+			},
+			data: [
+				{value: {{$funnel_new}}, name: '新生源'},
+				{value: {{$funnel_intent}}, name: '有意向'},
+				{value: {{$funnel_consult}}, name: '咨询中'},
+				{value: {{$funnel_signup}}, name: '已报名'}
+			]
+		}]
+	});
+
+	// 趋势图
+	var trendChart = echarts.init(document.getElementById('trendChart'));
+	trendChart.setOption({
+		tooltip: {
+			trigger: 'axis'
+		},
+		legend: {
+			data: ['新增线索', '成功报名']
+		},
+		grid: {
+			left: '3%',
+			right: '4%',
+			bottom: '3%',
+			containLabel: true
+		},
+		xAxis: {
+			type: 'category',
+			boundaryGap: false,
+			data: {{$trend_date}}
+		},
+		yAxis: {
+			type: 'value'
+		},
+		series: [
+			{
+				name: '新增线索',
+				type: 'line',
+				smooth: true,
+				data: {{$trend_leads}}
+			},
+			{
+				name: '成功报名',
+				type: 'line',
+				smooth: true,
+				data: {{$trend_signup}}
+			}
+		]
+	});
+});
+</script>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>经营概览 - 所以学教学系统</title>
+    <link rel="stylesheet" type="text/css" href="./Public/bootstrap-3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./Public/font-awesome-4.4.0/css/font-awesome.min.css">
+    <style>
+        .stat-card { padding: 20px; margin-bottom: 20px; border-radius: 8px; color: #fff; }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card.purple { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card h3 { font-size: 36px; margin: 0; }
+        .stat-card p { margin: 5px 0 0 0; opacity: 0.9; }
+        .chart-box { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .pending-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .pending-item:last-child { border-bottom: none; }
+    </style>
+</head>
+<body>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-dashboard"></i> 经营概览</h3>
+    </div>
+    <div class="panel-body">
+        <!-- 今日数据 -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card blue">
+                    <h3 id="today_attendance">0</h3>
+                    <p>今日考勤人次</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card green">
+                    <h3 id="today_consumption">0</h3>
+                    <p>今日课消课时</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card orange">
+                    <h3 id="today_new_students">0</h3>
+                    <p>今日新增学员</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card purple">
+                    <h3 id="month_revenue">¥0</h3>
+                    <p>本月收入</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 整体数据 -->
+        <div class="row">
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #3498db;">
+                    <h3 id="total_students">0</h3>
+                    <p>总学员</p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #e74c3c;">
+                    <h3 id="active_students">0</h3>
+                    <p>在读学员</p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #f39c12;">
+                    <h3 id="remaining_hours">0</h3>
+                    <p>剩余课时</p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #9b59b6;">
+                    <h3 id="total_teachers">0</h3>
+                    <p>老师数量</p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #1abc9c;">
+                    <h3 id="expire_soon">0</h3>
+                    <p>即将过期</p>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="stat-card" style="background: #34495e;">
+                    <h3 id="pending_leads">0</h3>
+                    <p>待跟进线索</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 待处理事项 -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-box">
+                    <h4><i class="fa fa-bell"></i> 待处理事项</h4>
+                    <div id="pending_list">
+                        <div class="pending-item">暂无待处理事项</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-box">
+                    <h4><i class="fa fa-line-chart"></i> 本月订单</h4>
+                    <div id="month_orders">
+                        <p>订单数: <span id="month_orders_count">0</span></p>
+                        <p>总收入: <span id="month_orders_amount">¥0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="./Public/static/js/jquery-2.0.0.min.js"></script>
+<script>
+$(function(){
+    loadData();
+});
+
+function loadData() {
+    $.get('/index.php?m=Admin&c=Dashboard&a=index&json=1', function(res){
+        if(res.code) {
+            var data = res.data;
+            // 今日数据
+            $('#today_attendance').text(data.today.attendance);
+            $('#today_consumption').text(data.today.consumption);
+            $('#today_new_students').text(data.today.new_students);
+            $('#month_revenue').text('¥' + data.month.revenue);
+            
+            // 整体数据
+            $('#total_students').text(data.total.students);
+            $('#active_students').text(data.total.active_students);
+            $('#remaining_hours').text(data.total.remaining_hours);
+            $('#total_teachers').text(data.total.teachers);
+            $('#expire_soon').text(data.pending.expire_courses);
+            $('#pending_leads').text(data.pending.pending_leads);
+            
+            // 月度订单
+            $('#month_orders_count').text(data.month.orders);
+            $('#month_orders_amount').text('¥' + data.month.revenue);
+        }
+    });
+}
+</script>
+</body>
+</html>

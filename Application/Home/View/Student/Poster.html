@@ -1,0 +1,164 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-image"></i> 海报中心</h1>
+			<p class="welcome-text">生成个性化海报，分享您的学习成果</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 海报分类筛选 -->
+		<div class="form-card">
+			<div class="am-g">
+				<div class="am-u-md-12">
+					<div class="am-btn-group">
+						<a href="{{:U('Home/Student/Poster')}}" class="am-btn am-btn-secondary am-btn-sm am-radius <if condition="empty(I('category'))">am-active</if>">全部</a>
+						<foreach name="category_list" item="cat">
+							<a href="{{:U('Home/Student/Poster', array('category'=>$cat['id']))}}" class="am-btn am-btn-default am-btn-sm am-radius <if condition="I('category') eq $cat['id']">am-active</if>">{{$cat.name}}</a>
+						</foreach>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 海报模板列表 -->
+		<if condition="!empty($list)">
+			<div class="poster-grid">
+				<foreach name="list" item="poster">
+					<div class="poster-item" onclick="generatePoster({{$poster.id}})">
+						<if condition="!empty($poster['thumbnail'])">
+							<img src="{{$poster.thumbnail}}" alt="{{$poster.title}}" />
+						<else />
+							<div style="width: 100%; height: 250px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+								<i class="am-icon-image" style="font-size: 64px; color: #fff; opacity: 0.5;"></i>
+							</div>
+						</if>
+						<div class="poster-title">
+							<span style="font-weight: bold;">{{$poster.title}}</span>
+							<span class="am-text-danger am-fr">
+								<i class="am-icon-hand-pointer-o"></i> 点击生成
+							</span>
+						</div>
+					</div>
+				</foreach>
+			</div>
+		<else />
+			<div class="am-text-center" style="padding: 60px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+				<i class="am-icon-frown-o" style="font-size: 64px; color: #ddd;"></i>
+				<p style="margin-top: 20px; color: #999; font-size: 16px;">暂无海报模板</p>
+			</div>
+		</if>
+
+		<!-- 分页 -->
+		<if condition="!empty($list)">
+			<div class="am-cf" style="margin-top: 20px;">
+				<div class="am-fr">
+					{{$page_html}}
+				</div>
+			</div>
+		</if>
+
+		<!-- 我的生成记录 -->
+		<div class="form-card" style="margin-top: 30px;">
+			<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+				<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+					<i class="am-icon-history" style="color: #667eea;"></i> 我的生成记录
+				</h3>
+			</div>
+			
+			<if condition="!empty($my_posters)">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>海报模板</th>
+							<th>姓名</th>
+							<th>电话</th>
+							<th>生成时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<foreach name="my_posters" item="item" key="key">
+							<tr>
+								<td>{{$key+1}}</td>
+								<td>{{$item.poster_title}}</td>
+								<td>{{$item.user_name}}</td>
+								<td>{{$item.user_phone}}</td>
+								<td>{{$item.add_time}}</td>
+								<td>
+									<if condition="!empty($item['image'])">
+										<a href="{{$item.image}}" target="_blank" class="am-btn am-btn-primary am-btn-xs am-radius">预览</a>
+										<a href="{{:U('Home/Student/DownloadPoster', array('id'=>$item['id']))}}" class="am-btn am-btn-success am-btn-xs am-radius">下载</a>
+									<else />
+										<a href="{{:U('Home/Student/Poster/Generate', array('template_id'=>$item['template_id']))}}" class="am-btn am-btn-warning am-btn-xs am-radius">重新生成</a>
+									</if>
+								</td>
+							</tr>
+						</foreach>
+					</tbody>
+				</table>
+			<else />
+				<div class="am-text-center" style="padding: 40px; color: #999;">
+					<i class="am-icon-frown-o" style="font-size: 32px;"></i>
+					<p style="margin-top: 10px;">暂无生成记录</p>
+				</div>
+			</if>
+		</div>
+	</div>
+</div>
+
+<!-- 海报生成弹窗 -->
+<div class="am-modal am-modal-alert" id="poster-generate-modal">
+	<div class="am-modal-dialog" style="max-width: 800px;">
+		<div class="am-modal-hd">
+			<h4 class="am-modal-title"><i class="am-icon-magic"></i> 生成海报</h4>
+			<span data-am-modal-close class="am-close">&times;</span>
+		</div>
+		<div class="am-modal-bd" id="poster-form-container">
+			<!-- 动态加载表单 -->
+		</div>
+	</div>
+</div>
+
+<script>
+// 跳转到海报生成页面
+function generatePoster(templateId) {
+	window.location.href = '{{:U("Home/Student/Poster/Generate")}}?template_id=' + templateId;
+}
+
+// 显示海报生成表单（可选的弹窗方式）
+function showGenerateForm(templateId) {
+	var url = '{{:U("Home/Student/GetPosterForm", array("template_id"=>"__ID__"))}}';
+	url = url.replace('__ID__', templateId);
+	
+	$.get(url, function(data) {
+		if(data.code == 1) {
+			$('#poster-form-container').html(data.data);
+			$('#poster-generate-modal').modal();
+		} else {
+			alert(data.msg);
+		}
+	}, 'json');
+}
+
+// 提交海报生成
+function submitPosterGenerate() {
+	var formData = $('#poster-generate-form').serialize();
+	var url = '{{:U("Home/Student/DoGeneratePoster")}}';
+	
+	$.post(url, formData, function(data) {
+		if(data.code == 1) {
+			alert('海报生成成功！');
+			location.reload();
+		} else {
+			alert(data.msg);
+		}
+	}, 'json');
+}
+</script>
+
+<include file="../Public/Footer" />

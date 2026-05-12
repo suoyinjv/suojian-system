@@ -1,0 +1,224 @@
+<include file="../../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-magic"></i> 海报生成</h1>
+			<p class="welcome-text">选择模板，填写信息，生成您的专属海报</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 海报生成表单和预览 -->
+		<div class="am-g">
+			<!-- 左侧：表单 -->
+			<div class="am-u-md-5">
+				<div class="form-card">
+					<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+							<i class="am-icon-edit" style="color: #667eea;"></i> 填写信息
+						</h3>
+					</div>
+					
+					<form class="am-form am-form-horizontal" id="poster-form" action="{{:U('Home/Student/DoGeneratePoster')}}" method="post">
+						<!-- 模板选择 -->
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label"><span class="am-text-danger">*</span> 模板</label>
+							<div class="am-u-md-9">
+								<select name="template_id" class="am-radius" id="template-select" required onchange="changeTemplate()">
+									<option value="">请选择海报模板</option>
+									<foreach name="template_list" item="tpl">
+										<option value="{{$tpl.id}}" <if condition="I('template_id') eq $tpl['id']">selected</if>>{{$tpl.title}}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+						
+						<!-- 姓名 -->
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label"><span class="am-text-danger">*</span> 姓名</label>
+							<div class="am-u-md-9">
+								<input type="text" name="user_name" class="am-radius" placeholder="请输入您的姓名" value="{{$user.student_name|default=''}}" required />
+							</div>
+						</div>
+						
+						<!-- 手机号 -->
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label"><span class="am-text-danger">*</span> 手机号</label>
+							<div class="am-u-md-9">
+								<input type="tel" name="user_phone" class="am-radius" placeholder="请输入您的手机号" pattern="^1[3-9]\d{9}$" data-validation-message="请输入正确的手机号" value="{{$user.mobile|default=''}}" required />
+							</div>
+						</div>
+						
+						<!-- 额外信息（可选，根据模板） -->
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label">课程名称</label>
+							<div class="am-u-md-9">
+								<input type="text" name="course_name" class="am-radius" placeholder="选填" />
+							</div>
+						</div>
+						
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label">校区</label>
+							<div class="am-u-md-9">
+								<input type="text" name="campus_name" class="am-radius" placeholder="选填" />
+							</div>
+						</div>
+						
+						<div class="am-form-group">
+							<label class="am-u-md-3 am-form-label">个性签名</label>
+							<div class="am-u-md-9">
+								<textarea name="signature" class="am-radius" rows="2" placeholder="选填，最多50字"></textarea>
+							</div>
+						</div>
+						
+						<!-- 提交按钮 -->
+						<div class="am-form-group">
+							<div class="am-u-md-9 am-u-md-offset-3">
+								<button type="button" class="am-btn am-btn-primary am-radius" onclick="previewPoster()">
+									<i class="am-icon-eye"></i> 预览海报
+								</button>
+								<button type="submit" class="am-btn am-btn-success am-radius m-l-10">
+									<i class="am-icon-download"></i> 生成并下载
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<!-- 右侧：预览 -->
+			<div class="am-u-md-7">
+				<div class="form-card">
+					<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+							<i class="am-icon-image" style="color: #667eea;"></i> 海报预览
+						</h3>
+					</div>
+					
+					<div class="am-text-center" id="poster-preview-container">
+						<if condition="!empty($current_template)">
+							<if condition="!empty($current_template['thumbnail'])">
+								<img src="{{$current_template.thumbnail}}" id="preview-image" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;" />
+							<else />
+								<div style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+									<div style="text-align: center; color: #fff;">
+										<i class="am-icon-image" style="font-size: 64px; opacity: 0.5;"></i>
+										<p style="margin-top: 10px; opacity: 0.8;">{{$current_template.title}}</p>
+									</div>
+								</div>
+							</if>
+						<else />
+							<div style="width: 100%; height: 400px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+								<div style="text-align: center; color: #999;">
+									<i class="am-icon-image" style="font-size: 64px;"></i>
+									<p style="margin-top: 10px;">请选择模板后预览</p>
+								</div>
+							</div>
+						</if>
+					</div>
+					
+					<!-- 预览信息叠加层 -->
+					<if condition="!empty($current_template)">
+						<div id="preview-overlay" class="am-text-center m-t-10 am-text-sm" style="color: #666;">
+							<p><i class="am-icon-info-circle"></i> 姓名和手机号将自动嵌入到海报中</p>
+						</div>
+					</if>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 推荐模板 -->
+		<if condition="!empty($recommend_templates)">
+			<div class="form-card" style="margin-top: 20px;">
+				<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+					<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+						<i class="am-icon-star" style="color: #ffc107;"></i> 推荐模板
+					</h3>
+				</div>
+				
+				<div class="poster-grid">
+					<foreach name="recommend_templates" item="tpl">
+						<div class="poster-item" onclick="selectTemplate({{$tpl.id}})">
+							<if condition="!empty($tpl['thumbnail'])">
+								<img src="{{$tpl.thumbnail}}" alt="{{$tpl.title}}" />
+							<else />
+								<div style="width: 100%; height: 250px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+									<i class="am-icon-image" style="font-size: 48px; color: #fff; opacity: 0.5;"></i>
+								</div>
+							</if>
+							<div class="poster-title">{{$tpl.title}}</div>
+						</div>
+					</foreach>
+				</div>
+			</div>
+		</if>
+	</div>
+</div>
+
+<script>
+// 切换模板
+function changeTemplate() {
+	var templateId = $('#template-select').val();
+	if(templateId) {
+		window.location.href = '{{:U("Home/Student/Poster/Generate")}}?template_id=' + templateId;
+	}
+}
+
+// 选择模板
+function selectTemplate(templateId) {
+	$('#template-select').val(templateId);
+	changeTemplate();
+}
+
+// 预览海报
+function previewPoster() {
+	var formData = $('#poster-form').serialize();
+	var url = '{{:U("Home/Student/PreviewPoster")}}';
+	
+	$.post(url, formData, function(data) {
+		if(data.code == 1) {
+			$('#poster-preview-container').html('<img src="' + data.data + '" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px;" />');
+		} else {
+			alert(data.msg);
+		}
+	}, 'json');
+}
+
+// 表单验证
+$(function() {
+	$('#poster-form').validator({
+		validate: function(validity) {
+			if(validity.valid) {
+				// 验证通过
+			}
+		},
+		submit: function(e) {
+			if(!$(e.target).is('[data-am-validator]') || $(e.target).valid()) {
+				e.preventDefault();
+				
+				var formData = $(e.target).serialize();
+				var url = $(e.target).attr('action');
+				
+				$.post(url, formData, function(data) {
+					if(data.code == 1) {
+						alert('海报生成成功！正在下载...');
+						// 触发下载
+						if(data.data.download_url) {
+							window.location.href = data.data.download_url;
+						}
+						setTimeout(function() {
+							location.reload();
+						}, 1500);
+					} else {
+						alert(data.msg);
+					}
+				}, 'json');
+			}
+		}
+	});
+});
+</script>
+
+<include file="../../Public/Footer" />

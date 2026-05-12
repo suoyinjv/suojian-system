@@ -1,0 +1,71 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">成长记录详情</span>
+			<a href="{{:U('Admin/Growth/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回</a>
+		</legend>
+
+		<!-- 基本信息 -->
+		<div class="am-panel am-panel-primary am-radius m-t-10">
+			<div class="am-panel-hd">基本信息</div>
+			<div class="am-panel-bd">
+				<dl class="dl-content">
+					<dt>学员姓名</dt>
+					<dd>{{$data.student_name}}</dd>
+
+					<dt>记录类型</dt>
+					<dd>
+						<if condition="$data['type'] eq 1"><span class="am-badge am-badge-primary">课堂表现</span>
+						<elseif condition="$data['type'] eq 2" /><span class="am-badge am-badge-success">比赛获奖</span>
+						<elseif condition="$data['type'] eq 3" /><span class="am-badge am-badge-warning">活动参与</span>
+						<else /><span class="am-badge">日常记录</span>
+						</if>
+					</dd>
+
+					<dt>标题</dt>
+					<dd>{{$data.title}}</dd>
+
+					<dt>内容</dt>
+					<dd>{{$data.content}}</dd>
+
+					<dt>图片</dt>
+					<dd>
+						<if condition="!empty($data['images_list'])">
+							<foreach name="data.images_list" item="v">
+								<img src="{{$v}}" class="am-img-thumbnail m-r-5 m-b-5" style="max-width:200px;max-height:200px;" />
+							</foreach>
+						<else />
+							无
+						</if>
+					</dd>
+
+					<dt>教师</dt>
+					<dd>{{$data.teacher_name}}</dd>
+
+					<dt>标签</dt>
+					<dd>{{$data.tags}}</dd>
+
+					<dt>发布时间</dt>
+					<dd>{{$data.add_time}}</dd>
+
+					<dt>更新时间</dt>
+					<dd>{{$data.upd_time}}</dd>
+				</dl>
+			</div>
+		</div>
+
+		<!-- 操作按钮 -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Growth/SaveInfo', array('id'=>$data['id']))}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-edit"> 编辑</a>
+			<button class="am-btn am-btn-danger am-btn-xs m-l-10 am-icon-trash-o am-radius submit-delete" data-url="{{:U('Admin/Growth/Delete')}}" data-id="{{$data.id}}"> 删除</button>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

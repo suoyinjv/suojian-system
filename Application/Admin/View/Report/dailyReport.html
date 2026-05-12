@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>经营日报表</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <script src="__PUBLIC__/js/echarts.min.js"></script>
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">经营日报表</h3>
+    </div>
+    <div class="panel-body">
+        <form method="get" class="form-inline">
+            <div class="form-group">
+                <input type="text" name="date" class="form-control datepicker" value="{$date}">
+            </div>
+            <div class="form-group">
+                <select name="campus_id" class="form-control">
+                    <option value="">全部校区</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">查询</button>
+            <a href="{:U('exportReport?type=daily&date='.$date)}" class="btn btn-success">导出Excel</a>
+        </form>
+        
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">线索数据</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>新增线索: <strong>{$leadsData.total}</strong> 条</p>
+                        <p>有效线索: <strong>{$leadsData.valid}</strong> 条</p>
+                        <p>转化数量: <strong>{$leadsData.converted}</strong> 条</p>
+                        <p>转化率: <strong>{$leadsData.convert_rate}%</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">销售数据</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>订单数量: <strong>{$orderData.count}</strong> 单</p>
+                        <p>销售金额: <strong>¥{$orderData.amount}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">耗课数据</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>耗课次数: <strong>{$consumptionData.count}</strong> 次</p>
+                        <p>消耗课时: <strong>{$consumptionData.hours}</strong> 课时</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">出勤数据</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p>出勤人数: <strong>{$attendanceData.total}</strong> 人</p>
+                        <p>正常出勤: <strong>{$attendanceData.normal}</strong> 人</p>
+                        <p>出勤率: <strong>{$attendanceData.rate}%</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

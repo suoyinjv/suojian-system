@@ -1,0 +1,226 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-calendar-minus-o"></i> 请假申请</h1>
+			<p class="welcome-text">提交和管理您的请假申请</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 新建请假表单 -->
+		<div class="form-card">
+			<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+				<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+					<i class="am-icon-plus" style="color: #667eea;"></i> 提交请假申请
+				</h3>
+			</div>
+			<form class="am-form am-form-horizontal" action="{{:U('Home/Student/LeaveSave')}}" method="post" data-am-validator>
+				<div class="am-form-group">
+					<label class="am-u-md-2 am-form-label"><span class="am-text-danger">*</span> 请假类型</label>
+					<div class="am-u-md-4">
+						<select name="type" class="am-radius" required>
+							<option value="">请选择请假类型</option>
+							<option value="1">事假</option>
+							<option value="2">病假</option>
+							<option value="3">其他</option>
+						</select>
+					</div>
+					<label class="am-u-md-2 am-form-label"><span class="am-text-danger">*</span> 关联课程</label>
+					<div class="am-u-md-4">
+						<select name="course_id" class="am-radius" required>
+							<option value="">请选择关联课程</option>
+							<foreach name="course_list" item="v">
+								<option value="{{$v.id}}">{{$v.name}} ({{$v.teacher_name}})</option>
+							</foreach>
+						</select>
+					</div>
+				</div>
+				<div class="am-form-group">
+					<label class="am-u-md-2 am-form-label"><span class="am-text-danger">*</span> 开始日期</label>
+					<div class="am-u-md-4">
+						<input type="text" name="start_date" class="am-radius datepicker" placeholder="开始日期" value="" required />
+					</div>
+					<label class="am-u-md-2 am-form-label"><span class="am-text-danger">*</span> 结束日期</label>
+					<div class="am-u-md-4">
+						<input type="text" name="end_date" class="am-radius datepicker" placeholder="结束日期" value="" required />
+					</div>
+				</div>
+				<div class="am-form-group">
+					<label class="am-u-md-2 am-form-label"><span class="am-text-danger">*</span> 请假原因</label>
+					<div class="am-u-md-10">
+						<textarea name="reason" class="am-radius" rows="3" placeholder="请详细描述请假原因..." required></textarea>
+					</div>
+				</div>
+				<div class="am-form-group">
+					<div class="am-u-md-10 am-u-md-offset-2">
+						<button type="submit" class="am-btn am-btn-primary am-radius">提交申请</button>
+						<button type="button" class="am-btn am-btn-default am-radius m-l-10" onclick="clearForm()">清空</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- 请假记录列表 -->
+		<div class="form-card" style="margin-top: 20px;">
+			<div class="am-panel-hd" style="padding: 0 0 15px 0; border-bottom: 1px solid #eee; margin-bottom: 15px;">
+				<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold; margin: 0;">
+					<i class="am-icon-list" style="color: #667eea;"></i> 请假记录
+				</h3>
+			</div>
+			
+			<if condition="!empty($list)">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>序号</th>
+							<th>请假类型</th>
+							<th>关联课程</th>
+							<th>开始日期</th>
+							<th>结束日期</th>
+							<th>请假原因</th>
+							<th>状态</th>
+							<th>申请时间</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<foreach name="list" item="record" key="key">
+							<tr>
+								<td>{{$key+1}}</td>
+								<td>
+									<if condition="$record['type'] eq 1">事假
+									<elseif condition="$record['type'] eq 2" />病假
+									<else />其他
+									</if>
+								</td>
+								<td>{{$record.course_name}}</td>
+								<td>{{$record.start_date}}</td>
+								<td>{{$record.end_date}}</td>
+								<td>
+									<span title="{{$record.reason}}">
+										{{:mb_substr($record['reason'], 0, 10)}}
+										<if condition="strlen($record['reason']) gt 10">...</if>
+									</span>
+								</td>
+								<td>
+									<if condition="$record['status'] eq 0">
+										<span class="status-badge status-pending">待审批</span>
+									<elseif condition="$record['status'] eq 1" />
+										<span class="status-badge status-approved">已批准</span>
+									<elseif condition="$record['status'] eq 2" />
+										<span class="status-badge status-rejected">已拒绝</span>
+									<else />
+										<span class="status-badge" style="background: #e2e3e5; color: #383d41;">已取消</span>
+									</if>
+								</td>
+								<td>{{$record.add_time}}</td>
+								<td>
+									<if condition="$record['status'] eq 0">
+										<button type="button" class="am-btn am-btn-warning am-btn-xs am-radius" onclick="cancelLeave({{$record.id}})">取消</button>
+									</if>
+									<button type="button" class="am-btn am-btn-primary am-btn-xs am-radius" onclick="showLeaveDetail({{$record.id}})">详情</button>
+								</td>
+							</tr>
+						</foreach>
+					</tbody>
+				</table>
+			<else />
+				<div class="am-text-center" style="padding: 40px; color: #999;">
+					<i class="am-icon-frown-o" style="font-size: 32px;"></i>
+					<p style="margin-top: 10px;">暂无请假记录</p>
+				</div>
+			</if>
+
+			<!-- 分页 -->
+			<if condition="!empty($list)">
+				<div class="am-cf" style="margin-top: 20px;">
+					<div class="am-fr">
+						{{$page_html}}
+					</div>
+				</div>
+			</if>
+		</div>
+	</div>
+</div>
+
+<!-- 请假详情弹窗 -->
+<div class="am-modal am-modal-alert" id="leave-detail-modal">
+	<div class="am-modal-dialog" style="max-width: 500px;">
+		<div class="am-modal-hd">
+			<h4 class="am-modal-title">请假详情</h4>
+			<span data-am-modal-close class="am-close">&times;</span>
+		</div>
+		<div class="am-modal-bd" id="leave-detail-content">
+			<!-- 动态加载 -->
+		</div>
+	</div>
+</div>
+
+<script>
+// 清空表单
+function clearForm() {
+	$('form')[0].reset();
+}
+
+// 显示请假详情
+function showLeaveDetail(id) {
+	var url = '{{:U("Home/Student/LeaveDetail", array("id"=>"__ID__"))}}';
+	url = url.replace('__ID__', id);
+	
+	$.get(url, function(data) {
+		if(data.code == 1) {
+			var info = data.data;
+			var typeName = info.type == 1 ? '事假' : (info.type == 2 ? '病假' : '其他');
+			var statusName = info.status == 0 ? '待审批' : (info.status == 1 ? '已批准' : (info.status == 2 ? '已拒绝' : '已取消'));
+			var statusClass = info.status == 0 ? 'status-pending' : (info.status == 1 ? 'status-approved' : (info.status == 2 ? 'status-rejected' : ''));
+			
+			var html = '<dl class="dl-horizontal">';
+			html += '<dt>请假类型：</dt><dd>' + typeName + '</dd>';
+			html += '<dt>关联课程：</dt><dd>' + info.course_name + '</dd>';
+			html += '<dt>开始日期：</dt><dd>' + info.start_date + '</dd>';
+			html += '<dt>结束日期：</dt><dd>' + info.end_date + '</dd>';
+			html += '<dt>请假原因：</dt><dd>' + info.reason + '</dd>';
+			html += '<dt>申请状态：</dt><dd><span class="status-badge ' + statusClass + '">' + statusName + '</span></dd>';
+			if(info.approve_remark) {
+				html += '<dt>审批备注：</dt><dd>' + info.approve_remark + '</dd>';
+			}
+			html += '<dt>申请时间：</dt><dd>' + info.add_time + '</dd>';
+			html += '</dl>';
+			$('#leave-detail-content').html(html);
+			$('#leave-detail-modal').modal();
+		} else {
+			alert(data.msg);
+		}
+	}, 'json');
+}
+
+// 取消请假
+function cancelLeave(id) {
+	if(confirm('确定要取消该请假申请吗？')) {
+		var url = '{{:U("Home/Student/LeaveCancel")}}';
+		$.post(url, {id: id}, function(data) {
+			if(data.code == 1) {
+				alert('取消成功');
+				location.reload();
+			} else {
+				alert(data.msg);
+			}
+		}, 'json');
+	}
+}
+
+// 日期选择器初始化
+$(function() {
+	$('.datepicker').datepicker({
+		format: 'yyyy-mm-dd',
+		language: 'zh-CN',
+		autoclose: true,
+		todayHighlight: true
+	});
+});
+</script>
+
+<include file="../Public/Footer" />

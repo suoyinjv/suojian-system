@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>数据座舱 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <script src="__PUBLIC__/echarts.min.js"></script>
+    <style>
+        .stat-card { 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .stat-card.purple { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        .stat-label { font-size: 14px; opacity: 0.9; }
+        .chart-container { height: 300px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <h2>📊 数据座舱 - 经营看板</h2>
+        
+        <!-- 今日数据 -->
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-3">
+                <div class="stat-card blue">
+                    <div class="stat-number">{$today_new_students}</div>
+                    <div class="stat-label">今日新增学员</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card green">
+                    <div class="stat-number">¥{$today_income}</div>
+                    <div class="stat-label">今日营收</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card orange">
+                    <div class="stat-number">{$today_consumption}</div>
+                    <div class="stat-label">今日课消(时)</div>
+                </div>
+            </div>
+            <div class="am-u-sm-3">
+                <div class="stat-card purple">
+                    <div class="stat-number">{$today_attendance}</div>
+                    <div class="stat-label">今日考勤</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 本月累计 -->
+        <div class="am-g" style="margin-bottom: 20px;">
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">{$month_new_students}</div>
+                    <div class="stat-label" style="color: #666;">本月新增</div>
+                </div>
+            </div>
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">¥{$month_income}</div>
+                    <div class="stat-label" style="color: #666;">本月营收</div>
+                </div>
+            </div>
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">{$month_consumption}</div>
+                    <div class="stat-label" style="color: #666;">本月课消</div>
+                </div>
+            </div>
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">{$total_students}</div>
+                    <div class="stat-label" style="color: #666;">学员总数</div>
+                </div>
+            </div>
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">{$total_teachers}</div>
+                    <div class="stat-label" style="color: #666;">老师总数</div>
+                </div>
+            </div>
+            <div class="am-u-sm-2">
+                <div class="stat-card" style="background: #f5f5f5;">
+                    <div class="stat-number" style="color: #333;">{$total_classes}</div>
+                    <div class="stat-label" style="color: #666;">班级总数</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="am-g">
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">课消趋势(最近7天)</div>
+                    <div class="am-panel-bd">
+                        <div id="consumptionChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">营收趋势(最近7天)</div>
+                    <div class="am-panel-bd">
+                        <div id="incomeChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 校区对比 -->
+        <div class="am-panel am-panel-default" style="margin-top: 20px;">
+            <div class="am-panel-hd">各校区数据对比</div>
+            <div class="am-panel-bd">
+                <table class="am-table">
+                    <thead>
+                        <tr>
+                            <th>校区</th>
+                            <th>学员数</th>
+                            <th>班级数</th>
+                            <th>本月营收</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="campuses" id="vo">
+                        <tr>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.student_count}</td>
+                            <td>{$vo.class_count}</td>
+                            <td>¥{$vo.income|default=0}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var consumptionData = {$consumption_trend};
+var incomeData = {$income_trend};
+
+// 课消趋势图
+var consumptionChart = echarts.init(document.getElementById('consumptionChart'));
+consumptionChart.setOption({
+    xAxis: { type: 'category', data: consumptionData.map(function(d){return d.date;}) },
+    yAxis: { type: 'value' },
+    series: [{ type: 'line', data: consumptionData.map(function(d){return d.hours;}), smooth: true }]
+});
+
+// 营收趋势图
+var incomeChart = echarts.init(document.getElementById('incomeChart'));
+incomeChart.setOption({
+    xAxis: { type: 'category', data: incomeData.map(function(d){return d.date;}) },
+    yAxis: { type: 'value' },
+    series: [{ type: 'bar', data: incomeData.map(function(d){return d.money;}), itemStyle: {color: '#667eea'} }]
+});
+</script>
+</body>
+</html>

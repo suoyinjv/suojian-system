@@ -1,0 +1,141 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Lead/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<select name="source" class="am-radius c-p m-l-5">
+					<option value="">全部来源</option>
+					<option value="1" <if condition="isset($param['source']) and $param['source'] eq 1">selected</if>>线上推广</option>
+					<option value="2" <if condition="isset($param['source']) and $param['source'] eq 2">selected</if>>电话咨询</option>
+					<option value="3" <if condition="isset($param['source']) and $param['source'] eq 3">selected</if>>地推活动</option>
+					<option value="4" <if condition="isset($param['source']) and $param['source'] eq 4">selected</if>>转介绍</option>
+				</select>
+				<select name="intent_level" class="am-radius c-p m-l-5">
+					<option value="">全部意向</option>
+					<option value="1" <if condition="isset($param['intent_level']) and $param['intent_level'] eq 1">selected</if>>★</option>
+					<option value="2" <if condition="isset($param['intent_level']) and $param['intent_level'] eq 2">selected</if>>★★</option>
+					<option value="3" <if condition="isset($param['intent_level']) and $param['intent_level'] eq 3">selected</if>>★★★</option>
+					<option value="4" <if condition="isset($param['intent_level']) and $param['intent_level'] eq 4">selected</if>>★★★★</option>
+					<option value="5" <if condition="isset($param['intent_level']) and $param['intent_level'] eq 5">selected</if>>★★★★★</option>
+				</select>
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>新建</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>跟进中</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>有意向</option>
+					<option value="3" <if condition="isset($param['status']) and $param['status'] eq 3">selected</if>>已报名</option>
+					<option value="4" <if condition="isset($param['status']) and $param['status'] eq 4">selected</if>>流失</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Lead/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增线索</a>
+			<a href="{{:U('Admin/Lead/BatchAssign')}}" class="am-btn am-btn-primary am-radius am-btn-xs m-l-10 am-icon-share"> 批量分配</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="select-all" /></th>
+					<th>ID</th>
+					<th>姓名</th>
+					<th>手机号</th>
+					<th>来源</th>
+					<th>意向等级</th>
+					<th>分配顾问</th>
+					<th>跟进状态</th>
+					<th>创建时间</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td><input type="checkbox" name="ids[]" value="{{$v.id}}" /></td>
+							<td>{{$v.id}}</td>
+							<td>{{$v.name}}</td>
+							<td>{{$v.mobile}}</td>
+							<td>
+								<if condition="$v['source'] eq 1"><span class="am-badge am-badge-primary">线上推广</span>
+								<elseif condition="$v['source'] eq 2" /><span class="am-badge am-badge-success">电话咨询</span>
+								<elseif condition="$v['source'] eq 3" /><span class="am-badge am-badge-warning">地推活动</span>
+								<else /><span class="am-badge am-badge-secondary">转介绍</span>
+								</if>
+							</td>
+							<td>
+								<switch name="v.intent_level">
+									<case value="1">★</case>
+									<case value="2">★★</case>
+									<case value="3">★★★</case>
+									<case value="4">★★★★</case>
+									<case value="5">★★★★★</case>
+									<default />
+								</switch>
+							</td>
+							<td>{{$v.advisor_name}}</td>
+							<td>
+								<if condition="$v['status'] eq 0"><span class="am-badge">新建</span>
+								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-primary">跟进中</span>
+								<elseif condition="$v['status'] eq 2" /><span class="am-badge am-badge-success">有意向</span>
+								<elseif condition="$v['status'] eq 3" /><span class="am-badge am-badge-warning">已报名</span>
+								<else /><span class="am-badge am-badge-danger">流失</span>
+								</if>
+							</td>
+							<td>{{$v.add_time}}</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/Lead/Detail', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
+								</a>
+								<a href="{{:U('Admin/Lead/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Lead/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="10" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 全选
+	$('#select-all').on('change', function(){
+		$('input[name="ids[]"]').prop('checked', $(this).prop('checked'));
+	});
+
+	// 状态颜色
+	$('td:contains("新建") .am-badge').parent().addClass('am-text-secondary');
+	$('td:contains("跟进中") .am-badge').parent().addClass('am-text-primary');
+	$('td:contains("有意向") .am-badge').parent().addClass('am-text-success');
+	$('td:contains("已报名") .am-badge').parent().addClass('am-text-warning');
+	$('td:contains("流失") .am-badge').parent().addClass('am-text-danger');
+});
+</script>

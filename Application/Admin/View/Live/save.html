@@ -1,0 +1,88 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Live/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Live/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						创建直播课程
+					<else />
+						编辑直播课程
+					</if>
+				</span>
+				<a href="{{:U('Admin/Live/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+			<div class="am-form-group">
+				<label>课程标题<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="text" name="title" placeholder="请输入直播课程标题" minlength="2" maxlength="100" data-validation-message="课程标题长度为2-100个字符" class="am-radius" <notempty name="data"> value="{{$data.title}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>课程类型<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<select name="type" class="am-radius c-p" data-validation-message="请选择课程类型" required>
+					<option value="">请选择课程类型</option>
+					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>1对1</option>
+					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>小班课（2-10人）</option>
+					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>大班课（10人以上）</option>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>所属课程<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<select name="course_id" class="am-radius c-p" data-validation-message="请选择所属课程" required>
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="course_list" item="v">
+						<option value="{{$v.id}}" <if condition="isset($data['course_id']) and $data['course_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</foreach>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>授课老师<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<select name="teacher_id" class="am-radius c-p" data-validation-message="请选择授课老师" required>
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="teacher_list" item="v">
+						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</foreach>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>开课时间<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="text" name="start_time" id="start_time" placeholder="请选择开课时间" data-validation-message="请选择开课时间" class="am-radius" <notempty name="data"> value="{{$data.start_time}}"</notempty> data-am-datepicker="{format: 'yyyy-mm-dd hh:mm:ss', viewMode: 'days'}" readonly required />
+			</div>
+			<div class="am-form-group">
+				<label>课程时长（分钟）<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="number" name="duration" placeholder="请输入课程时长" min="15" max="480" data-validation-message="课程时长范围为15-480分钟" class="am-radius" <notempty name="data"> value="{{$data.duration}}"</notempty> required />
+				<span class="fs-12 cr-999">建议时长：1对1 30-45分钟，小班课 45-60分钟，大班课 60-90分钟</span>
+			</div>
+			<div class="am-form-group">
+				<label>最大人数<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="number" name="max_students" placeholder="请输入最大报名人数" min="1" max="500" data-validation-message="最大人数范围为1-500人" class="am-radius" <notempty name="data"> value="{{$data.max_students}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>课程描述</label>
+				<textarea name="description" placeholder="请输入课程描述（选填）" rows="4" maxlength="500" class="am-radius"><notempty name="data">{{$data.description}}</notempty></textarea>
+			</div>
+			<div class="am-form-group">
+				<label>{{:L('common_view_enable_title')}}</label>
+				<div>
+					<foreach name="common_is_enable_list" item="v">
+						<label class="am-radio-inline m-r-10">
+							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] eq $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] eq true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+						</label>
+					</foreach>
+				</div>
+			</div>
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+        <!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+	
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

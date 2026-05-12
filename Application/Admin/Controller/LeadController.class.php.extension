@@ -1,0 +1,230 @@
+<?php
+namespace Admin\Controller;
+
+/**
+ * 扩展LeadsController线索管理
+ * @author   Devil
+ * @blog     http://gong.gg/
+ * @version  1.0.0
+ * @datetime 2026-05-12T00:00:00+0800
+ */
+trait LeadControllerExtension
+{
+    /**
+     * [extendFollow 添加跟进记录]
+     * @author   Devil
+     * @blog     http://gong.gg/
+     * @version  1.0.0
+     * @datetime 2026-05-12T00:00:00+0800
+     */
+    public function extendFollow()
+    {
+        if (IS_POST) {
+            $id = I('id', 0, 'intval');
+            $content = I('post.content', '', 'trim');
+            $next_time = I('post.next_time', 0, 'strtotime');
+            $interest_level = I('post.interest_level', 0, 'intval');
+
+            if (empty($content)) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '跟进内容不能为空'));
+            }
+
+            $leads = M('leads')->find($id);
+            if (empty($leads)) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '线索不存在'));
+            }
+
+            // 构建跟进记录
+            $follow_data = array(
+                'user_id' => session('admin.id'),
+                'user_name' => session('admin.name'),
+                'content' => $content,
+                'create_time' => time()
+            );
+
+            // 获取原有跟进记录
+            $old_logs = $leads['follow_log'] ? json_decode($leads['follow_log'], true) : array();
+            $old_logs[] = $follow_data;
+
+            // 更新线索
+            $update_data = array(
+                'follow_log' => json_encode($old_logs),
+                'follow_time' => time(),
+                'update_time' => time(),
+                'status' => 2 // 已跟进
+            );
+
+            if ($next_time > 0) {
+                $update_data['next_follow_time'] = $next_time;
+            }
+
+            if ($interest_level > 0) {
+                $update_data['interest_level'] = $interest_level;
+            }
+
+            $result = M('leads')->where(array('id' => $id))->save($update_data);
+
+            if ($result !== false) {
+                // 记录跟进日志
+                M('follow_log')->add(array(
+                    'leads_id' => $id,
+                    'user_id' => session('admin.id'),
+                    'content' => $content,
+                    'next_time' => $next_time,
+                    'create_time' => time()
+                ));
+
+                $this->ajaxReturn(array('code' => 1, 'msg' => '跟进成功'));
+            } else {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '跟进失败'));
+            }
+        }
+
+        $id = I('id', 0, 'intval');
+        $info = M('leads')->find($id);
+
+        // 解析跟进记录
+        if ($info && $info['follow_log']) {
+            $info['follow_logs'] = json_decode($info['follow_log'], true);
+        }
+
+        $this->assign('info', $info);
+        $this->display();
+    }
+
+    /**
+     * [assignLeads 分配线索]
+     * @author   Devil
+     * @blog     http://gong.gg/
+     * @version  1.0.0
+     * @datetime 2026-05-12T00:00:00+0800
+     */
+    public function assignLeads()
+    {
+        if (IS_POST) {
+            $ids = I('ids', '');
+            $assigned_to = I('assigned_to', 0, 'intval');
+
+            if (empty($ids)) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '请选择要分配的线索'));
+            }
+            if ($assigned_to <= 0) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '请选择分配给谁'));
+            }
+
+            // 获取被分配的顾问信息
+            $user = M('admin')->find($assigned_to);
+            if (empty($user)) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '被分配人不存在'));
+            }
+
+            $id_arr = explode(',', $ids);
+            $success = 0;
+
+            foreach ($id_arr as $id) {
+                $id = intval($id);
+                if ($id > 0) {
+                    M('leads')->where(array('id' => $id))->save(array(
+                        'assigned_to' => $assigned_to,
+                        'assigned_name' => $user['name'],
+                        'assign_time' => time(),
+                        'update_time' => time()
+                    ));
+                    $success++;
+                }
+            }
+
+            $this->ajaxReturn(array('code' => 1, 'msg' => "成功分配{$success}条线索"));
+        }
+
+        // 获取课程顾问列表
+        // 假设有一个角色是课程顾问
+        $admins = M('admin')->field('id, name')->where(array('status' => 1))->select();
+        $this->assign('admins', $admins);
+        $this->display();
+    }
+
+    /**
+     * [leadsStats 线索统计API]
+     * @author   Devil
+     * @blog     http://gong.gg/
+     * @version  1.0.0
+     * @datetime 2026-05-12T00:00:00+0800
+     */
+    public function leadsStats()
+    {
+        $start_date = I('start_date', date('Y-m-01'));
+        $end_date = I('end_date', date('Y-m-d'));
+        $assigned_to = I('assigned_to', 0, 'intval');
+
+        $where = "create_time >= UNIX_TIMESTAMP('{$start_date}') AND create_time <= UNIX_TIMESTAMP('{$end_date} 23:59:59')";
+        if ($assigned_to > 0) {
+            $where .= " AND assigned_to = {$assigned_to}";
+        }
+
+        // 总线索数
+        $total = M('leads')->where($where)->count();
+
+        // 各状态统计
+        $status_stats = M('leads')
+            ->field('status, COUNT(*) as cnt')
+            ->where($where)
+            ->group('status')
+            ->select();
+
+        // 来源统计
+        $source_stats = M('leads')
+            ->field('source, COUNT(*) as cnt')
+            ->where($where)
+            ->group('source')
+            ->select();
+
+        // 每日趋势
+        $daily_trend = array();
+        $days = (strtotime($end_date) - strtotime($start_date)) / 86400 + 1;
+        for ($i = 0; $i < $days; $i++) {
+            $date = date('Y-m-d', strtotime($start_date . " +{$i} days"));
+            $daily_trend[] = array(
+                'date' => $date,
+                'total' => M('leads')->where("FROM_UNIXTIME(create_time, '%Y-%m-%d') = '{$date}'")->count(),
+                'converted' => M('leads')->where("status=3 AND FROM_UNIXTIME(create_time, '%Y-%m-%d') = '{$date}'")->count()
+            );
+        }
+
+        // 顾问排名
+        $advisor_stats = M('leads')
+            ->field('assigned_to, assigned_name, COUNT(*) as total, SUM(CASE WHEN status=3 THEN 1 ELSE 0 END) as converted')
+            ->where($where . " AND assigned_to > 0")
+            ->group('assigned_to')
+            ->order('converted DESC')
+            ->select();
+
+        // 转化率
+        $converted = M('leads')->where($where . " AND status=3")->count();
+        $conversion_rate = $total > 0 ? round($converted / $total * 100, 2) : 0;
+
+        // 意向等级分布
+        $interest_stats = M('leads')
+            ->field('interest_level, COUNT(*) as cnt')
+            ->where($where . " AND interest_level > 0")
+            ->group('interest_level')
+            ->select();
+
+        $this->ajaxReturn(array(
+            'code' => 1,
+            'data' => array(
+                'total' => $total,
+                'converted' => $converted,
+                'conversion_rate' => $conversion_rate,
+                'status_stats' => $status_stats,
+                'source_stats' => $source_stats,
+                'daily_trend' => $daily_trend,
+                'advisor_stats' => $advisor_stats,
+                'interest_stats' => $interest_stats
+            )
+        ));
+    }
+}
+
+// 在原来的LeadController末尾添加以下方法来使用trait
+// 或者可以直接把trait中的方法复制到LeadController中

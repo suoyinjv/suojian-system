@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评价管理</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">评价管理</h3>
+    </div>
+    <div class="panel-body">
+        <form method="get" class="form-inline search-form">
+            <div class="form-group">
+                <input type="text" name="keyword" class="form-control" placeholder="评价内容" value="{:I('keyword')}">
+            </div>
+            <div class="form-group">
+                <select name="teacher_id" class="form-control">
+                    <option value="">全部老师</option>
+                    <volist name="teachers" id="t">
+                        <option value="{$t.id}" {:I('teacher_id')==$t['id']?'selected':''}>{$t.name}</option>
+                    </volist>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="score" class="form-control">
+                    <option value="">全部评分</option>
+                    <option value="5" {:I('score')==5?'selected':''}>5星</option>
+                    <option value="4" {:I('score')==4?'selected':''}>4星</option>
+                    <option value="3" {:I('score')==3?'selected':''}>3星</option>
+                    <option value="2" {:I('score')==2?'selected':''}>2星</option>
+                    <option value="1" {:I('score')==1?'selected':''}>1星</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="status" class="form-control">
+                    <option value="-1" {:I('status')==-1?'selected':''}>全部状态</option>
+                    <option value="0" {:I('status')==0?'selected':''}>隐藏</option>
+                    <option value="1" {:I('status')==1?'selected':''}>显示</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+            <a href="{:U('add')}" class="btn btn-success">添加评价</a>
+        </form>
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学生</th>
+                    <th>老师</th>
+                    <th>课程</th>
+                    <th>评分</th>
+                    <th>评价内容</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="item">
+                <tr>
+                    <td>{$item.id}</td>
+                    <td>{$item.student_name}</td>
+                    <td>{$item.teacher_name}</td>
+                    <td>{$item.course_name}</td>
+                    <td>
+                        <span class="stars">
+                            <volist name="item.score" id="s">
+                                <span class="star">★</span>
+                            </volist>
+                        </span>
+                    </td>
+                    <td>{$item.content|msubstr=0,50}</td>
+                    <td>
+                        <if condition="$item.status eq 1">
+                            <span class="label label-success">显示</span>
+                        <else/>
+                            <span class="label label-default">隐藏</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a href="{:U('edit?id='.$item['id'])}" class="btn btn-xs btn-primary">编辑</a>
+                        <a href="{:U('reply?id='.$item['id'])}" class="btn btn-xs btn-info">回复</a>
+                        <a href="{:U('toggleStatus?id='.$item['id'])}" class="btn btn-xs btn-warning">
+                            {$item.status==1?'隐藏':'显示'}
+                        </a>
+                        <a href="{:U('delete?id='.$item['id'])}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除?')">删除</a>
+                    </td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+        
+        {$page}
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Live/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="课程名称" name="name" <present name="param['name']"> value="{{$param.name}}"</present> />
+				<select name="course_type" class="am-radius c-p m-l-5">
+					<option value="">全部类型</option>
+					<option value="1" <if condition="isset($param['course_type']) and $param['course_type'] eq 1">selected</if>>1v1</option>
+					<option value="2" <if condition="isset($param['course_type']) and $param['course_type'] eq 2">selected</if>>小班</option>
+					<option value="3" <if condition="isset($param['course_type']) and $param['course_type'] eq 3">selected</if>>大班</option>
+				</select>
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>未开始</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>直播中</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已结束</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Live/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增直播</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>课程名称</th>
+					<th>类型</th>
+					<th>最大人数</th>
+					<th>直播平台</th>
+					<th>开播时间</th>
+					<th>录制状态</th>
+					<th>状态</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.name}}</td>
+							<td>
+								<if condition="$v['course_type'] eq 1"><span class="am-badge am-badge-primary">1v1</span>
+								<elseif condition="$v['course_type'] eq 2" /><span class="am-badge am-badge-success">小班</span>
+								<else /><span class="am-badge am-badge-warning">大班</span>
+								</if>
+							</td>
+							<td>{{$v.max_students}}</td>
+							<td>{{$v.platform}}</td>
+							<td>{{$v.start_time}}</td>
+							<td>
+								<if condition="$v['record_status'] eq 0"><span class="am-badge">未录制</span>
+								<elseif condition="$v['record_status'] eq 1" /><span class="am-badge am-badge-success">已录制</span>
+								<else /><span class="am-badge am-badge-warning">录制中</span>
+								</if>
+							</td>
+							<td>
+								<if condition="$v['status'] eq 0"><span class="am-badge">未开始</span>
+								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-primary">直播中</span>
+								<else /><span class="am-badge am-badge-default">已结束</span>
+								</if>
+							</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/Live/Detail', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
+								</a>
+								<a href="{{:U('Admin/Live/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Live/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="9" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

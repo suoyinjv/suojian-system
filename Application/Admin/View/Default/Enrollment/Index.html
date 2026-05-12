@@ -1,0 +1,88 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Enrollment/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="学员姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待缴费</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已缴费</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已取消</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Enrollment/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增报名</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>关联活动</th>
+					<th>学员姓名</th>
+					<th>手机号</th>
+					<th>报名课程</th>
+					<th>缴费金额</th>
+					<th>状态</th>
+					<th>报名时间</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.activity_name}}</td>
+							<td>{{$v.student_name}}</td>
+							<td>{{$v.mobile}}</td>
+							<td>{{$v.course_name}}</td>
+							<td>￥{{$v.amount}}</td>
+							<td>
+								<if condition="$v['status'] eq 0"><span class="am-badge am-badge-warning">待缴费</span>
+								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已缴费</span>
+								<else /><span class="am-badge am-badge-default">已取消</span>
+								</if>
+							</td>
+							<td>{{$v.add_time}}</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/Enrollment/Detail', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
+								</a>
+								<a href="{{:U('Admin/Enrollment/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Enrollment/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="9" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

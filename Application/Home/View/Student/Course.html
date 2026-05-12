@@ -1,0 +1,121 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-book"></i> 我的课程</h1>
+			<p class="welcome-text">查看和管理您的所有课程</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 筛选条件 -->
+		<div class="form-card">
+			<form class="am-form am-form-horizontal" action="{{:U('Home/Student/Course')}}" method="get">
+				<div class="am-form-group">
+					<div class="am-u-md-3">
+						<select name="status" class="am-radius">
+							<option value="">全部状态</option>
+							<option value="0" <if condition="I('status') eq '0'">selected</if>>未开始</option>
+							<option value="1" <if condition="I('status') eq '1'">selected</if>>进行中</option>
+							<option value="2" <if condition="I('status') eq '2'">selected</if>>已结课</option>
+						</select>
+					</div>
+					<div class="am-u-md-3">
+						<select name="course_id" class="am-radius">
+							<option value="">全部课程</option>
+							<foreach name="course_list" item="v">
+								<option value="{{$v.id}}" <if condition="I('course_id') eq $v['id']">selected</if>>{{$v.name}}</option>
+							</foreach>
+						</select>
+					</div>
+					<div class="am-u-md-3">
+						<select name="campus_id" class="am-radius">
+							<option value="">全部校区</option>
+							<foreach name="campus_list" item="v">
+								<option value="{{$v.id}}" <if condition="I('campus_id') eq $v['id']">selected</if>>{{$v.name}}</option>
+							</foreach>
+						</select>
+					</div>
+					<div class="am-u-md-3">
+						<button type="submit" class="am-btn am-btn-primary am-radius">筛选</button>
+						<a href="{{:U('Home/Student/Course')}}" class="am-btn am-btn-default am-radius m-l-10">重置</a>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- 课程列表 -->
+		<if condition="!empty($list)">
+			<div class="am-g">
+				<foreach name="list" item="course">
+					<div class="am-u-md-6">
+						<div class="course-card">
+							<div class="am-cf">
+								<div class="am-fl">
+									<div class="course-name">{{$course.course_name}}</div>
+									<div class="course-info">
+										<i class="am-icon-user"></i> {{$course.teacher_name}}
+									</div>
+									<div class="course-info">
+										<i class="am-icon-map-marker"></i> {{$course.campus_name}}
+									</div>
+									<div class="course-info">
+										<i class="am-icon-clock-o"></i> {{$course.class_time}}
+									</div>
+								</div>
+								<div class="am-fr">
+									<if condition="$course['status'] eq 0">
+										<span class="status-badge status-pending">未开始</span>
+									<elseif condition="$course['status'] eq 1" />
+										<span class="status-badge status-ongoing">进行中</span>
+									<else />
+										<span class="status-badge status-finished">已结课</span>
+									</if>
+								</div>
+							</div>
+							<div class="am-divider"></div>
+							<div class="am-cf">
+								<div class="am-fl" style="width: 100%;">
+									<div class="am-cf m-b-5">
+										<span class="am-fl" style="color: #666; font-size: 12px;">学习进度</span>
+										<span class="am-fr" style="color: #667eea; font-size: 12px;">{{$course.progress|default=0}}%</span>
+									</div>
+									<div class="progress-bar">
+										<div class="progress-fill" style="width: {{$course.progress|default=0}}%;"></div>
+									</div>
+								</div>
+							</div>
+							<div class="am-cf m-t-10">
+								<div class="am-fl" style="color: #999; font-size: 12px;">
+									<i class="am-icon-calendar"></i> {{$course.start_date}} ~ {{$course.end_date}}
+								</div>
+								<div class="am-fr">
+									<a href="{{:U('Home/Student/CourseDetail', array('id'=>$course['id']))}}" class="am-btn am-btn-primary am-btn-xs am-radius">查看详情</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</foreach>
+			</div>
+		<else />
+			<div class="am-text-center" style="padding: 60px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+				<i class="am-icon-frown-o" style="font-size: 64px; color: #ddd;"></i>
+				<p style="margin-top: 20px; color: #999; font-size: 16px;">暂无课程记录</p>
+				<a href="{{:U('Home/Course/Index')}}" class="am-btn am-btn-primary am-radius m-t-10">去选课</a>
+			</div>
+		</if>
+
+		<!-- 分页 -->
+		<if condition="!empty($list)">
+			<div class="am-cf" style="margin-top: 20px;">
+				<div class="am-fr">
+					{{$page_html}}
+				</div>
+			</div>
+		</if>
+	</div>
+</div>
+
+<include file="../Public/Footer" />

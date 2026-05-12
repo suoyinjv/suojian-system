@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>打卡记录</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">打卡记录</h3>
+    </div>
+    <div class="panel-body">
+        <form method="get" class="form-inline search-form">
+            <div class="form-group">
+                <select name="student_id" class="form-control">
+                    <option value="">全部学生</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="type" class="form-control">
+                    <option value="">全部类型</option>
+                    <option value="daily" {:I('type')=='daily'?'selected':''}>日常签到</option>
+                    <option value="lesson" {:I('type')=='lesson'?'selected':''}>课次打卡</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" name="start_date" class="form-control datepicker" placeholder="开始日期" value="{:I('start_date')}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="end_date" class="form-control datepicker" placeholder="结束日期" value="{:I('end_date')}">
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+            <a href="{:U('add')}" class="btn btn-success">添加记录</a>
+            <a href="{:U('statistics')}" class="btn btn-info">打卡统计</a>
+            <a href="{:U('calendar')}" class="btn btn-warning">打卡日历</a>
+        </form>
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学生</th>
+                    <th>手机号</th>
+                    <th>打卡类型</th>
+                    <th>打卡日期</th>
+                    <th>打卡时间</th>
+                    <th>打卡位置</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="item">
+                <tr>
+                    <td>{$item.id}</td>
+                    <td>{$item.student_name}</td>
+                    <td>{$item.student_phone}</td>
+                    <td>
+                        <if condition="$item.type eq 'daily'">
+                            <span class="label label-primary">日常签到</span>
+                        <elseif condition="$item.type eq 'lesson'"/>
+                            <span class="label label-success">课次打卡</span>
+                        </if>
+                    </td>
+                    <td>{$item.record_date}</td>
+                    <td>{$item.checkin_time}</td>
+                    <td>{$item.location}</td>
+                    <td>
+                        <a href="{:U('delete?id='.$item['id'])}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除?')">删除</a>
+                    </td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+        
+        {$page}
+    </div>
+</div>
+</body>
+</html>

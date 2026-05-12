@@ -1,0 +1,86 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Checkin/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="活动名称" name="name" <present name="param['name']"> value="{{$param.name}}"</present> />
+				<select name="type" class="am-radius c-p m-l-5">
+					<option value="">全部类型</option>
+					<option value="1" <if condition="isset($param['type']) and $param['type'] eq 1">selected</if>>日常打卡</option>
+					<option value="2" <if condition="isset($param['type']) and $param['type'] eq 2">selected</if>>闯关模式</option>
+				</select>
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>未开始</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>进行中</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已结束</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">搜索</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Checkin/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增打卡活动</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<div class="am-g m-t-15">
+			<if condition="!empty($list)">
+				<foreach name="list" item="v">
+					<div class="am-u-sm-6 am-u-lg-4 m-b-10">
+						<div class="am-panel am-panel-primary am-radius">
+							<div class="am-panel-hd am-text-truncate">{{$v.name}}</div>
+							<div class="am-panel-bd">
+								<img src="{{$v.cover_image}}" class="am-img-responsive am-center m-b-10" style="height: 120px; object-fit: cover;" />
+								<p class="am-text-sm">
+									<span class="am-badge am-badge-secondary">
+										<i class="am-icon-{{$v.type_icon}}"></i> {{$v.type_name}}
+									</span>
+								</p>
+								<p class="am-text-sm">时间：{{$v.start_date}} ~ {{$v.end_date}}</p>
+								<p class="am-text-sm">参与：{{$v.join_count}}人 | 完成率：{{$v.completion_rate}}%</p>
+								<p class="am-text-sm">
+									<if condition="$v['status'] eq 0"><span class="am-badge">未开始</span>
+									<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-primary">进行中</span>
+									<else /><span class="am-badge am-badge-default">已结束</span>
+									</if>
+								</p>
+								<div class="am-cf m-t-10">
+									<div class="am-fl">
+										<a href="{{:U('Admin/Checkin/Stages', array('id'=>$v['id']))}}" class="am-btn am-btn-xs am-btn-primary am-radius am-icon-sitemap"> 闯关</a>
+										<a href="{{:U('Admin/Checkin/Tasks', array('id'=>$v['id']))}}" class="am-btn am-btn-xs am-btn-secondary am-radius am-icon-tasks"> 任务</a>
+									</div>
+									<div class="am-fr">
+										<a href="{{:U('Admin/Checkin/SaveInfo', array('id'=>$v['id']))}}" class="am-btn am-btn-xs am-btn-default am-radius am-icon-edit"></a>
+										<a href="{{:U('Admin/Checkin/Detail', array('id'=>$v['id']))}}" class="am-btn am-btn-xs am-btn-default am-radius am-icon-eye"></a>
+										<button class="am-btn am-btn-xs am-btn-default am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Checkin/Delete')}}" data-id="{{$v.id}}"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</foreach>
+			<else />
+				<div class="am-u-sm-12 am-text-center">{{:L('common_not_data_tips')}}</div>
+			</if>
+		</div>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			<div class="am-cf">{{$page_html}}</div>
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

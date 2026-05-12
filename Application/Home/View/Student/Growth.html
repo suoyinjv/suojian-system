@@ -1,0 +1,151 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-heart"></i> 成长档案</h1>
+			<p class="welcome-text">记录您的每一次成长与进步</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 筛选条件 -->
+		<div class="form-card">
+			<form class="am-form am-form-horizontal" action="{{:U('Home/Student/Growth')}}" method="get">
+				<div class="am-form-group">
+					<div class="am-u-md-3">
+						<select name="type" class="am-radius">
+							<option value="">全部类型</option>
+							<option value="1" <if condition="I('type') eq '1'">selected</if>>课堂表现</option>
+							<option value="2" <if condition="I('type') eq '2'">selected</if>>比赛获奖</option>
+							<option value="3" <if condition="I('type') eq '3'">selected</if>>活动参与</option>
+							<option value="4" <if condition="I('type') eq '4'">selected</if>>日常记录</option>
+						</select>
+					</div>
+					<div class="am-u-md-3">
+						<input type="text" name="time_start" class="am-radius datepicker" placeholder="开始日期" value="{{:I('time_start')}}" />
+					</div>
+					<div class="am-u-md-3">
+						<input type="text" name="time_end" class="am-radius datepicker" placeholder="结束日期" value="{{:I('time_end')}}" />
+					</div>
+					<div class="am-u-md-3">
+						<button type="submit" class="am-btn am-btn-primary am-radius">筛选</button>
+						<a href="{{:U('Home/Student/Growth')}}" class="am-btn am-btn-default am-radius m-l-10">重置</a>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- 成长记录列表 -->
+		<if condition="!empty($list)">
+			<foreach name="list" item="record">
+				<div class="growth-item" onclick="showGrowthDetail({{$record.id}})">
+					<div class="am-cf">
+						<div class="am-fl">
+							<div class="growth-title">{{$record.title}}</div>
+							<div class="growth-meta">
+								<span><i class="am-icon-calendar"></i> {{$record.add_time}}</span>
+								<span class="m-l-15"><i class="am-icon-user"></i> {{$record.teacher_name}}</span>
+							</div>
+							<div class="m-t-5">
+								<if condition="$record['type'] eq 1">
+									<span class="status-badge" style="background: #667eea; color: #fff;">课堂表现</span>
+								<elseif condition="$record['type'] eq 2" />
+									<span class="status-badge" style="background: #28a745; color: #fff;">比赛获奖</span>
+								<elseif condition="$record['type'] eq 3" />
+									<span class="status-badge" style="background: #ffc107; color: #333;">活动参与</span>
+								<else />
+									<span class="status-badge" style="background: #6c757d; color: #fff;">日常记录</span>
+								</if>
+							</div>
+							<if condition="!empty($record['tags'])">
+								<div class="m-t-5">
+									<foreach name="record.tags" item="tag">
+										<span class="tag-item">{{$tag}}</span>
+									</foreach>
+								</div>
+							</if>
+						</div>
+						<div class="am-fr am-vertical-align-middle">
+							<i class="am-icon-chevron-right" style="color: #ccc;"></i>
+						</div>
+					</div>
+				</div>
+			</foreach>
+		<else />
+			<div class="am-text-center" style="padding: 60px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+				<i class="am-icon-frown-o" style="font-size: 64px; color: #ddd;"></i>
+				<p style="margin-top: 20px; color: #999; font-size: 16px;">暂无成长记录</p>
+			</div>
+		</if>
+
+		<!-- 分页 -->
+		<if condition="!empty($list)">
+			<div class="am-cf" style="margin-top: 20px;">
+				<div class="am-fr">
+					{{$page_html}}
+				</div>
+			</div>
+		</if>
+	</div>
+</div>
+
+<!-- 成长记录详情弹窗 -->
+<div class="am-modal am-modal-alert" id="growth-detail-modal">
+	<div class="am-modal-dialog" style="max-width: 600px;">
+		<div class="am-modal-hd">
+			<h4 class="am-modal-title" id="detail-title">成长记录详情</h4>
+			<span data-am-modal-close class="am-close">&times;</span>
+		</div>
+		<div class="am-modal-bd" id="detail-content">
+			<!-- 动态加载 -->
+		</div>
+	</div>
+</div>
+
+<script>
+function showGrowthDetail(id) {
+	var url = '{{:U("Home/Student/GrowthDetail", array("id"=>"__ID__"))}}';
+	url = url.replace('__ID__', id);
+	
+	$.get(url, function(data) {
+		if(data.code == 1) {
+			var info = data.data;
+			$('#detail-title').text(info.title);
+			var html = '<div class="am-g">';
+			html += '<div class="am-u-md-6"><p><strong>类型：</strong>';
+			if(info.type == 1) html += '<span class="status-badge" style="background: #667eea; color: #fff;">课堂表现</span>';
+			else if(info.type == 2) html += '<span class="status-badge" style="background: #28a745; color: #fff;">比赛获奖</span>';
+			else if(info.type == 3) html += '<span class="status-badge" style="background: #ffc107; color: #333;">活动参与</span>';
+			else html += '<span class="status-badge" style="background: #6c757d; color: #fff;">日常记录</span>';
+			html += '</p></div>';
+			html += '<div class="am-u-md-6"><p><strong>教师：</strong>' + info.teacher_name + '</p></div>';
+			html += '<div class="am-u-md-12"><p><strong>发布时间：</strong>' + info.add_time + '</p></div>';
+			html += '<div class="am-u-md-12"><p><strong>内容：</strong></p><div style="padding: 10px; background: #f5f5f5; border-radius: 4px;">' + info.content + '</div></div>';
+			if(info.images && info.images.length > 0) {
+				html += '<div class="am-u-md-12"><p><strong>图片：</strong></p>';
+				for(var i = 0; i < info.images.length; i++) {
+					html += '<img src="' + info.images[i] + '" class="am-img-thumbnail m-r-5 m-b-5" style="max-width: 150px; max-height: 150px;" />';
+				}
+				html += '</div>';
+			}
+			if(info.tags) {
+				html += '<div class="am-u-md-12"><p><strong>标签：</strong>';
+				var tags = info.tags.split(',');
+				for(var i = 0; i < tags.length; i++) {
+					html += '<span class="tag-item">' + tags[i] + '</span>';
+				}
+				html += '</p></div>';
+			}
+			html += '</div>';
+			$('#detail-content').html(html);
+			$('#growth-detail-modal').modal();
+		} else {
+			alert(data.msg);
+		}
+	}, 'json');
+}
+</script>
+
+<include file="../Public/Footer" />

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>营销活动管理 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <div class="am-btn-toolbar">
+                <a href="__CONTROLLER__/add" class="am-btn am-btn-primary am-radius">
+                    <i class="am-icon-plus"></i> 添加活动
+                </a>
+                <a href="__CONTROLLER__/coupon" class="am-btn am-btn-success am-radius">
+                    <i class="am-icon-ticket"></i> 优惠券管理
+                </a>
+            </div>
+            <table class="am-table am-table-bordered am-table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>活动名称</th>
+                        <th>类型</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>优惠</th>
+                        <th>已用/总数</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.title}</td>
+                        <td>{$vo.type_text}</td>
+                        <td>{$vo.start_time}</td>
+                        <td>{$vo.end_time}</td>
+                        <td>
+                            <if condition="$vo['type'] eq 1">{$vo.min_people}人成团
+                            <elseif condition="$vo['type'] eq 2"/>{$vo.discount}折
+                            <else/>{$vo.discount}元
+                            </if>
+                        </td>
+                        <td>{$vo.used_count}/{$vo.total_count}</td>
+                        <td>{$vo.status_text}</td>
+                        <td>
+                            <a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
+                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/{$vo.id}')">删除</a>
+                        </td>
+                    </tr>
+                    </volist>
+                </tbody>
+            </table>
+            <div class="am-pagination">
+                {$page}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function deleteConfirm(url) {
+    if(confirm('确定要删除吗？')) {
+        location.href = url;
+    }
+}
+</script>
+</body>
+</html>

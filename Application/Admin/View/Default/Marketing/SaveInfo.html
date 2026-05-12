@@ -1,0 +1,99 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Marketing/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Marketing/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						新增活动
+					<else />
+						编辑活动
+					</if>
+				</span>
+				<a href="{{:U('Admin/Marketing/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>活动名称</label>
+				<input type="text" name="name" placeholder="活动名称" class="am-radius" <notempty name="data"> value="{{$data.name}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>活动类型</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="1" <if condition="!isset($data['type']) or $data['type'] eq 1">checked="checked"</if> data-am-ucheck /> 公开课
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="2" <if condition="isset($data['type']) and $data['type'] eq 2">checked="checked"</if> data-am-ucheck /> 体验课
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="3" <if condition="isset($data['type']) and $data['type'] eq 3">checked="checked"</if> data-am-ucheck /> 优惠活动
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="4" <if condition="isset($data['type']) and $data['type'] eq 4">checked="checked"</if> data-am-ucheck /> 招生活动
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<label>时间范围</label>
+				<div class="am-g">
+					<div class="am-u-sm-5">
+						<input type="text" name="start_time" class="am-radius" placeholder="开始时间" <notempty name="data"> value="{{$data.start_time}}"</notempty> data-am-datepicker="{format: 'yyyy-mm-dd hh:ii:ss', viewMode: 'days'}" readonly required />
+					</div>
+					<div class="am-u-sm-1 am-text-center">~</div>
+					<div class="am-u-sm-5">
+						<input type="text" name="end_time" class="am-radius" placeholder="结束时间" <notempty name="data"> value="{{$data.end_time}}"</notempty> data-am-datepicker="{format: 'yyyy-mm-dd hh:ii:ss', viewMode: 'days'}" readonly required />
+					</div>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<label>活动规则</label>
+				<textarea name="rules" id="editor" class="am-radius"><notempty name="data">{{$data.rules}}</notempty></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<label>状态</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="0" <if condition="!isset($data['status']) or $data['status'] eq 0">checked="checked"</if> data-am-ucheck /> 未开始
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="1" <if condition="isset($data['status']) and $data['status'] eq 1">checked="checked"</if> data-am-ucheck /> 进行中
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="2" <if condition="isset($data['status']) and $data['status'] eq 2">checked="checked"</if> data-am-ucheck /> 已结束
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 富文本编辑器
+	if(typeof UE != 'undefined'){
+		var ue = UE.getEditor('editor', {
+			initialFrameWidth: '100%',
+			initialFrameHeight: 300
+		});
+	}
+});
+</script>

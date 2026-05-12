@@ -1,0 +1,141 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">打卡数据看板</span>
+			<a href="{{:U('Admin/Checkin/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 顶部统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$total_participants}}</p>
+						<p class="am-text-default">总参与人数</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$participation_rate}}%</p>
+						<p class="am-text-default">参与率</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$completion_rate}}%</p>
+						<p class="am-text-default">完成率</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$total_checkins}}</p>
+						<p class="am-text-default">总打卡次数</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 各活动参与情况 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">各活动参与情况</div>
+			<div class="am-panel-bd">
+				<div id="activityChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 连续打卡排行榜 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">连续打卡排行榜 TOP10</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>排名</th>
+							<th>头像</th>
+							<th>学员姓名</th>
+							<th>连续天数</th>
+							<th>累计积分</th>
+							<th>当前关卡</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($ranking_list)">
+							<foreach name="ranking_list" key="k" item="v">
+								<tr>
+									<td>
+										<if condition="$k eq 0"><span class="am-badge am-badge-warning">🥇</span>
+										<elseif condition="$k eq 1" /><span class="am-badge am-badge-secondary">🥈</span>
+										<elseif condition="$k eq 2" /><span class="am-badge am-badge-primary">🥉</span>
+										<else />{{$k+1}}
+										</if>
+									</td>
+									<td><img src="{{$v.avatar}}" class="am-radius" style="width: 40px; height: 40px; object-fit: cover;" /></td>
+									<td>{{$v.student_name}}</td>
+									<td><span class="am-text-warning">{{$v.consecutive_days}}</span> 天</td>
+									<td>{{$v.total_points}} 积分</td>
+									<td>{{$v.current_stage}}</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="6" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 各活动参与情况柱状图
+	var activityChart = echarts.init(document.getElementById('activityChart'));
+	activityChart.setOption({
+		tooltip: {
+			trigger: 'axis'
+		},
+		legend: {
+			data: ['参与人数', '完成人数']
+		},
+		grid: {
+			left: '3%',
+			right: '4%',
+			bottom: '3%',
+			containLabel: true
+		},
+		xAxis: {
+			type: 'category',
+			data: {{$activity_names}}
+		},
+		yAxis: {
+			type: 'value'
+		},
+		series: [
+			{
+				name: '参与人数',
+				type: 'bar',
+				data: {{$activity_participants}}
+			},
+			{
+				name: '完成人数',
+				type: 'bar',
+				data: {{$activity_completions}}
+			}
+		]
+	});
+});
+</script>

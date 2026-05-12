@@ -1,0 +1,129 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<!-- 页面标题 -->
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-clock-o"></i> 考勤记录</h1>
+			<p class="welcome-text">查看您的签到考勤历史</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 考勤统计 -->
+		<div class="am-g">
+			<div class="am-u-md-3 am-u-sm-6">
+				<div class="stat-card">
+					<div class="stat-icon" style="color: #28a745;"><i class="am-icon-check-circle"></i></div>
+					<div class="stat-value">{{$stats.normal|default=0}}</div>
+					<div class="stat-label">正常</div>
+				</div>
+			</div>
+			<div class="am-u-md-3 am-u-sm-6">
+				<div class="stat-card">
+					<div class="stat-icon" style="color: #ffc107;"><i class="am-icon-exclamation-circle"></i></div>
+					<div class="stat-value">{{$stats.late|default=0}}</div>
+					<div class="stat-label">迟到</div>
+				</div>
+			</div>
+			<div class="am-u-md-3 am-u-sm-6">
+				<div class="stat-card">
+					<div class="stat-icon" style="color: #dc3545;"><i class="am-icon-times-circle"></i></div>
+					<div class="stat-value">{{$stats.absent|default=0}}</div>
+					<div class="stat-label">缺勤</div>
+				</div>
+			</div>
+			<div class="am-u-md-3 am-u-sm-6">
+				<div class="stat-card">
+					<div class="stat-icon" style="color: #17a2b8;"><i class="am-icon-calendar-check-o"></i></div>
+					<div class="stat-value">{{$stats.total|default=0}}</div>
+					<div class="stat-label">总记录</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 筛选条件 -->
+		<div class="form-card">
+			<form class="am-form am-form-horizontal" action="{{:U('Home/Student/Attendance')}}" method="get">
+				<div class="am-form-group">
+					<div class="am-u-md-3">
+						<input type="text" name="start_date" class="am-radius datepicker" placeholder="开始日期" value="{{:I('start_date')}}" />
+					</div>
+					<div class="am-u-md-3">
+						<input type="text" name="end_date" class="am-radius datepicker" placeholder="结束日期" value="{{:I('end_date')}}" />
+					</div>
+					<div class="am-u-md-3">
+						<select name="status" class="am-radius">
+							<option value="">全部状态</option>
+							<option value="normal" <if condition="I('status') eq 'normal'">selected</if>>正常</option>
+							<option value="late" <if condition="I('status') eq 'late'">selected</if>>迟到</option>
+							<option value="absent" <if condition="I('status') eq 'absent'">selected</if>>缺勤</option>
+						</select>
+					</div>
+					<div class="am-u-md-3">
+						<button type="submit" class="am-btn am-btn-primary am-radius">筛选</button>
+						<a href="{{:U('Home/Student/Attendance')}}" class="am-btn am-btn-default am-radius m-l-10">重置</a>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- 考勤记录表格 -->
+		<div class="table-container">
+			<table class="am-table am-table-striped am-table-hover">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>日期</th>
+						<th>课程</th>
+						<th>签到时间</th>
+						<th>签退时间</th>
+						<th>状态</th>
+						<th>备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					<if condition="!empty($list)">
+						<foreach name="list" item="record" key="key">
+							<tr>
+								<td>{{$key+1}}</td>
+								<td>{{$record.checkin_date}}</td>
+								<td>{{$record.course_name}}</td>
+								<td>{{$record.checkin_time|default='--'}}</td>
+								<td>{{$record.checkout_time|default='--'}}</td>
+								<td>
+									<if condition="$record['status'] eq 'normal'">
+										<span class="status-badge status-normal">正常</span>
+									<elseif condition="$record['status'] eq 'late'" />
+										<span class="status-badge status-late">迟到</span>
+									<else />
+										<span class="status-badge status-absent">缺勤</span>
+									</if>
+								</td>
+								<td>{{$record.remark|default='--'}}</td>
+							</tr>
+						</foreach>
+					<else />
+						<tr>
+							<td colspan="7" class="am-text-center" style="padding: 40px; color: #999;">
+								<i class="am-icon-frown-o" style="font-size: 32px;"></i>
+								<p style="margin-top: 10px;">暂无考勤记录</p>
+							</td>
+						</tr>
+					</if>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- 分页 -->
+		<if condition="!empty($list)">
+			<div class="am-cf" style="margin-top: 20px;">
+				<div class="am-fr">
+					{{$page_html}}
+				</div>
+			</div>
+		</if>
+	</div>
+</div>
+
+<include file="../Public/Footer" />

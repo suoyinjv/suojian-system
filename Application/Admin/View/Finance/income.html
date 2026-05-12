@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>收入报表 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .summary-box { 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-number { font-size: 28px; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-12">
+        <div class="summary-box">
+            <div class="summary-number">¥{$total_income}</div>
+            <div>本月总收入</div>
+        </div>
+        
+        <form class="am-form am-form-horizontal" method="get">
+            <div class="am-form-group">
+                <div class="am-u-sm-3">
+                    <input type="text" name="start_time" placeholder="开始日期" onfocus="WdatePicker()">
+                </div>
+                <div class="am-u-sm-3">
+                    <input type="text" name="end_time" placeholder="结束日期" onfocus="WdatePicker()">
+                </div>
+                <div class="am-u-sm-2">
+                    <button type="submit" class="am-btn am-btn-default">查询</button>
+                </div>
+            </div>
+        </form>
+        
+        <table class="am-table am-table-bordered am-table-striped">
+            <thead>
+                <tr>
+                    <th>订单号</th>
+                    <th>学员</th>
+                    <th>课程</th>
+                    <th>金额</th>
+                    <th>支付方式</th>
+                    <th>状态</th>
+                    <th>时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="vo">
+                <tr>
+                    <td>{$vo.order_no}</td>
+                    <td>{$vo.student_name}</td>
+                    <td>{$vo.course_name}</td>
+                    <td>¥{$vo.money}</td>
+                    <td>{$vo.pay_type_text}</td>
+                    <td>
+                        <if condition="$vo['status'] eq 1">
+                        <span class="am-badge am-badge-success">已支付</span>
+                        <elseif condition="$vo['status'] eq 2"/>
+                        <span class="am-badge am-badge-warning">部分支付</span>
+                        <else/>
+                        <span class="am-badge">未支付</span>
+                        </if>
+                    </td>
+                    <td>{:date('Y-m-d H:i', $vo['add_time'])}</td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+        <div class="am-pagination">
+            {$page}
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>
