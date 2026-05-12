@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>营销活动数据报表 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
-    <script src="__PUBLIC__/echarts.min.js"></script>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
+    <script src="/Public/echarts.min.js"></script>
     <style>
         .stat-card { padding: 20px; margin-bottom: 20px; border-radius: 8px; text-align: center; }
         .stat-card.blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
@@ -23,25 +23,25 @@
         <div class="am-g" style="margin-bottom: 20px;">
             <div class="am-u-sm-3">
                 <div class="stat-card blue">
-                    <div class="stat-number">{$total_activity|default=0}</div>
+                    <div class="stat-number"><?php echo $total_activity ?? '0'; ?></div>
                     <div class="stat-label">活动总数</div>
                 </div>
             </div>
             <div class="am-u-sm-3">
                 <div class="stat-card green">
-                    <div class="stat-number">{$total_join|default=0}</div>
+                    <div class="stat-number"><?php echo $total_join ?? '0'; ?></div>
                     <div class="stat-label">参与人次</div>
                 </div>
             </div>
             <div class="am-u-sm-3">
                 <div class="stat-card orange">
-                    <div class="stat-number">{$total_convert|default=0}</div>
+                    <div class="stat-number"><?php echo $total_convert ?? '0'; ?></div>
                     <div class="stat-label">成功转化</div>
                 </div>
             </div>
             <div class="am-u-sm-3">
                 <div class="stat-card blue">
-                    <div class="stat-number">{$conversion_rate|default=0}%</div>
+                    <div class="stat-number"><?php echo $conversion_rate ?? '0'; ?>%</div>
                     <div class="stat-label">平均转化率</div>
                 </div>
             </div>
@@ -74,28 +74,28 @@
                         <tr><th>活动名称</th><th>类型</th><th>时间</th><th>状态</th><th>参与</th><th>转化</th><th>转化率</th></tr>
                     </thead>
                     <tbody>
-                        <volist name="list" id="vo">
+                        <?php foreach($$list as $$vo): ?>
                         <tr>
-                            <td>{$vo.name}</td>
-                            <td>{$vo.type_text}</td>
-                            <td>{:date('m-d', $vo['start_time'])} ~ {:date('m-d', $vo['end_time'])}</td>
-                            <td>{$vo.status_text}</td>
+                            <td><?php echo $vo['name']; ?></td>
+                            <td><?php echo $vo['type_text']; ?></td>
+                            <td><?php echo date('m-d', $vo['start_time']); ?> ~ <?php echo date('m-d', $vo['end_time']); ?></td>
+                            <td><?php echo $vo['status_text']; ?></td>
                             <td>{$vo.join_count|default=0}</td>
                             <td>{$vo.convert_count|default=0}</td>
                             <td>{$vo.rate|default='0%'}</td>
                         </tr>
-                        </volist>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
-                <div class="am-pagination">{$page}</div>
+                <div class="am-pagination"><?php echo $page; ?></div>
             </div>
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
-var typeData = {$type_data|default='[]'};
-var trendData = {$trend_data|default='[]'};
+var typeData = <?php echo $type_data ?? '[]'; ?>;
+var trendData = <?php echo $trend_data ?? '[]'; ?>;
 
 if(typeData.length) {
     var typeChart = echarts.init(document.getElementById('typeChart'));

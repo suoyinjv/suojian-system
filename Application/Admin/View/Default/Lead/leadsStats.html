@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>线索统计</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/font-awesome-4.4.0/css/font-awesome.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -19,18 +19,18 @@
                     <div class="am-panel-bd">
                         <form class="am-form am-form-inline" id="statsForm">
                             <div class="am-form-group">
-                                <input type="date" name="start_date" class="am-form-field" value="{:date('Y-m-01')}">
+                                <input type="date" name="start_date" class="am-form-field" value="<?php echo date('Y-m-01'); ?>">
                             </div>
                             <div class="am-form-group">-</div>
                             <div class="am-form-group">
-                                <input type="date" name="end_date" class="am-form-field" value="{:date('Y-m-d')}">
+                                <input type="date" name="end_date" class="am-form-field" value="<?php echo date('Y-m-d'); ?>">
                             </div>
                             <div class="am-form-group">
                                 <select name="assigned_to" class="am-form-field">
                                     <option value="">全部顾问</option>
-                                    <volist name="admins" id="vo">
-                                    <option value="{$vo.id}">{$vo.name}</option>
-                                    </volist>
+                                    <?php foreach($$admins as $$vo): ?>
+                                    <option value="<?php echo $vo['id']; ?>"><?php echo $vo['name']; ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <button type="button" class="am-btn am-btn-primary" onclick="loadStats()">
@@ -144,7 +144,7 @@
                 </div>
                 
                 <div class="am-text-center am-margin-top">
-                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default">
                         <i class="am-icon-arrow-left"></i> 返回列表
                     </a>
                 </div>
@@ -152,8 +152,8 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
     loadStats();

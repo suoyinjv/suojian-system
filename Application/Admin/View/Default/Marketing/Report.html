@@ -5,7 +5,7 @@
 	<div class="content">
 		<legend>
 			<span class="fs-16">招生数据看板</span>
-			<a href="{{:U('Admin/Marketing/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			<a href="{<?php echo U('Admin/Marketing/Index'); ?>}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {<?php echo L('common_operation_back'); ?>}</a>
 		</legend>
 
 		<!-- 顶部统计卡片 -->
@@ -13,7 +13,7 @@
 			<div class="am-u-sm-3">
 				<div class="am-panel am-panel-primary am-radius">
 					<div class="am-panel-bd am-text-center">
-						<p class="am-text-xxl">{{$today_leads}}</p>
+						<p class="am-text-xxl">{<?php echo $today_leads; ?>}</p>
 						<p class="am-text-default">今日线索</p>
 					</div>
 				</div>
@@ -21,7 +21,7 @@
 			<div class="am-u-sm-3">
 				<div class="am-panel am-panel-success am-radius">
 					<div class="am-panel-bd am-text-center">
-						<p class="am-text-xxl">{{$week_leads}}</p>
+						<p class="am-text-xxl">{<?php echo $week_leads; ?>}</p>
 						<p class="am-text-default">本周线索</p>
 					</div>
 				</div>
@@ -29,7 +29,7 @@
 			<div class="am-u-sm-3">
 				<div class="am-panel am-panel-warning am-radius">
 					<div class="am-panel-bd am-text-center">
-						<p class="am-text-xxl">{{$pending_leads}}</p>
+						<p class="am-text-xxl">{<?php echo $pending_leads; ?>}</p>
 						<p class="am-text-default">待跟进</p>
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 			<div class="am-u-sm-3">
 				<div class="am-panel am-panel-secondary am-radius">
 					<div class="am-panel-bd am-text-center">
-						<p class="am-text-xxl">{{$month_conversion}}%</p>
+						<p class="am-text-xxl">{<?php echo $month_conversion; ?>}%</p>
 						<p class="am-text-default">本月转化</p>
 					</div>
 				</div>
@@ -75,25 +75,25 @@
 						</tr>
 					</thead>
 					<tbody>
-						<if condition="!empty($advisor_list)">
+						<?php if(!empty($advisor_list)): ?>
 							<foreach name="advisor_list" key="k" item="v">
 								<tr>
 									<td>
-										<if condition="$k eq 0"><span class="am-badge am-badge-warning">1</span>
-										<elseif condition="$k eq 1" /><span class="am-badge am-badge-secondary">2</span>
-										<elseif condition="$k eq 2" /><span class="am-badge am-badge-primary">3</span>
-										<else />{{$k+1}}
-										</if>
+										<?php if($k == 0): ?><span class="am-badge am-badge-warning">1</span>
+										<?php elseif($k == 1): ?><span class="am-badge am-badge-secondary">2</span>
+										<?php elseif($k == 2): ?><span class="am-badge am-badge-primary">3</span>
+										<?php else: ?>{{$k+1}}
+										<?php endif; ?>
 									</td>
-									<td>{{$v.name}}</td>
-									<td>{{$v.assigned_count}}</td>
-									<td>{{$v.success_count}}</td>
-									<td>{{$v.conversion_rate}}%</td>
+									<td>{<?php echo $v['name']; ?>}</td>
+									<td>{<?php echo $v['assigned_count']; ?>}</td>
+									<td>{<?php echo $v['success_count']; ?>}</td>
+									<td>{<?php echo $v['conversion_rate']; ?>}%</td>
 								</tr>
 							</foreach>
-						<else />
-							<tr><td colspan="5" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
-						</if>
+						<?php else: ?>
+							<tr><td colspan="5" class="am-text-center">{<?php echo L('common_not_data_tips'); ?>}</td></tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 			</div>
@@ -123,7 +123,7 @@ $(function(){
 			bottom: 20,
 			width: '80%',
 			min: 0,
-			max: {{$total_leads}},
+			max: {<?php echo $total_leads; ?>},
 			minSize: '0%',
 			maxSize: '100%',
 			sort: 'descending',
@@ -145,10 +145,10 @@ $(function(){
 				}
 			},
 			data: [
-				{value: {{$funnel_new}}, name: '新生源'},
-				{value: {{$funnel_intent}}, name: '有意向'},
-				{value: {{$funnel_consult}}, name: '咨询中'},
-				{value: {{$funnel_signup}}, name: '已报名'}
+				{value: {<?php echo $funnel_new; ?>}, name: '新生源'},
+				{value: {<?php echo $funnel_intent; ?>}, name: '有意向'},
+				{value: {<?php echo $funnel_consult; ?>}, name: '咨询中'},
+				{value: {<?php echo $funnel_signup; ?>}, name: '已报名'}
 			]
 		}]
 	});
@@ -171,7 +171,7 @@ $(function(){
 		xAxis: {
 			type: 'category',
 			boundaryGap: false,
-			data: {{$trend_date}}
+			data: {<?php echo $trend_date; ?>}
 		},
 		yAxis: {
 			type: 'value'
@@ -181,13 +181,13 @@ $(function(){
 				name: '新增线索',
 				type: 'line',
 				smooth: true,
-				data: {{$trend_leads}}
+				data: {<?php echo $trend_leads; ?>}
 			},
 			{
 				name: '成功报名',
 				type: 'line',
 				smooth: true,
-				data: {{$trend_signup}}
+				data: {<?php echo $trend_signup; ?>}
 			}
 		]
 	});

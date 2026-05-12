@@ -4,30 +4,30 @@
 <div class="content-right">
 	<div class="content">
 		<!-- form start -->
-		<form class="am-form view-list" action="{{:U('Admin/Marketing/Index')}}" method="POST">
+		<form class="am-form view-list" action="{<?php echo U('Admin/Marketing/Index'); ?>}" method="POST">
 			<div class="am-g">
-				<input type="text" class="am-radius form-keyword" placeholder="活动名称" name="name" <present name="param['name']"> value="{{$param.name}}"</present> />
+				<input type="text" class="am-radius form-keyword" placeholder="活动名称" name="name" <present name="param['name']"> value="{<?php echo $param['name']; ?>}"<?php endif; ?> />
 				<select name="type" class="am-radius c-p m-l-5">
 					<option value="">全部类型</option>
-					<option value="1" <if condition="isset($param['type']) and $param['type'] eq 1">selected</if>>公开课</option>
-					<option value="2" <if condition="isset($param['type']) and $param['type'] eq 2">selected</if>>体验课</option>
-					<option value="3" <if condition="isset($param['type']) and $param['type'] eq 3">selected</if>>优惠活动</option>
-					<option value="4" <if condition="isset($param['type']) and $param['type'] eq 4">selected</if>>招生活动</option>
+					<option value="1" <?php if(isset($param['type']) and $param['type'] == 1): ?>selected<?php endif; ?>>公开课</option>
+					<option value="2" <?php if(isset($param['type']) and $param['type'] == 2): ?>selected<?php endif; ?>>体验课</option>
+					<option value="3" <?php if(isset($param['type']) and $param['type'] == 3): ?>selected<?php endif; ?>>优惠活动</option>
+					<option value="4" <?php if(isset($param['type']) and $param['type'] == 4): ?>selected<?php endif; ?>>招生活动</option>
 				</select>
 				<select name="status" class="am-radius c-p m-l-5">
 					<option value="-1">全部状态</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>未开始</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>进行中</option>
-					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已结束</option>
+					<option value="0" <?php if(isset($param['status']) and $param['status'] == 0): ?>selected<?php endif; ?>>未开始</option>
+					<option value="1" <?php if(isset($param['status']) and $param['status'] == 1): ?>selected<?php endif; ?>>进行中</option>
+					<option value="2" <?php if(isset($param['status']) and $param['status'] == 2): ?>selected<?php endif; ?>>已结束</option>
 				</select>
-				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{<?php echo L('common_operation_query'); ?>}</button>
 			</div>
 		</form>
 		<!-- form end -->
 
 		<!-- operation start -->
 		<div class="am-g m-t-15">
-			<a href="{{:U('Admin/Marketing/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增活动</a>
+			<a href="{<?php echo U('Admin/Marketing/SaveInfo'); ?>}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增活动</a>
 		</div>
 		<!-- operation end -->
 
@@ -43,54 +43,54 @@
 					<th>浏览量</th>
 					<th>报名数</th>
 					<th>转化率</th>
-					<th>{{:L('common_operation_name')}}</th>
+					<th>{<?php echo L('common_operation_name'); ?>}</th>
 				</tr>
 			</thead>
 			<tbody>
-				<if condition="!empty($list)">
+				<?php if(!empty($list)): ?>
 					<foreach name="list" item="v">
-						<tr id="data-list-{{$v.id}}">
-							<td>{{$v.id}}</td>
-							<td>{{$v.name}}</td>
+						<tr id="data-list-{<?php echo $v['id']; ?>}">
+							<td>{<?php echo $v['id']; ?>}</td>
+							<td>{<?php echo $v['name']; ?>}</td>
 							<td>
-								<if condition="$v['type'] eq 1"><span class="am-badge am-badge-primary">公开课</span>
-								<elseif condition="$v['type'] eq 2" /><span class="am-badge am-badge-success">体验课</span>
-								<elseif condition="$v['type'] eq 3" /><span class="am-badge am-badge-warning">优惠活动</span>
-								<else /><span class="am-badge am-badge-secondary">招生活动</span>
-								</if>
+								<?php if($v['type'] == 1): ?><span class="am-badge am-badge-primary">公开课</span>
+								<?php elseif($v['type'] == 2): ?><span class="am-badge am-badge-success">体验课</span>
+								<?php elseif($v['type'] == 3): ?><span class="am-badge am-badge-warning">优惠活动</span>
+								<?php else: ?><span class="am-badge am-badge-secondary">招生活动</span>
+								<?php endif; ?>
 							</td>
-							<td>{{$v.start_time}} ~ {{$v.end_time}}</td>
+							<td>{<?php echo $v['start_time']; ?>} ~ {<?php echo $v['end_time']; ?>}</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge">未开始</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-primary">进行中</span>
-								<else /><span class="am-badge am-badge-default">已结束</span>
-								</if>
+								<?php if($v['status'] == 0): ?><span class="am-badge">未开始</span>
+								<?php elseif($v['status'] == 1): ?><span class="am-badge am-badge-primary">进行中</span>
+								<?php else: ?><span class="am-badge am-badge-default">已结束</span>
+								<?php endif; ?>
 							</td>
-							<td>{{$v.view_count}}</td>
-							<td>{{$v.signup_count}}</td>
-							<td>{{$v.conversion_rate}}%</td>
+							<td>{<?php echo $v['view_count']; ?>}</td>
+							<td>{<?php echo $v['signup_count']; ?>}</td>
+							<td>{<?php echo $v['conversion_rate']; ?>}%</td>
 							<td class="view-operation">
-								<a href="{{:U('Admin/Marketing/Detail', array('id'=>$v['id']))}}">
+								<a href="{<?php echo U('Admin/Marketing/Detail', array('id'=>$v['id'])); ?>}">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
 								</a>
-								<a href="{{:U('Admin/Marketing/SaveInfo', array('id'=>$v['id']))}}">
-									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								<a href="{<?php echo U('Admin/Marketing/SaveInfo', array('id'=>$v['id'])); ?>}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{<?php echo L('common_operation_edit'); ?>}', trigger: 'hover focus'}"></button>
 								</a>
-								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Marketing/Delete')}}" data-id="{{$v.id}}"></button>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{<?php echo U('Admin/Marketing/Delete'); ?>}" data-id="{<?php echo $v['id']; ?>}"></button>
 							</td>
 						</tr>
 					</foreach>
-				<else />
-					<tr><td colspan="9" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
-				</if>
+				<?php else: ?>
+					<tr><td colspan="9" class="table-no">{<?php echo L('common_not_data_tips'); ?>}</td></tr>
+				<?php endif; ?>
 			</tbody>
 		</table>
 		<!-- list end -->
 
 		<!-- page start -->
-		<if condition="!empty($list)">
-			{{$page_html}}
-		</if>
+		<?php if(!empty($list)): ?>
+			{<?php echo $page_html; ?>}
+		<?php endif; ?>
 		<!-- page end -->
 	</div>
 </div>

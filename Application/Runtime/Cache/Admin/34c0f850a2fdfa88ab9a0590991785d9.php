@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -10,13 +10,13 @@
     <div class="admin-content">
         <div class="am-u-sm-12">
             <div class="am-btn-toolbar">
-                <a href="__CONTROLLER__/add" class="am-btn am-btn-primary am-radius">
+                <a href="/admin.php/Admin/Package/add" class="am-btn am-btn-primary am-radius">
                     <i class="am-icon-plus"></i> 添加套餐
                 </a>
-                <a href="__CONTROLLER__/studentPackage" class="am-btn am-btn-success am-radius">
+                <a href="/admin.php/Admin/Package/studentPackage" class="am-btn am-btn-success am-radius">
                     <i class="am-icon-users"></i> 学员课时
                 </a>
-                <a href="__CONTROLLER__/buyPackage" class="am-btn am-btn-warning am-radius">
+                <a href="/admin.php/Admin/Package/buyPackage" class="am-btn am-btn-warning am-radius">
                     <i class="am-icon-shopping-cart"></i> 购买课时
                 </a>
             </div>
@@ -46,8 +46,8 @@
                         <td><?php echo $vo['valid_days']; ?></td>
                         <td><?php echo $vo['status_text']; ?></td>
                         <td>
-                            <a href="__CONTROLLER__/edit/id/<?php echo $vo['id']; ?>">编辑</a>
-                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/<?php echo $vo['id']; ?>')">删除</a>
+                            <a href="/admin.php/Admin/Package/edit/id/<?php echo $vo['id']; ?>">编辑</a>
+                            <a href="javascript:;" onclick="deleteConfirm('/admin.php/Admin/Package/delete/id/<?php echo $vo['id']; ?>')">删除</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

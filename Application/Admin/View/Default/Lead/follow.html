@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>跟进记录</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -18,16 +18,16 @@
                     <div class="am-panel-bd">
                         <div class="am-g">
                             <div class="am-u-sm-3">
-                                <p><strong>姓名：</strong>{$info.student_name}</p>
+                                <p><strong>姓名：</strong><?php echo $info['student_name']; ?></p>
                             </div>
                             <div class="am-u-sm-3">
-                                <p><strong>电话：</strong>{$info.phone}</p>
+                                <p><strong>电话：</strong><?php echo $info['phone']; ?></p>
                             </div>
                             <div class="am-u-sm-3">
-                                <p><strong>来源：</strong>{$info.source_text}</p>
+                                <p><strong>来源：</strong><?php echo $info['source_text']; ?></p>
                             </div>
                             <div class="am-u-sm-3">
-                                <p><strong>状态：</strong>{$info.status_text}</p>
+                                <p><strong>状态：</strong><?php echo $info['status_text']; ?></p>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="am-panel-bd">
                         <form class="am-form am-form-horizontal" id="followForm">
-                            <input type="hidden" name="leads_id" value="{$info.id}">
+                            <input type="hidden" name="leads_id" value="<?php echo $info['id']; ?>">
                             
                             <div class="am-form-group">
                                 <label class="am-u-sm-2 am-text-right">跟进内容 <span class="am-text-danger">*</span></label>
@@ -98,9 +98,9 @@
                         <h3 class="am-panel-title"><i class="am-icon-history"></i> 历史跟进记录</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <notempty name="logs">
+                        <?php if(!empty($$logs)): ?>
                         <div class="am-timeline">
-                            <volist name="logs" id="log">
+                            <?php foreach($$logs as $$log): ?>
                             <div class="am-timeline-item">
                                 <div class="am-timeline-indicator">
                                     <i class="am-icon-circle-o"></i>
@@ -110,23 +110,23 @@
                                         <span class="am-badge am-badge-primary">{$log.create_time|date='Y-m-d H:i',###}</span>
                                     </div>
                                     <div class="am-timeline-body">
-                                        <p>{$log.content}</p>
+                                        <p><?php echo $log['content']; ?></p>
                                         <notempty name="log.next_time">
                                         <p class="am-text-warning">下次跟进: {$log.next_time|date='Y-m-d H:i',###}</p>
-                                        </notempty>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
-                            </volist>
+                            <?php endforeach; ?>
                         </div>
                         <else/>
                         <p class="am-text-center am-text-muted">暂无跟进记录</p>
-                        </notempty>
+                        <?php endif; ?>
                     </div>
                 </div>
                 
                 <div class="am-text-center am-margin-top">
-                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default">
                         <i class="am-icon-arrow-left"></i> 返回列表
                     </a>
                 </div>
@@ -134,12 +134,12 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $('#followForm').submit(function() {
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if(res.code) {
             location.reload();

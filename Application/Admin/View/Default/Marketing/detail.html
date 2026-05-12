@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>活动详情 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -18,22 +18,22 @@
                     <div class="am-panel-bd">
                         <div class="am-g">
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>活动名称：</strong>{$info.title}</p>
+                                <p><strong>活动名称：</strong><?php echo $info['title']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>活动类型：</strong>{$info.type_text}</p>
+                                <p><strong>活动类型：</strong><?php echo $info['type_text']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>状态：</strong>{$info.status_text}</p>
+                                <p><strong>状态：</strong><?php echo $info['status_text']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>开始时间：</strong>{$info.start_time}</p>
+                                <p><strong>开始时间：</strong><?php echo $info['start_time']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>结束时间：</strong>{$info.end_time}</p>
+                                <p><strong>结束时间：</strong><?php echo $info['end_time']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
-                                <p><strong>参与人数：</strong>{$info.used_count}/{$info.total_count}</p>
+                                <p><strong>参与人数：</strong><?php echo $info['used_count']; ?>/<?php echo $info['total_count']; ?></p>
                             </div>
                             <div class="am-u-sm-6 am-u-md-4">
                                 <p><strong>关联课程：</strong><?php echo $info['course_id'] ? $course_name : '无'; ?></p>
@@ -43,7 +43,7 @@
                             </div>
                             <div class="am-u-sm-12">
                                 <p><strong>活动描述：</strong></p>
-                                <p>{$info.description}</p>
+                                <p><?php echo $info['description']; ?></p>
                             </div>
                         </div>
                     </div>
@@ -51,13 +51,13 @@
                 
                 <!-- 操作按钮 -->
                 <div class="am-btn-toolbar am-margin-bottom">
-                    <a href="{:U('edit', array('id'=>$info['id']))}" class="am-btn am-btn-primary am-radius">
+                    <a href="<?php echo U('edit', array('id'=>$info['id'])); ?>" class="am-btn am-btn-primary am-radius">
                         <i class="am-icon-edit"></i> 编辑
                     </a>
-                    <a href="{:U('records', array('activity_id'=>$info['id']))}" class="am-btn am-btn-secondary am-radius">
+                    <a href="<?php echo U('records', array('activity_id'=>$info['id'])); ?>" class="am-btn am-btn-secondary am-radius">
                         <i class="am-icon-list"></i> 报名记录
                     </a>
-                    <a href="{:U('index')}" class="am-btn am-btn-default am-radius">
+                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default am-radius">
                         <i class="am-icon-arrow-left"></i> 返回列表
                     </a>
                 </div>
@@ -78,23 +78,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <volist name="member_list" id="vo">
+                                <?php foreach($$member_list as $$vo): ?>
                                 <tr>
-                                    <td>{$vo.user_name}</td>
-                                    <td>{$vo.mobile}</td>
-                                    <td>{$vo.create_time}</td>
-                                    <td>{$vo.status_text}</td>
+                                    <td><?php echo $vo['user_name']; ?></td>
+                                    <td><?php echo $vo['mobile']; ?></td>
+                                    <td><?php echo $vo['create_time']; ?></td>
+                                    <td><?php echo $vo['status_text']; ?></td>
                                 </tr>
-                                </volist>
-                                <if condition="empty($member_list)">
+                                <?php endforeach; ?>
+                                <?php if(empty($member_list)): ?>
                                 <tr>
                                     <td colspan="4" class="am-text-center">暂无报名记录</td>
                                 </tr>
-                                </if>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         <div class="am-pagination">
-                            {$page}
+                            <?php echo $page; ?>
                         </div>
                     </div>
                 </div>
@@ -102,6 +102,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

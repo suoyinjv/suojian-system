@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <title>优惠券发放记录</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
 </head>
 <body>
 <div class="panel panel-info">
     <div class="panel-heading">
         <h3 class="panel-title">
             优惠券发放记录
-            <a href="{:U('index')}" class="btn btn-xs btn-default pull-right">返回优惠券列表</a>
+            <a href="<?php echo U('index'); ?>" class="btn btn-xs btn-default pull-right">返回优惠券列表</a>
         </h3>
     </div>
     <div class="panel-body">
@@ -19,20 +19,20 @@
             <div class="form-group">
                 <select name="coupon_id" class="form-control">
                     <option value="">全部优惠券</option>
-                    <volist name="couponList" id="vo">
-                    <option value="{$vo.id}" <if condition="I('coupon_id') eq $vo['id']">selected</if>>{$vo.name}</option>
-                    </volist>
+                    <?php foreach($$couponList as $$vo): ?>
+                    <option value="<?php echo $vo['id']; ?>" <?php if(I('coupon_id') == $vo['id']): ?>selected<?php endif; ?>><?php echo $vo['name']; ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div class="form-group">
                 <select name="status" class="form-control">
-                    <option value="-1" <if condition="I('status') eq -1">selected</if>>全部状态</option>
-                    <option value="0" <if condition="I('status') eq 0">selected</if>>未使用</option>
-                    <option value="1" <if condition="I('status') eq 1">selected</if>>已使用</option>
+                    <option value="-1" <?php if(I('status') == -1): ?>selected<?php endif; ?>>全部状态</option>
+                    <option value="0" <?php if(I('status') == 0): ?>selected<?php endif; ?>>未使用</option>
+                    <option value="1" <?php if(I('status') == 1): ?>selected<?php endif; ?>>已使用</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">筛选</button>
-            <a href="{:U('sendLog')}" class="btn btn-default">重置</a>
+            <a href="<?php echo U('sendLog'); ?>" class="btn btn-default">重置</a>
         </form>
         
         <table class="table table-bordered table-hover am-margin-top">
@@ -48,46 +48,46 @@
                 </tr>
             </thead>
             <tbody>
-                <volist name="list" id="item">
+                <?php foreach($$list as $$item): ?>
                 <tr>
-                    <td>{$item.id}</td>
+                    <td><?php echo $item['id']; ?></td>
                     <td>
-                        <span class="label label-primary">{$item.coupon_name}</span>
+                        <span class="label label-primary"><?php echo $item['coupon_name']; ?></span>
                     </td>
-                    <td>{$item.student_name}</td>
+                    <td><?php echo $item['student_name']; ?></td>
                     <td>{$item.create_time|date='Y-m-d H:i',###}</td>
                     <td>
-                        <if condition="$item.status eq 0">
+                        <?php if($item['status'] == 0): ?>
                             <span class="label label-warning">未使用</span>
-                        <elseif condition="$item.status eq 1"/>
+                        <?php elseif($item['status'] == 1): ?>
                             <span class="label label-success">已使用</span>
                         <else/>
                             <span class="label label-default">已过期</span>
-                        </if>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <if condition="$item.use_time">
+                        <?php if($item['use_time']): ?>
                             {$item.use_time|date='Y-m-d H:i',###}
                         <else/>
                             -
-                        </if>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <if condition="$item.status eq 0">
-                            <a href="{:U('useCoupon?id='.$item['id'])}" class="btn btn-xs btn-success" onclick="return confirm('确认使用该优惠券?')">使用</a>
-                        </if>
+                        <?php if($item['status'] == 0): ?>
+                            <a href="<?php echo U('useCoupon?id='.$item['id']); ?>" class="btn btn-xs btn-success" onclick="return confirm('确认使用该优惠券?')">使用</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
-                </volist>
-                <notpresent name="list">
+                <?php endforeach; ?>
+                <?php if(!isset($$list)): ?>
                 <tr>
                     <td colspan="7" class="text-center">暂无记录</td>
                 </tr>
-                </notpresent>
+                <?php endif; ?>
             </tbody>
         </table>
         
-        {$page}
+        <?php echo $page; ?>
     </div>
 </div>
 </body>

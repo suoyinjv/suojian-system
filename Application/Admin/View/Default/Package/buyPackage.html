@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>购买课程包</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -15,32 +15,32 @@
                         <h3 class="am-panel-title"><i class="am-icon-shopping-cart"></i> 选择课程包</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <form class="am-form" action="__SELF__" method="POST" id="buyForm">
-                            <input type="hidden" name="student_id" value="{:I('student_id')}">
+                        <form class="am-form" action="" method="POST" id="buyForm">
+                            <input type="hidden" name="student_id" value="<?php echo I('student_id'); ?>">
                             
                             <div class="am-g">
-                                <volist name="packages" id="pkg">
+                                <?php foreach($$packages as $$pkg): ?>
                                 <div class="am-u-sm-4 am-margin-bottom">
                                     <div class="am-panel am-panel-warning">
                                         <div class="am-panel-hd">
-                                            <h4 class="am-panel-title">{$pkg.name}</h4>
+                                            <h4 class="am-panel-title"><?php echo $pkg['name']; ?></h4>
                                         </div>
                                         <div class="am-panel-bd">
-                                            <p class="am-text-xl am-text-danger">¥{$pkg.price}</p>
-                                            <p class="am-text-muted"><del>¥{$pkg.original_price}</del></p>
-                                            <p><span class="am-badge am-badge-primary">{$pkg.hours}课时</span></p>
-                                            <if condition="$pkg.validity_days gt 0">
-                                            <p class="am-text-sm">有效期: {$pkg.validity_days}天</p>
-                                            </if>
-                                            <p class="am-text-truncate">{$pkg.description}</p>
+                                            <p class="am-text-xl am-text-danger">¥<?php echo $pkg['price']; ?></p>
+                                            <p class="am-text-muted"><del>¥<?php echo $pkg['original_price']; ?></del></p>
+                                            <p><span class="am-badge am-badge-primary"><?php echo $pkg['hours']; ?>课时</span></p>
+                                            <?php if($pkg['validity_days'] > 0): ?>
+                                            <p class="am-text-sm">有效期: <?php echo $pkg['validity_days']; ?>天</p>
+                                            <?php endif; ?>
+                                            <p class="am-text-truncate"><?php echo $pkg['description']; ?></p>
                                             <label class="am-radio">
-                                                <input type="radio" name="package_id" value="{$pkg.id}" required>
+                                                <input type="radio" name="package_id" value="<?php echo $pkg['id']; ?>" required>
                                                 选择此课程包
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                                </volist>
+                                <?php endforeach; ?>
                             </div>
                             
                             <div class="am-form-group">
@@ -77,15 +77,15 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $('#buyForm').submit(function() {
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if(res.code) {
-            location.href = '__CONTROLLER__/studentPackage?student_id={:I("student_id")}';
+            location.href = '__CONTROLLER__/studentPackage?student_id=<?php echo I("student_id"); ?>';
         }
     });
     return false;

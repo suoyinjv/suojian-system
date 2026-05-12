@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>分配线索</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -23,7 +23,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">已选线索ID</label>
                                 <div class="am-u-sm-8">
-                                    <input type="text" name="ids" id="ids" class="am-form-field" placeholder="在列表页勾选后自动填入" value="{:I('ids')}" required>
+                                    <input type="text" name="ids" id="ids" class="am-form-field" placeholder="在列表页勾选后自动填入" value="<?php echo I('ids'); ?>" required>
                                     <span class="am-text-sm am-text-muted">多个ID用逗号分隔</span>
                                 </div>
                             </div>
@@ -33,9 +33,9 @@
                                 <div class="am-u-sm-8">
                                     <select name="assigned_to" class="am-form-field" required>
                                         <option value="">请选择</option>
-                                        <volist name="admins" id="vo">
-                                        <option value="{$vo.id}">{$vo.name}</option>
-                                        </volist>
+                                        <?php foreach($$admins as $$vo): ?>
+                                        <option value="<?php echo $vo['id']; ?>"><?php echo $vo['name']; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                             
                             <div class="am-form-group">
                                 <div class="am-u-sm-8 am-u-sm-offset-3">
-                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default am-btn-block">返回列表</a>
                                 </div>
                             </div>
                         </form>
@@ -60,12 +60,12 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $('#assignForm').submit(function() {
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if(res.code) {
             location.href = '__CONTROLLER__/index';
