@@ -54,7 +54,7 @@ class GrowthController extends CommonController
         $prefix = C('DB_PREFIX');
         $count = M('growth_record')->alias('g')->where($where)->count();
         $list = M('growth_record')->alias('g')
-            ->field('g.*, s.name as student_name, t.teacher_name')
+            ->field('g.*, s.username as student_name, t.teacher_name')
             ->join('LEFT JOIN ' . $prefix . 'student s ON g.student_id=s.id')
             ->join('LEFT JOIN ' . $prefix . 'teacher t ON g.teacher_id=t.id')
             ->where($where)

@@ -353,7 +353,7 @@ class CheckinController extends CommonController
         $prefix = C('DB_PREFIX');
         $count = M('checkin_record')->alias('cr')->where($where)->count();
         $list = M('checkin_record')->alias('cr')
-            ->field('cr.*, s.name as student_name, s.phone as student_phone, ct.title as task_title')
+            ->field('cr.*, s.username as student_name, s.my_mobile as student_phone, ct.title as task_title')
             ->join('LEFT JOIN ' . $prefix . 'student s ON cr.student_id=s.id')
             ->join('LEFT JOIN ' . $prefix . 'checkin_task ct ON cr.task_id=ct.id')
             ->where($where)

@@ -1,0 +1,75 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>学习计划管理</title>
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">学习计划管理</h3>
+    </div>
+    <div class="panel-body">
+        <form method="get" class="form-inline search-form">
+            <div class="form-group">
+                <select name="student_id" class="form-control">
+                    <option value="">全部学生</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="course_id" class="form-control">
+                    <option value="">全部课程</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select name="status" class="form-control">
+                    <option value="-1" {:I('status')==-1?'selected':''}>全部状态</option>
+                    <option value="0" {:I('status')==0?'selected':''}>进行中</option>
+                    <option value="1" {:I('status')==1?'selected':''}>已完成</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">搜索</button>
+            <a href="{:U('add')}" class="btn btn-success">添加计划</a>
+            <a href="{:U('statistics')}" class="btn btn-info">学习统计</a>
+        </form>
+        
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>学生</th>
+                    <th>课程</th>
+                    <th>计划标题</th>
+                    <th>目标日期</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$item): $mod = ($i % 2 );++$i;?><tr>
+                    <td>{$item.id}</td>
+                    <td>{$item.student_name}</td>
+                    <td>{$item.course_name}</td>
+                    <td>{$item.title}</td>
+                    <td>{$item.target_date}</td>
+                    <td>
+                        <?php if($item["status"] == 0): ?><span class="label label-warning">进行中</span>
+                        <?php elseif($item["status"] == 1): ?>
+                            <span class="label label-success">已完成</span><?php endif; ?>
+                    </td>
+                    <td>
+                        <a href="{:U('edit?id='.$item['id'])}" class="btn btn-xs btn-primary">编辑</a>
+                        <?php if($item["status"] == 0): ?><a href="{:U('complete?id='.$item['id'])}" class="btn btn-xs btn-success">完成</a><?php endif; ?>
+                        <a href="{:U('delete?id='.$item['id'])}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除?')">删除</a>
+                    </td>
+                </tr><?php endforeach; endif; else: echo "" ;endif; ?>
+            </tbody>
+        </table>
+        
+        {$page}
+    </div>
+</div>
+</body>
+</html>

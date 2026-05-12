@@ -38,7 +38,7 @@ class PointController extends AdminController {
             $students = M('student')->where(array('id' => array('in', $studentIds)))->index('id')->select();
             
             foreach ($list as &$item) {
-                $item['student_name'] = $students[$item['student_id']]['name'] ?: '';
+                $item['student_name'] = $students[$item['student_id']]['username'] ?: '';
             }
         }
         

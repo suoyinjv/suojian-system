@@ -45,8 +45,8 @@ class LeaveController extends CommonController
         }
         if ($keyword) {
             $where[] = array(
-                's.name' => array('like', '%' . $keyword . '%'),
-                's.phone' => array('like', '%' . $keyword . '%'),
+                's.username' => array('like', '%' . $keyword . '%'),
+                's.my_mobile' => array('like', '%' . $keyword . '%'),
                 '_logic' => 'or'
             );
         }
@@ -57,7 +57,7 @@ class LeaveController extends CommonController
             ->where($where)->count();
 
         $list = M('leave')->alias('l')
-            ->field('l.*, s.name as student_name, s.phone as student_phone, c.class_name, u.name as approver_name')
+            ->field('l.*, s.username as student_name, s.my_mobile as student_phone, c.class_name, u.nickname as approver_name')
             ->join('LEFT JOIN ' . $prefix . 'student s ON l.student_id=s.id')
             ->join('LEFT JOIN ' . $prefix . 'class c ON l.class_id=c.id')
             ->join('LEFT JOIN ' . $prefix . 'admin u ON l.approver_id=u.id')

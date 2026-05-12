@@ -334,7 +334,7 @@ class PosterController extends CommonController
         $prefix = C('DB_PREFIX');
         $count = M('poster_record')->alias('r')->where($where)->count();
         $list = M('poster_record')->alias('r')
-            ->field('r.*, p.title as template_title, s.name as student_name')
+            ->field('r.*, p.title as template_title, s.username as student_name')
             ->join('LEFT JOIN ' . $prefix . 'poster_template p ON r.template_id=p.id')
             ->join('LEFT JOIN ' . $prefix . 'student s ON r.student_id=s.id')
             ->where($where)

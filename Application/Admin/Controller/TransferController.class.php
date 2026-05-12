@@ -45,8 +45,8 @@ class TransferController extends CommonController
         }
         if ($keyword) {
             $where[] = array(
-                's.name' => array('like', '%' . $keyword . '%'),
-                's.phone' => array('like', '%' . $keyword . '%'),
+                's.username' => array('like', '%' . $keyword . '%'),
+                's.my_mobile' => array('like', '%' . $keyword . '%'),
                 '_logic' => 'or'
             );
         }
@@ -54,7 +54,7 @@ class TransferController extends CommonController
         $prefix = C('DB_PREFIX');
         $count = M('transfer')->alias('t')->where($where)->count();
         $list = M('transfer')->alias('t')
-            ->field('t.*, s.name as student_name, s.phone as student_phone, 
+            ->field('t.*, s.username as student_name, s.my_mobile as student_phone, 
                      fc.name as from_campus_name, tc.name as to_campus_name,
                      u.name as operator_name')
             ->join('LEFT JOIN ' . $prefix . 'student s ON t.student_id=s.id')
