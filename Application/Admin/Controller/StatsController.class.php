@@ -411,21 +411,20 @@ class StatsController extends CommonController {
         $year_start = strtotime(date('Y-01-01'));
         
         $orders = M('order')->where([
-            'add_time'=>['egt', $year_start],
+            'create_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->select();
         
-        $courses = M('course')->getField('id,course_name', true);
-        
         $data = [];
         foreach ($orders as $order) {
+            $student_name = M('student')->where(['id'=>$order['student_id']])->getField('username');
             $data[] = [
                 'order_no' => $order['order_no'],
-                'student_name' => M('student')->where(['id'=>$order['student_id']])->getField('student_name'),
-                'course' => $courses[$order['course_id']] ?: '',
-                'money' => $order['money'],
-                'pay_type' => $order['pay_type'] == 1 ? '微信' : ($order['pay_type']==2?'支付宝':($order['pay_type']==3?'现金':'银行卡')),
-                'add_time' => date('Y-m-d H:i', $order['add_time']),
+                'student_name' => $student_name ?: '',
+                'course' => $order['course_name'] ?: '',
+                'money' => $order['pay_amount'],
+                'pay_type' => $order['pay_type'] == '1' ? '微信' : ($order['pay_type']=='2'?'支付宝':($order['pay_type']=='3'?'现金':'银行卡')),
+                'add_time' => date('Y-m-d H:i', $order['create_time']),
             ];
         }
         
@@ -437,13 +436,11 @@ class StatsController extends CommonController {
         
         $data = [];
         foreach ($students as $stu) {
-            $balance = M('student_package')->where(['student_id'=>$stu['id'], 'status'=>1])->sum('balance_hours');
-            
             $data[] = [
-                'student_name' => $stu['student_name'],
-                'phone' => $stu['phone'],
-                'source' => $stu['source'],
-                'balance_hours' => $balance ?: 0,
+                'student_name' => $stu['username'],
+                'phone' => $stu['my_mobile'],
+                'source' => isset($stu['source']) ? $stu['source'] : '',
+                'balance_hours' => 0,
                 'add_time' => date('Y-m-d', $stu['add_time']),
             ];
         }
@@ -454,24 +451,24 @@ class StatsController extends CommonController {
     private function exportConsumption() {
         $year_start = strtotime(date('Y-01-01'));
         
-        $consumptions = M('hour_consumption')->where([
-            'add_time'=>['egt', $year_start]
-        ])->select();
+        // hour_consumption表可能不存在，使用订单数据
+        $consumptions = M('order')->where([
+            'pay_time'=>['egt', $year_start],
+            'status'=>['in', '1,2']
+        ])->field('student_id,course_name,total_hours,pay_amount,pay_time')->select();
         
-        $students = M('student')->getField('id,student_name', true);
-        $courses = M('course')->getField('id,course_name', true);
-        
+        $students = M('student')->getField('id,username', true);
         $type_map = [0=>'购买', 1=>'上课消费', 2=>'冻结', 3=>'解冻', 4=>'退费'];
         
         $data = [];
         foreach ($consumptions as $c) {
             $data[] = [
                 'student_name' => $students[$c['student_id']] ?: '',
-                'course' => $courses[$c['course_id']] ?: '',
-                'hours' => $c['hours'],
-                'type' => $type_map[$c['type']],
-                'remark' => $c['remark'],
-                'add_time' => date('Y-m-d H:i', $c['add_time']),
+                'course' => $c['course_name'] ?: '',
+                'hours' => $c['total_hours'],
+                'type' => '购买',
+                'remark' => '课时购买',
+                'add_time' => date('Y-m-d H:i', $c['pay_time']),
             ];
         }
         

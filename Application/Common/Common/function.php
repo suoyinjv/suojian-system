@@ -1046,4 +1046,64 @@ function Authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
         return $keyc.str_replace('=', '', base64_encode($result));
     }
 }
+
+/**
+ * [exportExcel 导出Excel报表]
+ * @author   Hermes Agent
+ * @param    [array]   $header [表头，如 ['姓名', '电话']]
+ * @param    [array]   $data   [数据二维数组，每行与表头对应]
+ * @param    [string]  $title  [文件标题]
+ */
+function exportExcel($header, $data, $title = '导出报表')
+{
+    vendor('PHPExcel.PHPExcel');
+    $objPHPExcel = new \PHPExcel();
+    
+    // 设置属性
+    $objPHPExcel->getProperties()->setCreator("SchoolCMS")
+        ->setLastModifiedBy("SchoolCMS")
+        ->setTitle($title)
+        ->setSubject($title)
+        ->setDescription($title);
+    
+    $sheet = $objPHPExcel->setActiveSheetIndex(0);
+    
+    // 表头样式
+    $style_header = [
+        'font' => ['bold' => true, 'size' => 12],
+        'alignment' => ['horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER],
+        'borders' => ['allborders' => ['style' => \PHPExcel_Style_Border::BORDER_THIN]],
+    ];
+    
+    // 写入表头
+    foreach ($header as $k => $v) {
+        $col = \PHPExcel_Cell::stringFromColumnIndex($k);
+        $sheet->setCellValue($col.'1', $v);
+    }
+    $sheet->getStyle('1')->applyFromArray($style_header);
+    
+    // 写入数据
+    foreach ($data as $row => $row_data) {
+        foreach ($row_data as $col => $val) {
+            $col_letter = \PHPExcel_Cell::stringFromColumnIndex($col);
+            $sheet->setCellValueExplicit($col_letter.($row+2), $val, \PHPExcel_Cell_DataType::TYPE_STRING);
+        }
+    }
+    
+    // 自动列宽
+    foreach ($header as $k => $v) {
+        $col = \PHPExcel_Cell::stringFromColumnIndex($k);
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+    
+    // 输出
+    $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+    $filename = $title . '_' . date('YmdHis') . '.xls';
+    
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="' . $filename . '"');
+    header('Cache-Control: max-age=0');
+    $objWriter->save('php://output');
+    exit;
+}
 ?>
