@@ -1,14 +1,8 @@
 <?php
 namespace Admin\Controller;
 
-/**
- * 评价管理控制器
- */
 class ReviewController extends AdminController {
     
-    /**
-     * 评价列表
-     */
     public function index() {
         $page = I('page', 1, 'intval');
         $rows = I('rows', 20, 'intval');
@@ -34,31 +28,34 @@ class ReviewController extends AdminController {
             $where['status'] = $status;
         }
         
-        $list = M('review')->where($where)->order('id desc')->page($page, $rows)->select();
         $count = M('review')->where($where)->count();
+        $list = M('review')->alias('r')
+            ->field('r.*, s.username as student_name, t.username as teacher_name, co.course_name')
+            ->join('LEFT JOIN sc_student s ON r.student_id=s.id')
+            ->join('LEFT JOIN sc_teacher t ON r.teacher_id=t.id')
+            ->join('LEFT JOIN sc_course co ON r.course_id=co.id')
+            ->where($where)
+            ->order('r.id desc')
+            ->page($page, $rows)
+            ->select();
         
-        // 获取关联数据
-        if ($list) {
-            $studentIds = array_filter(array_unique(array_column($list, 'student_id')));
-            $teacherIds = array_filter(array_unique(array_column($list, 'teacher_id')));
-            
-            $students = M('student')->where(array('id' => array('in', $studentIds)))->index('id')->select();
-            $teachers = M('teacher')->where(array('id' => array('in', $teacherIds)))->index('id')->select();
-            
-            foreach ($list as &$item) {
-                $item['student_name'] = $students[$item['student_id']]['name'] ?: '';
-                $item['teacher_name'] = $teachers[$item['teacher_id']]['name'] ?: '';
-            }
+        // JSON mode
+        if (I('json', 0, 'intval')) {
+            $this->ajaxReturn(['total' => $count, 'rows' => $list]);
         }
         
-        $this->ajaxReturn(['total'=>$count,'rows'=>$list]);
+        // 获取教师列表（用于筛选下拉）
+        $teachers = M('teacher')->field('id, username as name')->select();
+        
+        $this->assign('list', $list);
+        $this->assign('teachers', $teachers);
+        $this->assign('count', $count);
+        $this->display();
     }
     
-    /**
-     * 添加评价
-     */
-    public function add() {
+    public function save() {
         if (IS_POST) {
+            $id = I('id', 0, 'intval');
             $data = array(
                 'student_id' => I('student_id', 0, 'intval'),
                 'teacher_id' => I('teacher_id', 0, 'intval'),
@@ -66,38 +63,42 @@ class ReviewController extends AdminController {
                 'score' => I('score', 5, 'intval'),
                 'content' => I('content'),
                 'status' => I('status', 1, 'intval'),
-                'create_time' => time()
             );
             
             if (empty($data['student_id']) || empty($data['teacher_id'])) {
-                $this->ajaxReturn(['code'=>1,'msg'=>'学生和老师不能为空']);
+                $this->ajaxReturn(['code' => 1, 'msg' => '学生和老师不能为空']);
             }
             
-            $id = M('review')->add($data);
             if ($id) {
-                $this->ajaxReturn(['code'=>0,'msg'=>'添加成功']);
+                M('review')->where(['id' => $id])->save($data);
+                $this->ajaxReturn(['code' => 0, 'msg' => '修改成功']);
             } else {
-                $this->ajaxReturn(['code'=>1,'msg'=>'添加失败']);
+                $data['create_time'] = time();
+                M('review')->add($data);
+                $this->ajaxReturn(['code' => 0, 'msg' => '添加成功']);
             }
         }
+        
+        $id = I('id', 0, 'intval');
+        $info = M('review')->find($id);
+        $this->assign('info', $info);
+        
+        $students = M('student')->field('id, username')->select();
+        $teachers = M('teacher')->field('id, username')->select();
+        $this->assign('students', $students);
+        $this->assign('teachers', $teachers);
+        $this->display();
     }
     
-    /**
-     * 删除评价
-     */
     public function delete() {
         $id = I('id', 0, 'intval');
-        
         if (M('review')->delete($id)) {
-            $this->ajaxReturn(['code'=>0,'msg'=>'删除成功']);
+            $this->ajaxReturn(['code' => 0, 'msg' => '删除成功']);
         } else {
-            $this->ajaxReturn(['code'=>1,'msg'=>'删除失败']);
+            $this->ajaxReturn(['code' => 1, 'msg' => '删除失败']);
         }
     }
     
-    /**
-     * 评价统计
-     */
     public function statistics() {
         $where = array('status' => 1);
         
@@ -108,10 +109,10 @@ class ReviewController extends AdminController {
         }
         
         $this->ajaxReturn([
-            'code'=>0,
-            'data'=>[
-                'avgScore'=>round($avgScore, 1),
-                'scoreDist'=>$scoreDist
+            'code' => 0,
+            'data' => [
+                'avgScore' => round($avgScore, 1),
+                'scoreDist' => $scoreDist
             ]
         ]);
     }
