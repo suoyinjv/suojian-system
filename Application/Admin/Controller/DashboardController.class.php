@@ -170,6 +170,55 @@ class DashboardController extends Controller {
         ]);
     }
     
+    // 经营概览
+    public function overview() {
+        $today = date('Y-m-d');
+        $month_start = date('Y-m-01');
+
+        // 今日数据
+        $today_attendance   = M('attendance')->where(['attend_date' => $today])->count();
+        $today_consumption  = M('consumption')->where("FROM_UNIXTIME(create_time, '%Y-%m-%d')='{$today}'")->sum('hours');
+        $today_new_students = M('student')->where("FROM_UNIXTIME(create_time, '%Y-%m-%d')='{$today}'")->count();
+        $today_revenue      = M('order')->where("status=1 AND FROM_UNIXTIME(pay_time, '%Y-%m-%d')='{$today}'")->sum('pay_amount');
+        $today_orders       = M('order')->where("status=1 AND FROM_UNIXTIME(pay_time, '%Y-%m-%d')='{$today}'")->count();
+
+        // 本月数据
+        $month_revenue = M('order')->where("status=1 AND pay_time>=" . strtotime($month_start))->sum('pay_amount');
+        $month_orders  = M('order')->where("status=1 AND create_time>=" . strtotime($month_start))->count();
+        $month_new     = M('student')->where("FROM_UNIXTIME(create_time, '%Y-%m-%d')>='{$month_start}'")->count();
+        $month_attendance = M('attendance')->where("attend_date>='{$month_start}'")->count();
+
+        // 累计数据
+        $total_students      = M('student')->count();
+        $active_students     = M('student')->where(['status' => 1])->count();
+        $total_teachers      = M('teacher')->where(['status' => 1])->count();
+        $total_remaining     = M('student_course')->where(['status' => 1])->sum('remaining_hours');
+        $total_revenue       = M('order')->where(['status' => 1])->sum('pay_amount');
+        $total_orders        = M('order')->where(['status' => 1])->count();
+        $expire_courses      = M('student_course')->where("expire_date <= DATE_ADD('{$today}', INTERVAL 7 DAY) AND status=1")->count();
+        $pending_leads       = M('leads')->where(['status' => 1])->count();
+
+        $this->assign('today_attendance', $today_attendance ?: 0);
+        $this->assign('today_consumption', $today_consumption ?: 0);
+        $this->assign('today_new_students', $today_new_students ?: 0);
+        $this->assign('today_revenue', $today_revenue ?: 0);
+        $this->assign('today_orders', $today_orders ?: 0);
+        $this->assign('month_revenue', $month_revenue ?: 0);
+        $this->assign('month_orders', $month_orders ?: 0);
+        $this->assign('month_new', $month_new ?: 0);
+        $this->assign('month_attendance', $month_attendance ?: 0);
+        $this->assign('total_students', $total_students);
+        $this->assign('active_students', $active_students);
+        $this->assign('total_teachers', $total_teachers);
+        $this->assign('total_remaining', $total_remaining ?: 0);
+        $this->assign('total_revenue', $total_revenue ?: 0);
+        $this->assign('total_orders', $total_orders);
+        $this->assign('expire_courses', $expire_courses);
+        $this->assign('pending_leads', $pending_leads);
+
+        $this->display();
+    }
+
     // 实时看板
     public function realtime() {
         // 当前在班学员

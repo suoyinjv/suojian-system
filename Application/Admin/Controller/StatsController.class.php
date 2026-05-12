@@ -8,6 +8,14 @@ namespace Admin\Controller;
 class StatsController extends CommonController {
     
     /**
+     * 数据统计首页
+     */
+    public function index() {
+        $this->dashboard();
+        $this->display('dashboard');
+    }
+    
+    /**
      * 数据座舱/经营看板
      */
     public function dashboard() {
@@ -205,7 +213,7 @@ class StatsController extends CommonController {
         ])->group('course_id')->getField('course_id, sum(money) as total', true);
         
         $course_ids = array_keys($course_income);
-        $courses = M('course')->where(['id'=>['in', $course_ids]])->getField('id,course_name', true);
+        $courses = !empty($course_ids) ? M('course')->where(['id'=>['in', $course_ids]])->getField('id,course_name', true) : [];
         
         $course_data = [];
         foreach ($course_income as $k => $v) {
@@ -274,7 +282,7 @@ class StatsController extends CommonController {
         $top_students = array_slice($top_consumption, 0, 10, true);
         
         $student_ids = array_keys($top_students);
-        $students = M('student')->where(['id'=>['in', $student_ids]])->getField('id,student_name', true);
+        $students = !empty($student_ids) ? M('student')->where(['id'=>['in', $student_ids]])->getField('id,student_name', true) : [];
         
         $consumption_rank = [];
         foreach ($top_students as $k => $v) {
@@ -323,7 +331,7 @@ class StatsController extends CommonController {
         ])->group('course_id')->getField('course_id, sum(hours) as total', true);
         
         $course_ids = array_keys($course_consumption);
-        $courses = M('course')->where(['id'=>['in', $course_ids]])->getField('id,course_name', true);
+        $courses = !empty($course_ids) ? M('course')->where(['id'=>['in', $course_ids]])->getField('id,course_name', true) : [];
         
         $course_data = [];
         foreach ($course_consumption as $k => $v) {

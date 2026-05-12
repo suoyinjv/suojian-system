@@ -164,7 +164,7 @@ class CampusController extends CommonController {
         
         // 获取学员所在校区
         $campus_ids = array_unique(array_column($list, 'campus_id'));
-        $campuses = M('campus')->where(['id'=>['in', $campus_ids]])->getField('id,name', true);
+        $campuses = !empty($campus_ids) ? M('campus')->where(['id'=>['in', $campus_ids]])->getField('id,name', true) : [];
         
         // 获取学员课时
         foreach ($list as &$item) {
@@ -196,7 +196,7 @@ class CampusController extends CommonController {
         $list = M('teacher')->where($where)->select();
         
         $campus_ids = array_unique(array_column($list, 'campus_id'));
-        $campuses = M('campus')->where(['id'=>['in', $campus_ids]])->getField('id,name', true);
+        $campuses = !empty($campus_ids) ? M('campus')->where(['id'=>['in', $campus_ids]])->getField('id,name', true) : [];
         
         foreach ($list as &$item) {
             $item['campus_name'] = $campuses[$item['campus_id']] ?: '未分配';

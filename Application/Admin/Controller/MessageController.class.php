@@ -189,4 +189,11 @@ class MessageController extends CommonController {
         
         echo '课时预警已发送';
     }
+
+    /**
+     * 消息中心首页 - 转向发送页面
+     */
+    public function index() {
+        $this->redirect('send');
+    }
 }

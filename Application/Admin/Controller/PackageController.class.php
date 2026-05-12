@@ -229,7 +229,7 @@ class PackageController extends CommonController {
         
         // 获取学员和课程名称
         $student_ids = array_unique(array_column($list, 'student_id'));
-        $students = M('student')->where(['id'=>['in', $student_ids]])->getField('id,student_name', true);
+        $students = !empty($student_ids) ? M('student')->where(['id'=>['in', $student_ids]])->getField('id,student_name', true) : [];
         
         $type_map = [0=>'购买', 1=>'上课消费', 2=>'冻结', 3=>'解冻', 4=>'退费'];
         

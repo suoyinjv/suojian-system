@@ -155,4 +155,9 @@ class OrderController extends Controller {
             'pay_type_stats' => $pay_type_stats
         ]);
     }
+    
+    // 订单统计页面跳转
+    public function stats() {
+        $this->redirect('statistics');
+    }
 }

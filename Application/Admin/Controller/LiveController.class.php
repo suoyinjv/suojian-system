@@ -29,7 +29,7 @@ class LiveController extends CommonController {
         
         // 获取课程和老师名称
         $teacher_ids = array_unique(array_column($list, 'teacher_id'));
-        $teachers = M('teacher')->where(['id'=>['in', $teacher_ids]])->getField('id,teacher_name', true);
+        $teachers = !empty($teacher_ids) ? M('teacher')->where(['id'=>['in', $teacher_ids]])->getField('id,teacher_name', true) : [];
         
         $type_map = [1=>'1v1', 2=>'小班课', 3=>'大班课'];
         $status_map = [0=>'未开始', 1=>'进行中', 2=>'已结束', 3=>'已取消'];

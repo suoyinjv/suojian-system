@@ -119,4 +119,9 @@ class ScheduleController extends Controller {
         
         $this->ajaxReturn(['code'=>1, 'slots'=>$time_slots, 'busy'=>$busy]);
     }
+    
+    // 转向课表视图
+    public function timetable() {
+        $this->redirect('scheduleView');
+    }
 }

@@ -7,6 +7,14 @@ namespace Admin\Controller;
 class FinanceController extends CommonController {
     
     /**
+     * 财务首页 — 收入总览
+     */
+    public function index() {
+        $this->income();
+        $this->display('Income');
+    }
+    
+    /**
      * 收入报表
      */
     public function income() {

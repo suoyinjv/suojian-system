@@ -393,4 +393,26 @@ class ReportController extends AdminController {
         $objWriter->save('php://output');
         exit;
     }
+    
+    /**
+     * 招生报表 - 转向经营日报表
+     */
+    public function recruit() {
+        // 转向 dailyReport 方法共享经营日报页面
+        $this->redirect('dailyReport');
+    }
+    
+    /**
+     * 总览报表 - 占位页面
+     */
+    public function overview() {
+        $this->display();
+    }
+    
+    /**
+     * 对比报表 - 占位页面
+     */
+    public function compare() {
+        $this->display();
+    }
 }

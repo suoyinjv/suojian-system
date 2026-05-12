@@ -39,7 +39,7 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
 
 // 开启调试模式 建议开发阶段开启 部署阶段注释或者设为false
 // 生产环境已关闭；如需开发请改为 true
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 
 // 分之模式,master,develop,test,debug
 define('APP_STATUS', 'master');
