@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>线索统计 - 所以学教学系统</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <div class="am-breadcrumb am-margin-bottom-sm">
+                    <a href="<?php echo U('index'); ?>"><i class="am-icon-home"></i> 首页</a>
+                    <a href="<?php echo U('index'); ?>">线索列表</a>
+                    <span class="am-active">线索统计</span>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="am-g am-margin-bottom">
+                    <div class="am-u-sm-4">
+                        <div class="am-panel am-panel-primary">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-primary"><?php echo $total ?? 0; ?></p>
+                                <p class="am-text-sm">线索总数</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-4">
+                        <div class="am-panel am-panel-success">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-success"><?php echo $converted ?? 0; ?></p>
+                                <p class="am-text-sm">已转化</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-4">
+                        <div class="am-panel am-panel-warning">
+                            <div class="am-panel-bd am-text-center">
+                                <p class="am-text-xxxl am-text-warning"><?php echo $convert_rate ?? 0; ?>%</p>
+                                <p class="am-text-sm">转化率</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 日期筛选 -->
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-calendar"></i> 日期范围</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline" method="GET" action="">
+                            <input type="hidden" name="m" value="Admin">
+                            <input type="hidden" name="c" value="Leads">
+                            <input type="hidden" name="a" value="statistics">
+                            <div class="am-form-group">
+                                <label>从：</label>
+                                <input type="date" name="start_date" class="am-form-field" value="<?php echo htmlspecialchars($start_date ?? date('Y-m-01')); ?>">
+                            </div>
+                            <div class="am-form-group">
+                                <label>到：</label>
+                                <input type="date" name="end_date" class="am-form-field" value="<?php echo htmlspecialchars($end_date ?? date('Y-m-d')); ?>">
+                            </div>
+                            <button type="submit" class="am-btn am-btn-primary"><i class="am-icon-search"></i> 查询</button>
+                            <a href="<?php echo U('statistics'); ?>" class="am-btn am-btn-default"><i class="am-icon-refresh"></i> 重置</a>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 状态分布 -->
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-pie-chart"></i> 状态分布</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>状态</th>
+                                    <th>数量</th>
+                                    <th>占比</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($status_stats)): ?>
+                                <?php $t = intval($total); ?>
+                                <?php foreach ($status_stats as $v): ?>
+                                <tr>
+                                    <td>
+                                        <?php
+                                        $s = $v['status'];
+                                        $st = $status_arr[$s] ?? '未知';
+                                        if ($s == 1): ?>
+                                            <span class="am-badge am-badge-default"><?php echo $st; ?></span>
+                                        <?php elseif ($s == 2): ?>
+                                            <span class="am-badge am-badge-primary"><?php echo $st; ?></span>
+                                        <?php elseif ($s == 3): ?>
+                                            <span class="am-badge am-badge-success"><?php echo $st; ?></span>
+                                        <?php elseif ($s == 4): ?>
+                                            <span class="am-badge am-badge-danger"><?php echo $st; ?></span>
+                                        <?php else: ?>
+                                            <span class="am-badge"><?php echo $st; ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><strong><?php echo intval($v['cnt']); ?></strong></td>
+                                    <td><?php echo $t > 0 ? round(intval($v['cnt']) / $t * 100, 1) : 0; ?>%</td>
+                                </tr>
+                                <?php endforeach; ?>
+                                <?php else: ?>
+                                <tr><td colspan="3" class="am-text-center">暂无数据</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="am-margin-top">
+                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回线索列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>
