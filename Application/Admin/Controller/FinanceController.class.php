@@ -7,11 +7,23 @@ namespace Admin\Controller;
 class FinanceController extends CommonController {
     
     /**
-     * 财务首页 — 收入总览
+     * 财务首页 — 数据概览
      */
     public function index() {
-        $this->income();
-        $this->display('Income');
+        // 总收入
+        $total_income = M('order')->where(['status'=>['in', '1,2']])->sum('pay_amount');
+        // 总支出
+        $total_expense = M('expense')->sum('amount');
+        // 净利润
+        $total_profit = ($total_income ?: 0) - ($total_expense ?: 0);
+        // 待退款数
+        $refund_count = M('refund')->where(['status'=>0])->count();
+        
+        $this->assign('total_income', $total_income ?: 0);
+        $this->assign('total_expense', $total_expense ?: 0);
+        $this->assign('total_profit', $total_profit);
+        $this->assign('refund_count', $refund_count ?: 0);
+        $this->display();
     }
     
     /**
@@ -22,42 +34,61 @@ class FinanceController extends CommonController {
         $limit = 30;
         $offset = ($page - 1) * $limit;
         
-        $start_time = I('start_time', 0, 'strtotime');
-        $end_time = I('end_time', 0, 'strtotime');
-        
         $where = ['status'=>['in', '1,2']];
-        if ($start_time) {
-            $where['add_time'] = ['egt', $start_time];
+        
+        $keyword = I('keyword', '', 'trim');
+        if ($keyword) {
+            $where['order_no'] = ['like', "%{$keyword}%"];
         }
-        if ($end_time) {
-            $where['add_time'] = ['elt', $end_time + 86400];
+        $type = I('type', 0, 'intval');
+        if ($type > 0) {
+            $where['type'] = $type;
         }
+        
+        // 搜索参数回传
+        $this->assign('param', ['keyword'=>$keyword, 'type'=>$type]);
         
         $prefix = C('DB_PREFIX');
         $count = M('order')->where($where)->count();
         
         $list = M('order')->where($where)
-            ->order('add_time DESC')
+            ->order('create_time DESC')
             ->limit($offset, $limit)
             ->select();
         
-        $courses = M('course')->getField('id,course_name', true);
         $students = M('student')->getField('id,student_name', true);
-        
+        $type_map = [1=>'课程报名', 2=>'资料购买', 3=>'续费', 4=>'其他'];
         $pay_map = [1=>'微信', 2=>'支付宝', 3=>'现金', 4=>'银行卡'];
         
         foreach ($list as &$item) {
-            $item['course_name'] = $courses[$item['course_id']] ?: '';
             $item['student_name'] = $students[$item['student_id']] ?: '';
-            $item['pay_type_text'] = $pay_map[$item['pay_type']] ?: '其他';
+            $item['amount'] = $item['pay_amount'];
+            $item['pay_method'] = $pay_map[$item['pay_type']] ?: $item['pay_type'];
+            $item['add_time'] = date('Y-m-d H:i', $item['create_time']);
+            $item['type_text'] = $type_map[$item['type']] ?: '其他';
         }
         
         $this->assign('list', $list);
         $this->assign('page', $page);
-        $this->assign('total', ceil($count/$limit));
+        
+        $totalPage = ceil($count/$limit);
+        $this->assign('total', $totalPage);
+        
+        // 生成分页HTML
+        $pageHtml = '';
+        if ($totalPage > 1) {
+            $pageHtml = '<div class="am-pagination"><ul>';
+            for ($i = 1; $i <= $totalPage; $i++) {
+                $active = $i == $page ? ' class="am-active"' : '';
+                $url = U('Admin/Finance/Income', ['page'=>$i, 'keyword'=>$keyword, 'type'=>$type]);
+                $pageHtml .= "<li{$active}><a href=\"{$url}\">{$i}</a></li>";
+            }
+            $pageHtml .= '</ul></div>';
+        }
+        $this->assign('page_html', $pageHtml);
         
         // 统计
-        $total = M('order')->where($where)->sum('money');
+        $total = M('order')->where($where)->sum('pay_amount');
         $this->assign('total_income', $total ?: 0);
         
         $this->display();
@@ -77,12 +108,31 @@ class FinanceController extends CommonController {
             ->select();
         
         $type_map = [1=>'工资', 2=>'房租', 3=>'广告', 4=>'物料', 5=>'其他'];
+        $pay_type_map = [1=>'微信', 2=>'支付宝', 3=>'现金', 4=>'银行卡'];
         
         foreach ($list as &$item) {
             $item['type_text'] = $type_map[$item['type']] ?: '其他';
+            $item['pay_type_text'] = $pay_type_map[$item['pay_type']] ?: '其他';
+            $item['add_time_text'] = date('Y-m-d H:i', $item['add_time']);
         }
         
         $this->assign('list', $list);
+        
+        $totalPage = ceil($count/$limit);
+        // 分页
+        $pageHtml = '';
+        if ($totalPage > 1) {
+            $pageHtml = '<div class="am-pagination"><ul>';
+            for ($i = 1; $i <= $totalPage; $i++) {
+                $active = $i == $page ? ' class="am-active"' : '';
+                $url = U('Admin/Finance/Expense', ['page'=>$i]);
+                $pageHtml .= "<li{$active}><a href=\"{$url}\">{$i}</a></li>";
+            }
+            $pageHtml .= '</ul></div>';
+        }
+        $this->assign('page_html', $pageHtml);
+        $this->assign('total_expense', M('expense')->sum('amount') ?: 0);
+        
         $this->display();
     }
     
@@ -130,9 +180,25 @@ class FinanceController extends CommonController {
         foreach ($list as &$item) {
             $item['student_name'] = $students[$item['student_id']] ?: '';
             $item['status_text'] = $status_map[$item['status']];
+            $item['add_time_text'] = date('Y-m-d H:i', $item['add_time']);
+            $item['audit_time_text'] = $item['audit_time'] ? date('Y-m-d H:i', $item['audit_time']) : '-';
         }
         
         $this->assign('list', $list);
+        
+        $totalPage = ceil($count/$limit);
+        $pageHtml = '';
+        if ($totalPage > 1) {
+            $pageHtml = '<div class="am-pagination"><ul>';
+            for ($i = 1; $i <= $totalPage; $i++) {
+                $active = $i == $page ? ' class="am-active"' : '';
+                $url = U('Admin/Finance/Refund', ['page'=>$i]);
+                $pageHtml .= "<li{$active}><a href=\"{$url}\">{$i}</a></li>";
+            }
+            $pageHtml .= '</ul></div>';
+        }
+        $this->assign('page_html', $pageHtml);
+        
         $this->display();
     }
     
@@ -162,12 +228,18 @@ class FinanceController extends CommonController {
      */
     public function statistics() {
         $month_start = strtotime(date('Y-m-01'));
+        $year_start = strtotime(date('Y-01-01'));
+        
+        // 总统计
+        $total_income = M('order')->where(['status'=>['in', '1,2']])->sum('pay_amount');
+        $total_expense = M('expense')->sum('amount');
+        $total_profit = ($total_income ?: 0) - ($total_expense ?: 0);
         
         // 本月收入
         $month_income = M('order')->where([
-            'add_time'=>['egt', $month_start],
+            'create_time'=>['egt', $month_start],
             'status'=>['in', '1,2']
-        ])->sum('money');
+        ])->sum('pay_amount');
         
         // 本月支出
         $month_expense = M('expense')->where([
@@ -181,12 +253,60 @@ class FinanceController extends CommonController {
         ])->sum('amount');
         
         // 本月利润
-        $month_profit = $month_income - $month_expense - $month_refund;
+        $month_profit = ($month_income ?: 0) - ($month_expense ?: 0) - ($month_refund ?: 0);
         
+        // 近30天每日收支明细（图表数据）
+        $days = [];
+        $income_list = [];
+        $expense_list = [];
+        $profit_list = [];
+        $list = [];
+        
+        for ($i = 29; $i >= 0; $i--) {
+            $day_start = strtotime(date('Y-m-d', strtotime("-{$i} days")));
+            $day_end = $day_start + 86400;
+            $date_str = date('Y-m-d', $day_start);
+            
+            // 当日收入
+            $day_income = M('order')->where([
+                'create_time'=>[['egt', $day_start], ['lt', $day_end]],
+                'status'=>['in', '1,2']
+            ])->sum('pay_amount');
+            
+            // 当日支出
+            $day_expense = M('expense')->where([
+                'add_time'=>[['egt', $day_start], ['lt', $day_end]]
+            ])->sum('amount');
+            
+            $day_income = $day_income ?: 0;
+            $day_expense = $day_expense ?: 0;
+            $day_profit = $day_income - $day_expense;
+            
+            $days[] = "'{$date_str}'";
+            $income_list[] = $day_income;
+            $expense_list[] = $day_expense;
+            $profit_list[] = $day_profit;
+            
+            $list[] = [
+                'date' => $date_str,
+                'income' => $day_income,
+                'expense' => $day_expense,
+                'profit' => $day_profit,
+            ];
+        }
+        
+        $this->assign('total_income', $total_income ?: 0);
+        $this->assign('total_expense', $total_expense ?: 0);
+        $this->assign('total_profit', $total_profit);
         $this->assign('month_income', $month_income ?: 0);
         $this->assign('month_expense', $month_expense ?: 0);
         $this->assign('month_refund', $month_refund ?: 0);
         $this->assign('month_profit', $month_profit);
+        $this->assign('list', $list);
+        $this->assign('date_list', '[' . implode(',', $days) . ']');
+        $this->assign('income_list', '[' . implode(',', $income_list) . ']');
+        $this->assign('expense_list', '[' . implode(',', $expense_list) . ']');
+        $this->assign('profit_list', '[' . implode(',', $profit_list) . ']');
         
         $this->display();
     }
