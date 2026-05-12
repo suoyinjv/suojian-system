@@ -105,6 +105,12 @@ class ScheduleController extends Controller {
             $this->ajaxReturn(['list'=>$list]);
         }
         
+        // 页面模式：传递筛选数据
+        $teachers = M('teacher')->field('id,username as name')->where(['status'=>1])->select();
+        $classes = M('class')->field('id,name')->where(['status'=>1])->select();
+        $this->assign('teachers', $teachers ?: []);
+        $this->assign('classes', $classes ?: []);
+        
         $this->display();
     }
     
