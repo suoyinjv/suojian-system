@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>老师空闲时间</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-clock-o"></i> 老师空闲时间查询</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline">
+                            <div class="am-form-group">
+                                <select name="teacher_id" class="am-form-field" required>
+                                    <option value="">请选择老师</option>
+                                    <volist name="teachers" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <div class="am-form-group">
+                                <input type="date" name="date" class="am-form-field" required value="{:date('Y-m-d')}">
+                            </div>
+                            <button type="submit" class="am-btn am-btn-primary">查询</button>
+                        </form>
+                        
+                        <div class="am-g am-margin-top">
+                            <div class="am-u-sm-12">
+                                <php>for($h=8;$h<=20;$h++):</php>
+                                <div class="am-panel am-panel-default am-margin-bottom-xs">
+                                    <div class="am-panel-bd am-cf">
+                                        <div class="am-fl am-text-xl am-text-bold" style="width:100px;">
+                                            {$h}:00
+                                        </div>
+                                        <div class="am-fl" id="slot_{$h}">
+                                            <span class="am-text-muted">加载中...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <php>endfor;</php>
+                            </div>
+                        </div>
+                        
+                        <div class="am-alert am-alert-secondary am-margin-top">
+                            <i class="am-icon-info-circle"></i> 
+                            <strong>图例：</strong>
+                            <span class="am-badge am-badge-success">空闲</span> 可以排课
+                            <span class="am-badge am-badge-danger">已排课</span> 该时段已被占用
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('form').submit(function() {
+    var teacherId = $('select[name="teacher_id"]').val();
+    var date = $('input[name="date"]').val();
+    if (!teacherId) { alert('请选择老师'); return false; }
+    
+    $.get('__CONTROLLER__/getTeacherFreeTime?teacher_id=' + teacherId + '&date=' + date, function(res) {
+        if (res.code && res.data) {
+            for (var h = 8; h <= 20; h++) {
+                var occupied = res.data[h] || false;
+                var html = occupied 
+                    ? '<span class="am-badge am-badge-danger">已排课</span> ' + occupied.course_name
+                    : '<span class="am-badge am-badge-success">空闲</span>';
+                $('#slot_' + h).html(html);
+            }
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

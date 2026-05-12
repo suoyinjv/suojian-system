@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>布置作业 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <h2>布置作业</h2>
+            <form class="am-form am-form-horizontal" action="{:U('save')}" method="post" enctype="multipart/form-data">
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">作业标题</label>
+                    <div class="am-u-sm-8">
+                        <input type="text" name="title" class="am-form-field" placeholder="请输入作业标题" required>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">所属课程</label>
+                    <div class="am-u-sm-4">
+                        <select name="course_id" required>
+                            <option value="">请选择课程</option>
+                            <volist name="courses" id="vo">
+                            <option value="{$key}">{$vo}</option>
+                            </volist>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">截止日期</label>
+                    <div class="am-u-sm-4">
+                        <input type="datetime-local" name="submit_deadline" class="am-form-field" required>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">作业类型</label>
+                    <div class="am-u-sm-4">
+                        <select name="type">
+                            <option value="1">书面作业</option>
+                            <option value="2">在线作业</option>
+                            <option value="3">实践作业</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">作业内容</label>
+                    <div class="am-u-sm-8">
+                        <textarea name="content" rows="5" class="am-form-field" placeholder="请输入作业内容"></textarea>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">满分分值</label>
+                    <div class="am-u-sm-2">
+                        <input type="number" name="total_score" class="am-form-field" value="100" min="1" required>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-form-label">附件上传</label>
+                    <div class="am-u-sm-4">
+                        <input type="file" name="attachment">
+                        <span class="am-form-caret">支持 PDF、Word、图片等格式</span>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-10">
+                        <button type="submit" class="am-btn am-btn-primary">保存</button>
+                        <a href="{:U('index')}" class="am-btn am-btn-default">取消</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

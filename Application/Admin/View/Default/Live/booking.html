@@ -1,0 +1,218 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- breadcrumb start -->
+		<div class="am-breadcrumb m-t-10">
+			<ul class="am-breadcrumb-list">
+				<li><a href="{{:U('Admin/Live/Index')}}" class="am-icon-home"> 直播课程</a></li>
+				<li class="am-active">预约管理</li>
+			</ul>
+		</div>
+		<!-- breadcrumb end -->
+
+		<!-- course info start -->
+		<if condition="!empty($live_info)">
+			<div class="am-panel am-panel-secondary m-t-15">
+				<div class="am-panel-hd">
+					<h3 class="am-panel-title">课程信息</h3>
+				</div>
+				<div class="am-panel-bd">
+					<div class="am-g">
+						<div class="am-u-sm-3">
+							<strong>课程名称：</strong>{{$live_info.title}}
+						</div>
+						<div class="am-u-sm-3">
+							<strong>课程类型：</strong>
+							<switch name="live_info.type">
+								<case value="1">1对1</case>
+								<case value="2">小班课</case>
+								<case value="3">大班课</case>
+							</switch>
+						</div>
+						<div class="am-u-sm-3">
+							<strong>授课老师：</strong>{{$live_info.teacher_name}}
+						</div>
+						<div class="am-u-sm-3">
+							<strong>开课时间：</strong>{{$live_info.start_time}}
+						</div>
+					</div>
+					<div class="am-g m-t-10">
+						<div class="am-u-sm-3">
+							<strong>课程时长：</strong>{{$live_info.duration}}分钟
+						</div>
+						<div class="am-u-sm-3">
+							<strong>报名人数：</strong><span class="am-text-success">{{$live_info.current_students}}</span> / {{$live_info.max_students}}
+						</div>
+						<div class="am-u-sm-3">
+							<strong>课程状态：</strong>
+							<switch name="live_info.status">
+								<case value="0"><span class="am-text-secondary">未开始</span></case>
+								<case value="1"><span class="am-text-success">进行中</span></case>
+								<case value="2"><span class="am-text-danger">已结束</span></case>
+							</switch>
+						</div>
+					</div>
+				</div>
+			</div>
+		</if>
+		<!-- course info end -->
+
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Live/Booking')}}" method="POST">
+			<input type="hidden" name="live_id" value="{{$live_id}}" />
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="学员姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
+					{{:L('common_more_screening')}}
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] neq 1">checked</if> />
+					<i class="am-icon-angle-down"></i>
+				</label>
+
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1">预约状态</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待确认</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已确认</option>
+						<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已取消</option>
+						<option value="3" <if condition="isset($param['status']) and $param['status'] eq 3">selected</if>>已完成</option>
+					</select>
+					<div class="param-date param-where m-l-5">
+						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="预约时间开始" id="booking_time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
+						<span>~</span>
+						<input type="text" readonly="readonly" class="am-radius m-t-10" placeholder="预约时间结束" name="time_end" id="booking_time_end" <if condition="isset($param['time_end'])">value="{{$param.time_end}}"</if>/>
+					</div>
+				</div>
+			</div>
+        </form>
+        <!-- form end -->
+
+        <!-- operation start -->
+        <div class="am-g m-t-15">
+            <a href="{{:U('Admin/Live/AddBooking', array('live_id'=>$live_id))}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 添加预约</a>
+            <if condition="!IsMobile()">
+            	<a href="{{$excel_url}}" class="am-btn am-btn-success am-btn-xs m-l-10 am-icon-file-excel-o am-radius"> {{:L('common_operation_excel_export_name')}}</a>
+            </if>
+        </div>
+        <!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10 m-l-5">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>学员姓名</th>
+					<th>联系电话</th>
+					<th>直播课程</th>
+					<th class="am-hide-sm-only">预约时间</th>
+					<th class="am-hide-sm-only">加入时间</th>
+					<th>状态</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>
+								<span class="am-icon-user-secret"></span> {{$v.student_name}}
+							</td>
+							<td>{{$v.student_tel}}</td>
+							<td>{{$v.course_name}}</td>
+							<td class="am-hide-sm-only">{{$v.booking_time}}</td>
+							<td class="am-hide-sm-only">
+								<if condition="!empty($v['join_time'])">
+									{{$v.join_time}}
+								<else />
+									<span class="am-text-warning">未加入</span>
+								</if>
+							</td>
+							<td>
+								<switch name="v.status">
+									<case value="0"><span class="am-badge am-badge-warning">待确认</span></case>
+									<case value="1"><span class="am-badge am-badge-success">已确认</span></case>
+									<case value="2"><span class="am-badge am-badge-danger">已取消</span></case>
+									<case value="3"><span class="am-badge am-badge-primary">已完成</span></case>
+								</switch>
+							</td>
+							<td class="view-operation">
+								<if condition="$v['status'] eq 0">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-check submit-confirm" data-url="{{:U('Admin/Live/ConfirmBooking')}}" data-id="{{$v.id}}" data-am-popover="{content: '确认预约', trigger: 'hover focus'}"></button>
+								</if>
+								<if condition="$v['status'] neq 2 and $v['status'] neq 3">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-times submit-cancel" data-url="{{:U('Admin/Live/CancelBooking')}}" data-id="{{$v.id}}" data-am-popover="{content: '取消预约', trigger: 'hover focus'}"></button>
+								</if>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Live/DeleteBooking')}}" data-am-popover="{content: '{{:L('common_operation_delete')}}', trigger: 'hover focus'}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="10" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+	
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script type="text/javascript">
+$(document).ready(function() {
+	// 确认预约
+	$('.submit-confirm').on('click', function() {
+		var url = $(this).data('url');
+		var id = $(this).data('id');
+		if (confirm('确认该预约吗？')) {
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {id: id},
+				dataType: 'json',
+				success: function(res) {
+					if (res.code == 1) {
+						alert(res.msg);
+						location.reload();
+					} else {
+						alert(res.msg);
+					}
+				}
+			});
+		}
+	});
+
+	// 取消预约
+	$('.submit-cancel').on('click', function() {
+		var url = $(this).data('url');
+		var id = $(this).data('id');
+		if (confirm('确定要取消该预约吗？')) {
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {id: id},
+				dataType: 'json',
+				success: function(res) {
+					if (res.code == 1) {
+						alert(res.msg);
+						location.reload();
+					} else {
+						alert(res.msg);
+					}
+				}
+			});
+		}
+	});
+});
+</script>

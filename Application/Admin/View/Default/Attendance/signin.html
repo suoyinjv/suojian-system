@@ -1,0 +1,196 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend>
+            <span class="fs-16">扫码签到</span>
+            <a href="{:U('index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回列表</a>
+        </legend>
+
+        <!-- 操作按钮 -->
+        <div class="am-g m-b-10">
+            <a href="{:U('index')}" class="am-btn am-btn-primary am-radius am-btn-sm">
+                <i class="am-icon-list"></i> 考勤记录
+            </a>
+            <a href="{:U('stats')}" class="am-btn am-btn-secondary am-radius am-btn-sm">
+                <i class="am-icon-bar-chart"></i> 考勤统计
+            </a>
+        </div>
+
+        <!-- 签到面板 -->
+        <div class="am-panel am-panel-success am-radius m-b-10">
+            <div class="am-panel-hd">快速签到</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" id="signinForm">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">学员手机号</label>
+                        <div class="am-u-sm-4">
+                            <input type="text" name="phone" class="am-form-field" placeholder="输入学员手机号" required>
+                        </div>
+                        <label class="am-u-sm-2 am-form-label">考勤状态</label>
+                        <div class="am-u-sm-4">
+                            <select name="status" class="am-form-field">
+                                <option value="1">正常</option>
+                                <option value="2">请假</option>
+                                <option value="3">旷课</option>
+                                <option value="4">迟到</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">选择课程</label>
+                        <div class="am-u-sm-4">
+                            <select name="schedule_id" class="am-form-field" id="scheduleSelect">
+                                <option value="">请先输入手机号查询</option>
+                            </select>
+                        </div>
+                        <div class="am-u-sm-6">
+                            <button type="button" class="am-btn am-btn-success am-radius" onclick="doSignin()">
+                                <i class="am-icon-check"></i> 确认签到
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 刷卡签到 -->
+        <div class="am-panel am-panel-primary am-radius m-b-10">
+            <div class="am-panel-hd">刷卡考勤</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" id="scanForm">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-2 am-form-label">刷卡/手机号</label>
+                        <div class="am-u-sm-4">
+                            <input type="text" name="card_no" class="am-form-field" placeholder="刷卡或输入手机号">
+                        </div>
+                        <label class="am-u-sm-2 am-form-label">选择课程</label>
+                        <div class="am-u-sm-4">
+                            <select name="schedule_id" class="am-form-field">
+                                <option value="">请选择课程</option>
+                                <volist name="schedule_list" id="vo">
+                                <option value="{$vo.id}">{$vo.course_name} - {:date('H:i', $vo['start_time'])}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-offset-2 am-u-sm-10">
+                            <button type="button" class="am-btn am-btn-primary am-radius" onclick="doScan()">
+                                <i class="am-icon-credit-card"></i> 确认刷卡签到
+                            </button>
+                            <span class="am-badge am-badge-warning m-l-10" id="scanTip">刷卡功能需要配合硬件设备使用</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 搜索表单 -->
+        <form class="am-form am-form-horizontal" method="get" id="searchForm">
+            <div class="am-form-group">
+                <div class="am-u-sm-3">
+                    <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名/手机号" value="{:I('keyword')}">
+                </div>
+                <div class="am-u-sm-3">
+                    <input type="text" name="start_date" class="am-form-field" placeholder="开始日期" onfocus="WdatePicker()" value="{:I('start_date')}">
+                </div>
+                <div class="am-u-sm-3">
+                    <input type="text" name="end_date" class="am-form-field" placeholder="结束日期" onfocus="WdatePicker()" value="{:I('end_date')}">
+                </div>
+                <div class="am-u-sm-3">
+                    <button type="submit" class="am-btn am-btn-primary am-radius">搜索</button>
+                    <a href="{:U('signin')}" class="am-btn am-btn-default am-radius">重置</a>
+                </div>
+            </div>
+        </form>
+
+        <!-- 数据表格 -->
+        <table class="am-table am-table-bordered am-table-striped am-table-hover">
+            <thead>
+                <tr>
+                    <th>学员</th>
+                    <th>电话</th>
+                    <th>课程</th>
+                    <th>考勤日期</th>
+                    <th>状态</th>
+                    <th>扣课时</th>
+                    <th>备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                <volist name="list" id="vo">
+                <tr>
+                    <td>{$vo.student_name}</td>
+                    <td>{$vo.phone}</td>
+                    <td>{$vo.course_name}</td>
+                    <td>{$vo.attend_date}</td>
+                    <td>
+                        <if condition="$vo['status'] eq 1">
+                            <span class="am-badge am-badge-success">正常</span>
+                        <elseif condition="$vo['status'] eq 2" />
+                            <span class="am-badge am-badge-primary">请假</span>
+                        <elseif condition="$vo['status'] eq 3" />
+                            <span class="am-badge am-badge-danger">旷课</span>
+                        <else />
+                            <span class="am-badge am-badge-warning">迟到</span>
+                        </if>
+                    </td>
+                    <td>{$vo.hours|default='-'}</td>
+                    <td>{$vo.remark|default='-'}</td>
+                </tr>
+                <else />
+                <tr>
+                    <td colspan="7" class="am-text-center">暂无签到记录</td>
+                </tr>
+                </volist>
+            </tbody>
+        </table>
+
+        {$page}
+    </div>
+</div>
+
+<include file="Public/Footer" />
+
+<script src="__PUBLIC__/js/jquery.min.js"></script>
+<script src="__PUBLIC__/My97DatePicker/WdatePicker.js"></script>
+<script>
+function doSignin() {
+    var phone = $('input[name="phone"]').val();
+    var status = $('select[name="status"]').val();
+    var schedule_id = $('select[name="schedule_id"]').val();
+    
+    if(!phone) { alert('请输入手机号'); return; }
+    if(!schedule_id) { alert('请选择课程'); return; }
+    
+    $.post('{:U("signin")}', {phone: phone, status: status, schedule_id: schedule_id}, function(res) {
+        if(res.code == 1) {
+            alert('签到成功');
+            location.reload();
+        } else {
+            alert(res.msg);
+        }
+    }, 'json');
+}
+
+function doScan() {
+    alert('刷卡功能需要配合硬件设备使用');
+}
+
+// 根据手机号查询可选课程
+$('input[name="phone"]').blur(function(){
+    var phone = $(this).val();
+    if(phone && phone.length >= 11) {
+        $.get('{:U("getScheduleByPhone")}?phone='+phone, function(res){
+            if(res.code == 1) {
+                var html = '<option value="">请选择课程</option>';
+                $.each(res.data, function(i, v){
+                    html += '<option value="'+v.id+'">'+v.course_name+' - '+v.start_time+'</option>';
+                });
+                $('#scheduleSelect').html(html);
+            }
+        }, 'json');
+    }
+});
+</script>

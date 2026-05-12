@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>作业回顾 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .homework-card { margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .homework-card .am-panel-hd { background: #f9f9f9; cursor: pointer; }
+        .homework-card .am-panel-hd:hover { background: #eee; }
+    </style>
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-u-sm-12">
+            <h2>作业回顾</h2>
+            
+            <form class="am-form am-form-inline" method="get" style="margin-bottom:20px;">
+                <div class="am-form-group">
+                    <select name="course_id">
+                        <option value="">全部课程</option>
+                        <volist name="courses" id="vo">
+                        <option value="{$key}" {:I('course_id')==$key?'selected':''}>{$vo}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="am-form-group">
+                    <input type="text" name="keyword" class="am-form-field" placeholder="作业标题" value="{:I('keyword')}">
+                </div>
+                <div class="am-form-group">
+                    <select name="status">
+                        <option value="">全部状态</option>
+                        <option value="1" {:I('status')==='1'?'selected':''}>已完成</option>
+                        <option value="0" {:I('status')==='0'?'selected':''}>未完成</option>
+                    </select>
+                </div>
+                <button type="submit" class="am-btn am-btn-default">搜索</button>
+            </form>
+            
+            <div class="am-panel-group" id="accordion">
+                <volist name="list" id="vo">
+                <div class="homework-card am-panel am-panel-default">
+                    <div class="am-panel-hd" data-am-collapse="{target: '#homework-{$vo.id}'}">
+                        <div class="am-fl">
+                            <strong>{$vo.title}</strong>
+                            <span class="am-text-secondary"> - {$vo.course_name}</span>
+                        </div>
+                        <div class="am-fr">
+                            <if condition="$vo['is_submit'] eq 1">
+                            <span class="am-badge am-badge-success">已完成 | 得分：{$vo.score|default='--'}/{$vo.total_score|default=100}</span>
+                            <else/>
+                            <span class="am-badge am-badge-warning">未完成</span>
+                            </if>
+                            <span class="am-icon-chevron-down am-fr" style="margin-left:10px;"></span>
+                        </div>
+                    </div>
+                    <div id="homework-{$vo.id}" class="am-panel-collapse am-collapse">
+                        <div class="am-panel-bd">
+                            <div class="am-g">
+                                <div class="am-u-sm-6">
+                                    <p><strong>作业内容：</strong></p>
+                                    <div style="background:#f9f9f9;padding:10px;min-height:80px;">
+                                        {$vo.content|htmlspecialchars_decode|default='无'}
+                                    </div>
+                                    <if condition="!empty($vo['attachment'])">
+                                    <p style="margin-top:10px;">
+                                        <a href="{$vo.attachment}" target="_blank">
+                                            <i class="am-icon-paperclip"></i> 下载附件
+                                        </a>
+                                    </p>
+                                    </if>
+                                </div>
+                                <div class="am-u-sm-6">
+                                    <p><strong>作业信息：</strong></p>
+                                    <p>截止时间：{$vo.submit_deadline}</p>
+                                    <p>满分分值：{$vo.total_score|default=100}分</p>
+                                    <p>作业类型：
+                                        <switch name="vo.type">
+                                            <case value="1">书面作业</case>
+                                            <case value="2">在线作业</case>
+                                            <case value="3">实践作业</case>
+                                            <default/>未知
+                                        </switch>
+                                    </p>
+                                    <if condition="$vo['is_submit'] eq 1">
+                                    <p>提交时间：{$vo.submit_time}</p>
+                                    <if condition="!empty($vo['comment'])">
+                                    <p><strong>教师评语：</strong>{$vo.comment}</p>
+                                    </if>
+                                    </if>
+                                </div>
+                            </div>
+                            <div style="margin-top:15px;">
+                                <if condition="$vo['is_submit'] eq 1">
+                                <a href="{:U('correct', array('id'=>$vo['submit_id']))}" class="am-btn am-btn-xs am-btn-primary">查看批改</a>
+                                <else/>
+                                <a href="{:U('submit', array('homework_id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-default">去完成</a>
+                                </if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </volist>
+            </div>
+            
+            <if condition="empty($list)">
+            <div class="am-alert am-alert-secondary" style="text-align:center;margin-top:20px;">
+                暂无作业记录
+            </div>
+            </if>
+            
+            <div class="am-pagination">{$page}</div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.collapse.js"></script>
+</body>
+</html>

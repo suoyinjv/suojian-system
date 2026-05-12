@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>成长记录详情 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .gallery img { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; }
+        .info-row { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .info-label { color: #999; }
+        .share-qr { text-align: center; padding: 20px; background: #f8f8f8; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <volist name="info" id="vo">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">
+                {$vo.title}
+                <span class="am-fr am-text-sm">{:date('Y-m-d H:i', $vo['add_time'])}</span>
+            </div>
+            <div class="am-panel-bd">
+                <div class="info-row">
+                    <span class="info-label">学员：</span>
+                    <span>{$vo.student_name}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">类型：</span>
+                    <span>
+                        <switch name="vo.type">
+                            <case value="1">课堂表现</case>
+                            <case value="2">作业完成</case>
+                            <case value="3">活动参与</case>
+                            <case value="4">进步表扬</case>
+                            <case value="5">其他</case>
+                        </switch>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">关联课程：</span>
+                    <span>{$vo.course_name|default='无'}</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <span class="info-label">记录内容：</span>
+                    <p style="margin-top: 8px; line-height: 1.8;">{$vo.content}</p>
+                </div>
+                
+                <if condition="$vo['images']">
+                <div style="margin-top: 15px;">
+                    <span class="info-label">图片：</span>
+                    <div class="gallery">
+                        <volist name="vo.images" id="img">
+                        <img src="{$img}" onclick="preview(this.src)">
+                        </volist>
+                    </div>
+                </div>
+                </if>
+                
+                <div class="share-qr">
+                    <p class="am-text-muted">分享给家长</p>
+                    <a href="{:U('share', array('id'=>$vo['id']))}" class="am-btn am-btn-primary am-radius">
+                        <i class="am-icon-share-alt"></i> 生成分享链接
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-text-center">
+            <a href="{:U('index')}" class="am-btn am-btn-default am-radius">返回列表</a>
+        </div>
+        </volist>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function preview(src) {
+    window.open(src);
+}
+</script>
+</body>
+</html>

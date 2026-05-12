@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑课程包</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-edit"></i> 编辑课程包</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课程包名称</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="name" class="am-form-field" value="{$info.name}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课时数</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="hours" class="am-form-field" value="{$info.hours}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">售价</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="price" step="0.01" class="am-form-field" value="{$info.price}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">原价</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="original_price" step="0.01" class="am-form-field" value="{$info.original_price}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">有效期(天)</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="validity_days" class="am-form-field" value="{$info.validity_days}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">描述</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="description" class="am-form-field" rows="4">{$info.description}</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">状态</label>
+                                <div class="am-u-sm-7">
+                                    <select name="status" class="am-form-field">
+                                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>上架</option>
+                                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>下架</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">保存</button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

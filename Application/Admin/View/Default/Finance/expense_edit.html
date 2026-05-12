@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>编辑支出 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .page-header { margin-bottom: 20px; }
+        .am-form .am-form-group { margin-bottom: 15px; }
+        .info-box {
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #f5f5f5;
+            border-left: 4px solid #dd514c;
+            border-radius: 4px;
+        }
+        .am-form .am-form-label { font-weight: 500; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-cf admin-main">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <div class="page-header">
+                    <h2>编辑支出记录</h2>
+                </div>
+
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd am-cf">
+                        <span class="am-fl">支出信息</span>
+                        <a href="{:U('Finance/expense')}" class="am-btn am-btn-sm am-btn-default am-fr">返回列表</a>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="{:U('Finance/expense_update')}" method="post">
+                            <input type="hidden" name="id" value="{$expense.id}">
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">支出日期</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" name="expense_date" value="{:date('Y-m-d', $expense['expense_date'])}" required onfocus="WdatePicker()">
+                                </div>
+                                <label class="am-u-sm-2 am-form-label">支出类型</label>
+                                <div class="am-u-sm-4">
+                                    <select name="type_id" required>
+                                        <option value="">请选择</option>
+                                        <volist name="type_list" id="t">
+                                        <option value="{$t.id}" <if condition="$expense['type_id'] eq $t['id']">selected</if>>{$t.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">金额（元）</label>
+                                <div class="am-u-sm-4">
+                                    <input type="number" name="amount" step="0.01" value="{$expense.amount}" required placeholder="0.00">
+                                </div>
+                                <label class="am-u-sm-2 am-form-label">付款方式</label>
+                                <div class="am-u-sm-4">
+                                    <select name="pay_method">
+                                        <option value="1" <if condition="$expense['pay_method'] eq 1">selected</if>>现金</option>
+                                        <option value="2" <if condition="$expense['pay_method'] eq 2">selected</if>>银行转账</option>
+                                        <option value="3" <if condition="$expense['pay_method'] eq 3">selected</if>>微信支付</option>
+                                        <option value="4" <if condition="$expense['pay_method'] eq 4">selected</if>>支付宝</option>
+                                        <option value="5" <if condition="$expense['pay_method'] eq 5">selected</if>>其他</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">收款人</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" name="payee" value="{$expense.payee}" placeholder="收款方名称">
+                                </div>
+                                <label class="am-u-sm-2 am-form-label">操作人</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" value="{$expense.admin_name}" disabled class="am-form-field">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">备注</label>
+                                <div class="am-u-sm-10">
+                                    <textarea name="remark" rows="4" placeholder="支出说明">{$expense.remark}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-10 am-u-sm-offset-2">
+                                    <button type="submit" class="am-btn am-btn-primary">保存修改</button>
+                                    <a href="{:U('Finance/expense')}" class="am-btn am-btn-default">取消</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/Admin/js/datepicker/WdatePicker.js"></script>
+</body>
+</html>

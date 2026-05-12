@@ -1,0 +1,123 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Poster/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Poster/Index')}}" enctype="multipart/form-data">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						添加海报模板
+					<else />
+						编辑海报模板
+					</if>
+				</span>
+				<a href="{{:U('Admin/Poster/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+			<div class="am-form-group">
+				<label>模板名称<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="text" name="title" placeholder="请输入海报模板名称" minlength="2" maxlength="60" data-validation-message="模板名称长度为2-60个字符" class="am-radius" <notempty name="data"> value="{{$data.title}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>海报分类<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<select name="category_id" class="am-radius c-p" data-validation-message="请选择海报分类" required>
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="category_list" item="v">
+						<option value="{{$v.id}}" <if condition="isset($data['category_id']) and $data['category_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</foreach>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>缩略图<span class="fs-12 fw-100 cr-999">（建议尺寸：200x300）</span></label>
+				<div class="am-input-group">
+					<input type="text" name="thumbnail" id="thumbnail" placeholder="上传缩略图或输入图片URL" class="am-form-field am-radius" <notempty name="data"> value="{{$data.thumbnail}}"</notempty> />
+					<span class="am-input-group-btn">
+						<button type="button" class="am-btn am-btn-default am-radius" onclick="uploadImage('thumbnail')">
+							<i class="am-icon-cloud-upload"></i> 上传图片
+						</button>
+					</span>
+				</div>
+				<if condition="!empty($data['thumbnail'])">
+					<div class="m-t-10">
+						<img src="{{$data.thumbnail}}" class="am-img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+					</div>
+				</if>
+			</div>
+			<div class="am-form-group">
+				<label>画布宽度<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="number" name="canvas_width" placeholder="请输入画布宽度" min="100" max="2000" data-validation-message="画布宽度范围为100-2000像素" class="am-radius" <notempty name="data"> value="{{$data.canvas_width}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>画布高度<span class="fs-12 fw-100 cr-red"> *</span></label>
+				<input type="number" name="canvas_height" placeholder="请输入画布高度" min="100" max="2000" data-validation-message="画布高度范围为100-2000像素" class="am-radius" <notempty name="data"> value="{{$data.canvas_height}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>设计JSON<span class="fs-12 fw-100 cr-999">（海报元素配置）</span></label>
+				<textarea name="design_json" placeholder='请输入设计JSON配置' rows="10" class="am-radius" data-validation-message="请输入正确的JSON格式"><notempty name="data">{{$data.design_json}}</notempty></textarea>
+				<span class="fs-12 cr-999">示例：{"elements":[{"type":"text","content":"标题","x":10,"y":10,"width":200,"height":30}]}</span>
+			</div>
+			<div class="am-form-group">
+				<label>{{:L('common_view_enable_title')}}</label>
+				<div>
+					<foreach name="common_is_enable_list" item="v">
+						<label class="am-radio-inline m-r-10">
+							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] eq $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] eq true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+						</label>
+					</foreach>
+				</div>
+			</div>
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+        <!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+	
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script type="text/javascript">
+// 上传图片函数
+function uploadImage(inputId) {
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        
+        var formData = new FormData();
+        formData.append('file', file);
+        
+        $.ajax({
+            url: '{{:U("Admin/Upload/Image")}}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            beforeSend: function() {
+                $('#' + inputId).val('上传中...');
+            },
+            success: function(res) {
+                if (res.code == 1) {
+                    $('#' + inputId).val(res.data);
+                    alert('上传成功');
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function() {
+                alert('上传失败，请重试');
+                $('#' + inputId).val('');
+            }
+        });
+    };
+    input.click();
+}
+</script>

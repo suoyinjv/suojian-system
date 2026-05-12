@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>报名记录 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <!-- 筛选区域 -->
+            <div class="am-u-sm-12 am-margin-bottom">
+                <form action="{:U('records')}" method="get" class="am-form-inline">
+                    <div class="am-form-group">
+                        <select name="activity_id" class="am-form-field">
+                            <option value="">全部活动</option>
+                            <volist name="activity_list" id="vo">
+                            <option value="{$vo.id}" <?php if(isset($_GET['activity_id']) && $_GET['activity_id']==$vo['id']) echo 'selected'; ?>>{$vo.title}</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <div class="am-form-group">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名/手机号" value="{$Think.get.keyword}">
+                    </div>
+                    <div class="am-form-group">
+                        <select name="status" class="am-form-field">
+                            <option value="">全部状态</option>
+                            <option value="1" <?php if(isset($_GET['status']) && $_GET['status']==1) echo 'selected'; ?>>有效</option>
+                            <option value="0" <?php if(isset($_GET['status']) && $_GET['status']==='0') echo 'selected'; ?>>已取消</option>
+                        </select>
+                    </div>
+                    <div class="am-form-group">
+                        <input type="date" name="start_date" class="am-form-field" value="{$Think.get.start_date}" placeholder="开始日期">
+                    </div>
+                    <div class="am-form-group">
+                        <input type="date" name="end_date" class="am-form-field" value="{$Think.get.end_date}" placeholder="结束日期">
+                    </div>
+                    <button type="submit" class="am-btn am-btn-primary am-radius">筛选</button>
+                    <a href="{:U('records')}" class="am-btn am-btn-default am-radius">重置</a>
+                </form>
+            </div>
+            
+            <!-- 数据表格 -->
+            <div class="am-u-sm-12">
+                <table class="am-table am-table-bordered am-table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>活动名称</th>
+                            <th>学员姓名</th>
+                            <th>联系电话</th>
+                            <th>报名时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.activity_title}</td>
+                            <td>{$vo.user_name}</td>
+                            <td>{$vo.mobile}</td>
+                            <td>{$vo.create_time}</td>
+                            <td>{$vo.status_text}</td>
+                            <td>
+                                <a href="javascript:;" onclick="toggleStatus('{:U('toggleRecordStatus')}', {$vo.id}, {$vo.status})">
+                                    {$vo.status ? '取消' : '恢复'}
+                                </a>
+                            </td>
+                        </tr>
+                        </volist>
+                        <if condition="empty($list)">
+                        <tr>
+                            <td colspan="7" class="am-text-center">暂无记录</td>
+                        </tr>
+                        </if>
+                    </tbody>
+                </table>
+                
+                <!-- 分页 -->
+                <div class="am-pagination">
+                    {$page}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function toggleStatus(url, id, status) {
+    var action = status ? '取消' : '恢复';
+    if(confirm('确定要' + action + '此报名记录吗？')) {
+        location.href = url + '?id=' + id;
+    }
+}
+</script>
+</body>
+</html>

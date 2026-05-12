@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>分享设置 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-10 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="fa fa-share-alt"></i> 分享设置 - {$info.name}</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">当前状态</label>
+                                <div class="am-u-sm-7 am-padding-top-xs">
+                                    <if condition="$info['is_shared'] eq 1">
+                                        <span class="am-badge am-badge-success"><i class="am-icon-check"></i> 已共享</span>
+                                    <else/>
+                                        <span class="am-badge am-badge-default"><i class="am-icon-lock"></i> 私有</span>
+                                    </if>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">分享方式</label>
+                                <div class="am-u-sm-7">
+                                    <select name="share_type" class="am-form-field" id="shareType">
+                                        <option value="0" <if condition="$info['share_type'] eq 0">selected</if>>不共享</option>
+                                        <option value="1" <if condition="$info['share_type'] eq 1">selected</if>>按班级分享</option>
+                                        <option value="2" <if condition="$info['share_type'] eq 2">selected</if>>按课程分享</option>
+                                        <option value="3" <if condition="$info['share_type'] eq 3">selected</if>>公开分享</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group" id="classSelect" style="display:none;">
+                                <label class="am-u-sm-3 am-text-right">选择班级</label>
+                                <div class="am-u-sm-7">
+                                    <select name="class_id" class="am-form-field">
+                                        <option value="">请选择班级</option>
+                                        <volist name="classList" id="class">
+                                        <option value="{$class.id}">{$class.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group" id="courseSelect" style="display:none;">
+                                <label class="am-u-sm-3 am-text-right">选择课程</label>
+                                <div class="am-u-sm-7">
+                                    <select name="course_id" class="am-form-field">
+                                        <option value="">请选择课程</option>
+                                        <volist name="courseList" id="course">
+                                        <option value="{$course.id}">{$course.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">分享说明</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="share_desc" class="am-form-field" rows="3" placeholder="可选：添加分享说明">{$info.share_desc}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-save"></i> 保存分享设置
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-btn-block">
+                                        <i class="am-icon-arrow-left"></i> 返回列表
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    function toggleShareOptions() {
+        var shareType = $('#shareType').val();
+        $('#classSelect').hide();
+        $('#courseSelect').hide();
+        if(shareType == 1) {
+            $('#classSelect').show();
+        } else if(shareType == 2) {
+            $('#courseSelect').show();
+        }
+    }
+    $('#shareType').change(toggleShareOptions);
+    toggleShareOptions();
+});
+</script>
+</body>
+</html>

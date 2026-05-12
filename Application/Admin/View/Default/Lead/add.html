@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加线索</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-plus"></i> 添加线索</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="addForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">学员姓名 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="student_name" class="am-form-field" placeholder="学员姓名" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">手机号 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="phone" class="am-form-field" placeholder="手机号" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">来源渠道</label>
+                                <div class="am-u-sm-7">
+                                    <select name="source" class="am-form-field">
+                                        <option value="website">网站表单</option>
+                                        <option value="offline">线下地推</option>
+                                        <option value="viral">裂变海报</option>
+                                        <option value="tel">电话咨询</option>
+                                        <option value="referral">转介绍</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">微信号</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="wechat" class="am-form-field" placeholder="微信号">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">年龄</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="age" class="am-form-field" placeholder="年龄">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">家长姓名</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="parent_name" class="am-form-field" placeholder="家长姓名">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">意向课程</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="interest_course" class="am-form-field" placeholder="意向课程">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">预算</label>
+                                <div class="am-u-sm-7">
+                                    <input type="number" name="budget" class="am-form-field" placeholder="预算金额">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">意向程度</label>
+                                <div class="am-u-sm-7">
+                                    <select name="interest_level" class="am-form-field">
+                                        <option value="1">低</option>
+                                        <option value="2">中</option>
+                                        <option value="3" selected>高</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">地址</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="address" class="am-form-field" placeholder="家庭住址">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-check"></i> 提交
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#addForm').submit(function() {
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if(res.code) {
+            location.href = '__CONTROLLER__/index';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- page title start -->
+		<div class="am-g">
+			<h3 class="page-title">课程报表</h3>
+		</div>
+		<!-- page title end -->
+
+		<!-- top cards start -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-book am-3x am-text-success"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalCourses}</p>
+							<p class="am-text-sm am-text-muted">在售课程（个）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-user-plus am-3x am-text-primary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalEnrollments}</p>
+							<p class="am-text-sm am-text-muted">总报名人数（人）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-yen am-3x am-text-warning"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalCourseRevenue}</p>
+							<p class="am-text-sm am-text-muted">课程总收入（元）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-users am-3x am-text-secondary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$avgStudentsPerCourse}</p>
+							<p class="am-text-sm am-text-muted">课程平均学员数</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- top cards end -->
+
+		<!-- filter form start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-bd">
+				<form class="am-form" action="{{:U('Admin/Report/courseReport')}}" method="get">
+					<div class="am-g">
+						<div class="am-u-md-3">
+							<div class="am-input-group">
+								<span class="am-input-group-label"><i class="am-icon-calendar"></i></span>
+								<input type="text" class="am-form-field" name="start_date" placeholder="开始日期" value="{{$startDate}}" data-am-datepicker />
+							</div>
+						</div>
+						<div class="am-u-md-3">
+							<div class="am-input-group">
+								<span class="am-input-group-label"><i class="am-icon-calendar"></i></span>
+								<input type="text" class="am-form-field" name="end_date" placeholder="结束日期" value="{{$endDate}}" data-am-datepicker />
+							</div>
+						</div>
+						<div class="am-u-md-2">
+							<select name="campus_id" class="am-form-field">
+								<option value="">全部校区</option>
+								<volist name="campusList" id="campus">
+								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId eq $campus['id']">selected</if>>{{$campus.name}}</option>
+								</volist>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<input type="text" class="am-form-field" name="keyword" placeholder="课程名称" value="{{$keyword}}" />
+						</div>
+						<div class="am-u-md-2">
+							<button type="submit" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-search"></i> 查询</button>
+							<a href="{{:U('Admin/Report/exportCourse')}}" class="am-btn am-btn-success am-btn-sm"><i class="am-icon-download"></i> 导出</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- filter form end -->
+
+		<!-- table start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-hd"><i class="am-icon-table"></i> 各课程招生数据</div>
+			<div class="am-panel-bd am-scrollable-horizontal">
+				<table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap">
+					<thead>
+						<tr>
+							<th>课程名称</th>
+							<th>校区</th>
+							<th>课程类型</th>
+							<th class="am-text-right">单价（元）</th>
+							<th class="am-text-right">报名人数</th>
+							<th class="am-text-right">退课人数</th>
+							<th class="am-text-right">实收金额（元）</th>
+							<th class="am-text-right">转化率</th>
+							<th>状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($list)">
+						<volist name="list" id="item">
+						<tr>
+							<td>{{$item.course_name}}</td>
+							<td>{{$item.campus_name}}</td>
+							<td>{{$item.category_name}}</td>
+							<td class="am-text-right">{{$item.price}}</td>
+							<td class="am-text-right">{{$item.enroll_count}}</td>
+							<td class="am-text-right">{{$item.refund_count}}</td>
+							<td class="am-text-right">{{$item.revenue}}</td>
+							<td class="am-text-right">{{$item.convert_rate}}%</td>
+							<td>
+								<if condition="$item['status'] eq 1">
+								<span class="am-badge am-badge-success">在售</span>
+								<else />
+								<span class="am-badge am-badge-default">已下架</span>
+								</if>
+							</td>
+						</tr>
+						</volist>
+						<else />
+						<tr><td colspan="9" class="am-text-center">暂无数据</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- table end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

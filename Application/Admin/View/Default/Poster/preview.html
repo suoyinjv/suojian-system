@@ -1,0 +1,188 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<div class="am-g">
+			<a href="{{:U('Admin/Poster/Records')}}" class="am-btn am-btn-default am-radius am-btn-sm am-icon-mail-reply m-b-10"> 返回记录列表</a>
+		</div>
+
+		<if condition="!empty($data)">
+		<!-- poster preview start -->
+		<div class="am-g">
+			<!-- large image start -->
+			<div class="am-u-sm-8">
+				<div class="am-panel am-panel-default am-radius">
+					<div class="am-panel-hd">
+						<span class="fs-14 fw-bold">海报预览</span>
+					</div>
+					<div class="am-panel-bd am-text-center" style="background:#f5f5f5; padding: 30px;">
+						<if condition="!empty($data['poster_url'])">
+							<img src="{{$data.poster_url}}" id="poster-img" class="am-img-responsive am-center" style="max-width:100%; max-height:600px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);" />
+						<else />
+							<div class="am-text-secondary am-text-xl am-padding-xl">
+								<i class="am-icon-picture-o am-icon-lg"></i><br />
+								<span class="fs-14">海报文件不存在</span>
+							</div>
+						</if>
+					</div>
+				</div>
+			</div>
+			<!-- large image end -->
+
+			<!-- info card start -->
+			<div class="am-u-sm-4">
+				<div class="am-panel am-panel-default am-radius">
+					<div class="am-panel-hd">
+						<span class="fs-14 fw-bold">海报信息</span>
+					</div>
+					<div class="am-panel-bd">
+						<table class="am-table">
+							<tr>
+								<td class="cr-999" style="width:35%;">海报名称</td>
+								<td>{{$data.title}}</td>
+							</tr>
+							<tr>
+								<td class="cr-999">学员姓名</td>
+								<td>{{$data.student_name}}</td>
+							</tr>
+							<tr>
+								<td class="cr-999">所属模板</td>
+								<td>{{$data.template_title}}</td>
+							</tr>
+							<tr>
+								<td class="cr-999">生成时间</td>
+								<td>{{$data.create_time}}</td>
+							</tr>
+							<tr>
+								<td class="cr-999">文件状态</td>
+								<td>
+									<if condition="$data['status'] eq 1">
+										<span class="am-text-success"><i class="am-icon-check-circle"></i> 生成成功</span>
+									<else />
+										<span class="am-text-danger" title="{{$data.error_msg}}"><i class="am-icon-times-circle"></i> 生成失败</span>
+									</if>
+								</td>
+							</tr>
+							<if condition="!empty($data['file_size'])">
+							<tr>
+								<td class="cr-999">文件大小</td>
+								<td>{{$data.file_size}}</td>
+							</tr>
+							</if>
+							<if condition="!empty($data['canvas_width'])">
+							<tr>
+								<td class="cr-999">画布尺寸</td>
+								<td>{{$data.canvas_width}} x {{$data.canvas_height}} px</td>
+							</tr>
+							</if>
+						</table>
+
+						<hr />
+
+						<!-- action buttons -->
+						<div class="am-g">
+							<div class="am-u-sm-4 am-text-center">
+								<if condition="$data['status'] eq 1">
+									<a href="{{$data.download_url}}" class="am-btn am-btn-secondary am-btn-sm am-radius am-icon-download">
+										<div class="fs-12 m-t-5">下载</div>
+									</a>
+								<else />
+									<button class="am-btn am-btn-default am-btn-sm am-radius am-icon-download" disabled title="生成失败，无法下载">
+										<div class="fs-12 m-t-5">下载</div>
+									</button>
+								</if>
+							</div>
+							<div class="am-u-sm-4 am-text-center">
+								<if condition="!empty($data['poster_url'])">
+									<a href="{{:U('Admin/Poster/share', array('id'=>$data['id']))}}" class="am-btn am-btn-secondary am-btn-sm am-radius am-icon-share-alt">
+										<div class="fs-12 m-t-5">分享</div>
+									</a>
+								<else />
+									<button class="am-btn am-btn-default am-btn-sm am-radius am-icon-share-alt" disabled>
+										<div class="fs-12 m-t-5">分享</div>
+									</button>
+								</if>
+							</div>
+							<div class="am-u-sm-4 am-text-center">
+								<button class="am-btn am-btn-danger am-btn-sm am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Poster/DeleteRecord')}}" data-id="{{$data.id}}" data-confirm="确定删除此海报？">
+									<div class="fs-12 m-t-5">删除</div>
+								</button>
+							</div>
+						</div>
+
+						<hr />
+
+						<!-- zoom controls -->
+						<div class="am-text-center">
+							<div class="am-btn-group">
+								<button type="button" class="am-btn am-btn-default am-btn-sm am-radius" id="btn-zoom-out"><i class="am-icon-search-minus"></i> 缩小</button>
+								<button type="button" class="am-btn am-btn-default am-btn-sm am-radius" id="btn-zoom-reset">重置</button>
+								<button type="button" class="am-btn am-btn-default am-btn-sm am-radius" id="btn-zoom-in"><i class="am-icon-search-plus"></i> 放大</button>
+							</div>
+							<div class="fs-12 cr-999 m-t-5" id="zoom-level">缩放比例: 100%</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- info card end -->
+		</div>
+		<!-- poster preview end -->
+
+		<!-- QR code section start -->
+		<if condition="!empty($data['qrcode_url'])">
+		<div class="am-g m-t-15">
+			<div class="am-panel am-panel-default am-radius">
+				<div class="am-panel-hd">
+					<span class="fs-14 fw-bold">二维码信息</span>
+				</div>
+				<div class="am-panel-bd am-text-center">
+					<img src="{{$data.qrcode_url}}" class="am-img-thumbnail" style="max-width:150px;" />
+					<p class="fs-12 cr-999 m-t-10">扫描查看或下载海报</p>
+				</div>
+			</div>
+		</div>
+		</if>
+		<!-- QR code section end -->
+
+		<else />
+		<div class="am-alert am-alert-warning am-radius am-text-center">
+			<i class="am-icon-frown-o"></i> 未找到该海报记录
+		</div>
+		</if>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script type="text/javascript">
+$(function(){
+	var zoom = 100;
+	var $img = $('#poster-img');
+
+	$('#btn-zoom-in').click(function(){
+		if(zoom < 300) {
+			zoom += 10;
+			$img.css('max-height', (600 * zoom / 100) + 'px');
+			$('#zoom-level').text('缩放比例: ' + zoom + '%');
+		}
+	});
+
+	$('#btn-zoom-out').click(function(){
+		if(zoom > 20) {
+			zoom -= 10;
+			$img.css('max-height', (600 * zoom / 100) + 'px');
+			$('#zoom-level').text('缩放比例: ' + zoom + '%');
+		}
+	});
+
+	$('#btn-zoom-reset').click(function(){
+		zoom = 100;
+		$img.css('max-height', '600px');
+		$('#zoom-level').text('缩放比例: 100%');
+	});
+});
+</script>

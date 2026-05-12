@@ -1,0 +1,63 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Region/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Region/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						新增地区
+					<else />
+						编辑地区
+					</if>
+				</span>
+				<a href="{{:U('Admin/Region/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>地区名称</label>
+				<input type="text" name="name" placeholder="地区名称" class="am-radius" <notempty name="data"> value="{{$data.name}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>上级地区</label>
+				<select name="parent_id" class="am-radius">
+					<option value="0">顶级地区</option>
+					<volist name="region_list" id="v">
+						<option value="{{$v.id}}" <if condition="isset($data['parent_id']) and $data['parent_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</volist>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>排序</label>
+				<input type="number" name="sort" placeholder="排序" class="am-radius" <notempty name="data"> value="{{$data.sort}}"</notempty> value="0" />
+			</div>
+
+			<div class="am-form-group">
+				<label>状态</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="is_show" value="1" <if condition="!isset($data['is_show']) or $data['is_show'] eq 1">checked="checked"</if> data-am-ucheck /> 显示
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="is_show" value="0" <if condition="isset($data['is_show']) and $data['is_show'] eq 0">checked="checked"</if> data-am-ucheck /> 隐藏
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

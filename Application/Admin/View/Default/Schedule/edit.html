@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编辑排课</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-edit"></i> 编辑排课</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">课程</label>
+                                <div class="am-u-sm-7">
+                                    <select name="course_id" class="am-form-field" required>
+                                        <volist name="courses" id="vo">
+                                        <option value="{$vo.id}" <if condition="$info['course_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">班级</label>
+                                <div class="am-u-sm-7">
+                                    <select name="class_id" class="am-form-field" required>
+                                        <volist name="classes" id="vo">
+                                        <option value="{$vo.id}" <if condition="$info['class_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">老师</label>
+                                <div class="am-u-sm-7">
+                                    <select name="teacher_id" class="am-form-field" required>
+                                        <volist name="teachers" id="vo">
+                                        <option value="{$vo.id}" <if condition="$info['teacher_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">上课日期</label>
+                                <div class="am-u-sm-7">
+                                    <input type="date" name="schedule_date" class="am-form-field" required value="{$info.schedule_date}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">开始时间</label>
+                                <div class="am-u-sm-7">
+                                    <input type="time" name="start_time" class="am-form-field" required value="{$info.start_time}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">结束时间</label>
+                                <div class="am-u-sm-7">
+                                    <input type="time" name="end_time" class="am-form-field" required value="{$info.end_time}">
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">教室</label>
+                                <div class="am-u-sm-7">
+                                    <select name="room_id" class="am-form-field">
+                                        <option value="">不限定</option>
+                                        <volist name="rooms" id="vo">
+                                        <option value="{$vo.id}" <if condition="$info['room_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">状态</label>
+                                <div class="am-u-sm-7">
+                                    <select name="status" class="am-form-field">
+                                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>正常</option>
+                                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>已取消</option>
+                                        <option value="2" <if condition="$info['status'] eq 2">selected</if>>已结束</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">备注</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="remark" class="am-form-field" rows="2">{$info.remark}</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">保存</button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

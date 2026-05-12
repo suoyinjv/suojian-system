@@ -1,0 +1,53 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation" method="POST" action="{:U('Admin/Live/replayAdd')}" request-type="ajax-url" request-value="{:U('Admin/Live/replay')}">
+			<legend>
+				<span class="fs-16">新增回放记录</span>
+				<a href="{:U('Admin/Live/replay')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>回放标题 <span class="cr-red">*</span></label>
+				<input type="text" name="title" placeholder="请输入回放标题" class="am-radius" required>
+			</div>
+
+			<div class="am-form-group">
+				<label>关联课程 <span class="cr-red">*</span></label>
+				<select name="course_id" class="am-radius" required>
+					<option value="">请选择课程</option>
+					<foreach name="courses" item="v">
+						<option value="{{$v.id}}">{{$v.title}}</option>
+					</foreach>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>回放地址</label>
+				<input type="url" name="url" placeholder="请输入回放视频地址（URL）" class="am-radius">
+				<span class="fs-12 cr-999">支持MP4、HLS(.m3u8)等格式</span>
+			</div>
+
+			<div class="am-form-group">
+				<label>Session标识</label>
+				<input type="text" name="session_id" placeholder="请输入第三方直播会话ID（选填）" class="am-radius">
+			</div>
+
+			<div class="am-form-group">
+				<label>时长（秒）</label>
+				<input type="number" name="duration" placeholder="请输入时长（秒）" min="0" class="am-radius">
+			</div>
+
+			<div class="am-form-group">
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end -->
+
+<include file="Public/Footer" />

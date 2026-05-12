@@ -1,0 +1,181 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- page title start -->
+		<div class="am-g">
+			<h3 class="page-title">学员报表</h3>
+		</div>
+		<!-- page title end -->
+
+		<!-- top cards start -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-user am-3x am-text-success"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$totalStudents}</p>
+							<p class="am-text-sm am-text-muted">学员总数（人）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-user-plus am-3x am-text-primary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$newStudents}</p>
+							<p class="am-text-sm am-text-muted">新增学员（人）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-star am-3x am-text-warning"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$vipStudents}</p>
+							<p class="am-text-sm am-text-muted">VIP学员（人）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6 am-u-md-3">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-bd am-cf">
+						<div class="am-fl"><i class="am-icon-check-circle am-3x am-text-secondary"></i></div>
+						<div class="am-fr am-text-right">
+							<p class="am-text-xl m-b-0">{$activeStudents}</p>
+							<p class="am-text-sm am-text-muted">活跃学员（人）</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- top cards end -->
+
+		<!-- filter form start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-bd">
+				<form class="am-form" action="{{:U('Admin/Report/studentReport')}}" method="get">
+					<div class="am-g">
+						<div class="am-u-md-2">
+							<input type="text" class="am-form-field" name="keyword" placeholder="姓名/手机号" value="{{$keyword}}" />
+						</div>
+						<div class="am-u-md-2">
+							<select name="campus_id" class="am-form-field">
+								<option value="">全部校区</option>
+								<volist name="campusList" id="campus">
+								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId eq $campus['id']">selected</if>>{{$campus.name}}</option>
+								</volist>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<select name="source" class="am-form-field">
+								<option value="">来源渠道</option>
+								<volist name="sourceList" id="src">
+								<option value="{{$src}}" <if condition="isset($source) and $source eq $src">selected</if>>{{$src}}</option>
+								</volist>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<select name="level" class="am-form-field">
+								<option value="">学员等级</option>
+								<option value="normal" <if condition="isset($level) and $level eq 'normal'">selected</if>>普通</option>
+								<option value="vip" <if condition="isset($level) and $level eq 'vip'">selected</if>>VIP</option>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<select name="status" class="am-form-field">
+								<option value="">状态</option>
+								<option value="1" <if condition="isset($status) and $status eq 1">selected</if>>在读</option>
+								<option value="2" <if condition="isset($status) and $status eq 2">selected</if>>毕业</option>
+								<option value="0" <if condition="isset($status) and $status eq 0">selected</if>>休学</option>
+							</select>
+						</div>
+						<div class="am-u-md-2">
+							<button type="submit" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-search"></i> 查询</button>
+							<a href="{{:U('Admin/Report/exportStudent')}}" class="am-btn am-btn-success am-btn-sm"><i class="am-icon-download"></i> 导出</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- filter form end -->
+
+		<!-- table start -->
+		<div class="am-panel am-panel-default m-t-15">
+			<div class="am-panel-hd"><i class="am-icon-users"></i> 学员分析</div>
+			<div class="am-panel-bd am-scrollable-horizontal">
+				<table class="am-table am-table-bordered am-table-striped am-table-hover am-text-nowrap">
+					<thead>
+						<tr>
+							<th>学员姓名</th>
+							<th>手机号</th>
+							<th>校区</th>
+							<th>来源渠道</th>
+							<th>等级</th>
+							<th class="am-text-right">累计消费（元）</th>
+							<th class="am-text-right">剩余课时</th>
+							<th class="am-text-right">累计出勤</th>
+							<th>状态</th>
+							<th>最近上课</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($list)">
+						<volist name="list" id="item">
+						<tr>
+							<td>
+								<a href="{{:U('Admin/Student/Detail', array('id'=>$item['id']))}}">{{$item.name}}</a>
+							</td>
+							<td>{{$item.mobile}}</td>
+							<td>{{$item.campus_name}}</td>
+							<td>{{$item.source}}</td>
+							<td>
+								<if condition="$item['level'] eq 'vip'">
+								<span class="am-badge am-badge-warning">VIP</span>
+								<else />
+								<span class="am-badge am-badge-default">普通</span>
+								</if>
+							</td>
+							<td class="am-text-right">{{$item.total_consume}}</td>
+							<td class="am-text-right">{{$item.remain_hours}}</td>
+							<td class="am-text-right">{{$item.total_attendance}}</td>
+							<td>
+								<if condition="$item['status'] eq 1">
+								<span class="am-badge am-badge-success">在读</span>
+								<elseif condition="$item['status'] eq 2" />
+								<span class="am-badge am-badge-primary">毕业</span>
+								<else />
+								<span class="am-badge am-badge-default">休学</span>
+								</if>
+							</td>
+							<td>{{$item.last_class_date}}</td>
+						</tr>
+						</volist>
+						<else />
+						<tr><td colspan="10" class="am-text-center">暂无数据</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- table end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

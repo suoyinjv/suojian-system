@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单退款</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-6 am-u-sm-centered">
+                <div class="am-panel am-panel-danger">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-rotate-left"></i> 订单退款</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="refundForm">
+                            <input type="hidden" name="id" value="{:I('id')}">
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-4 am-text-right">订单号</label>
+                                <div class="am-u-sm-6">
+                                    <p class="am-form-field-static">{$order.order_no}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-4 am-text-right">学员</label>
+                                <div class="am-u-sm-6">
+                                    <p class="am-form-field-static">{$order.student_name}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-4 am-text-right">实付金额</label>
+                                <div class="am-u-sm-6">
+                                    <p class="am-text-xl am-text-danger"><strong>¥{$order.pay_amount}</strong></p>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-4 am-text-right">退款金额 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-6">
+                                    <input type="number" name="refund_amount" step="0.01" class="am-form-field" value="{$order.pay_amount}" required>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <label class="am-u-sm-4 am-text-right">退款原因 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-6">
+                                    <textarea name="refund_reason" class="am-form-field" rows="3" placeholder="请输入退款原因" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-4">
+                                    <div class="am-alert am-alert-danger">
+                                        <i class="am-icon-exclamation-triangle"></i> 退款操作不可逆，请谨慎操作！
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-4">
+                                    <button type="submit" class="am-btn am-btn-danger am-btn-block">
+                                        <i class="am-icon-check"></i> 确认退款
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="am-form-group">
+                                <div class="am-u-sm-6 am-u-sm-offset-4">
+                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$('#refundForm').submit(function() {
+    if (!confirm('确定要退款吗？此操作不可逆！')) {
+        return false;
+    }
+    var formData = $(this).serialize();
+    $.post('__SELF__', formData, function(res) {
+        alert(res.msg);
+        if (res.code) {
+            location.href = '__CONTROLLER__/index';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

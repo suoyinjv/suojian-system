@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>学员签到 - 所以学教学系统</title>
+    <link rel="stylesheet" type="text/css" href="./Public/bootstrap-3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./Public/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./Public/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-g am-g-fixed am-margin-top">
+    <div class="am-panel am-panel-warning">
+        <div class="am-panel-hd">
+            <h3 class="am-panel-title"><i class="fa fa-sign-in"></i> 学员签到</h3>
+        </div>
+        <div class="am-panel-bd am-padding">
+            <form class="am-form am-form-horizontal" id="checkinForm">
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">学员手机号</label>
+                    <div class="am-u-sm-6">
+                        <input type="text" name="phone" class="am-form-field" placeholder="输入学员手机号" required>
+                    </div>
+                    <div class="am-u-sm-4">
+                        <button type="button" class="am-btn am-btn-primary" onclick="searchStudent()">
+                            <i class="fa fa-search"></i> 查找学员
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="studentInfo" class="am-alert am-alert-secondary am-hide">
+                    <p>学员姓名：<span id="studentName">-</span></p>
+                    <p>手机号：<span id="studentPhone">-</span></p>
+                    <p>剩余课时：<span id="remainHours">-</span></p>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">选择课程</label>
+                    <div class="am-u-sm-6">
+                        <select name="course_id" class="am-form-field" id="courseSelect" required>
+                            <option value="">请先查找学员</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">考勤状态</label>
+                    <div class="am-u-sm-6">
+                        <select name="status" class="am-form-field">
+                            <option value="1">正常</option>
+                            <option value="2">请假</option>
+                            <option value="3">旷课</option>
+                            <option value="4">迟到</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <label class="am-u-sm-2 am-text-right">备注</label>
+                    <div class="am-u-sm-6">
+                        <textarea name="remark" class="am-form-field" rows="2" placeholder="可选备注"></textarea>
+                    </div>
+                </div>
+                
+                <div class="am-form-group">
+                    <div class="am-u-sm-offset-2 am-u-sm-6">
+                        <button type="submit" class="am-btn am-btn-success am-btn-block">
+                            <i class="fa fa-check"></i> 确认签到
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="./Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="./Public/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="./Public/AmazeUI/js/amazeui.min.js"></script>
+<script>
+var studentId = 0;
+
+function searchStudent() {
+    var phone = $('input[name="phone"]').val();
+    if(!phone) { alert('请输入手机号'); return; }
+    
+    $.get('/index.php?m=Admin&c=Student&a=getByPhone&phone='+phone+'&json=1', function(res){
+        if(res.code && res.data) {
+            studentId = res.data.id;
+            $('#studentName').text(res.data.name || '-');
+            $('#studentPhone').text(res.data.phone || '-');
+            $('#remainHours').text(res.data.remaining_hours || '-');
+            $('#studentInfo').removeClass('am-hide');
+            
+            // 加载学员课程
+            loadStudentCourses(studentId);
+        } else {
+            alert('学员不存在');
+            $('#studentInfo').addClass('am-hide');
+        }
+    });
+}
+
+function loadStudentCourses(studentId) {
+    $.get('/index.php?m=Admin&c=StudentCourse&a=getByStudent&student_id='+studentId+'&json=1', function(res){
+        var html = '<option value="">请选择课程</option>';
+        if(res.data && res.data.length > 0) {
+            $.each(res.data, function(i, v){
+                html += '<option value="'+v.course_id+'">'+v.course_name+' (剩余:'+v.remaining_hours+'课时)</option>';
+            });
+        } else {
+            html = '<option value="">该学员暂无课程</option>';
+        }
+        $('#courseSelect').html(html);
+    });
+}
+
+$('#checkinForm').submit(function(){
+    if(!studentId) { alert('请先查找学员'); return false; }
+    
+    var data = $(this).serialize() + '&student_id=' + studentId + '&json=1';
+    $.get('/index.php?m=Admin&c=Attendance&a=checkin&' + data, function(res){
+        alert(res.msg);
+        if(res.code) {
+            window.location.href = '/index.php?m=Admin&c=Attendance&a=index';
+        }
+    });
+    return false;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>排课视图</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .schedule-grid { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 1px; background: #ddd; }
+        .schedule-header { background: #f5f5f5; padding: 10px; text-align: center; font-weight: bold; }
+        .schedule-time { background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; }
+        .schedule-cell { background: #fff; padding: 5px; min-height: 60px; font-size: 11px; }
+        .schedule-item { background: #5eb95e; color: #fff; padding: 3px 5px; margin-bottom: 3px; border-radius: 3px; cursor: pointer; }
+        .schedule-item.cancelled { background: #f37b1d; }
+        .schedule-item.finished { background: #999; }
+    </style>
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <!-- 筛选 -->
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-calendar"></i> 排课视图</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-inline">
+                            <div class="am-form-group">
+                                <select name="week_start" class="am-form-field">
+                                    <php>$week_start = date('Y-m-d', strtotime('monday this week'));</php>
+                                    <option value="{$week_start}">本周</option>
+                                    <php>$next_week = date('Y-m-d', strtotime('monday next week'));</php>
+                                    <option value="{$next_week}">下周</option>
+                                </select>
+                            </div>
+                            <div class="am-form-group">
+                                <select name="teacher_id" class="am-form-field">
+                                    <option value="">全部老师</option>
+                                    <volist name="teachers" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <div class="am-form-group">
+                                <select name="class_id" class="am-form-field">
+                                    <option value="">全部班级</option>
+                                    <volist name="classes" id="vo">
+                                    <option value="{$vo.id}">{$vo.name}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <button type="submit" class="am-btn am-btn-primary">筛选</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 日历视图 -->
+                <div class="schedule-grid">
+                    <div class="schedule-header">时间</div>
+                    <php>for($i=0;$i<7;$i++): $day = date('Y-m-d', strtotime($week_start . " +{$i} days")); $day_name = date('m/d', strtotime($day)); $day_week = ['周日','周一','周二','周三','周四','周五','周六'][date('w', strtotime($day))];</php>
+                    <div class="schedule-header">{$day_week}<br>{$day_name}</div>
+                    <php>endfor;</php>
+                    
+                    <php>for($h=8;$h<=20;$h++):</php>
+                    <div class="schedule-time">{$h}:00</div>
+                    <php>for($i=0;$i<7;$i++):</php>
+                    <div class="schedule-cell">
+                        <!-- 这里会通过JS填充课程 -->
+                    </div>
+                    <php>endfor; endfor;</php>
+                </div>
+                
+                <div class="am-text-center am-margin-top">
+                    <a href="{:U('add')}" class="am-btn am-btn-primary">
+                        <i class="am-icon-plus"></i> 添加排课
+                    </a>
+                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                        <i class="am-icon-list"></i> 列表视图
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+// 加载课程数据并渲染到日历
+$(function() {
+    $.get('__CONTROLLER__/getWeekSchedules?week_start=' + $('select[name="week_start"]').val(), function(res) {
+        if (res.data) {
+            renderSchedules(res.data);
+        }
+    });
+});
+
+function renderSchedules(schedules) {
+    // 简化实现 - 实际需要根据时间来定位
+    console.log('Schedules:', schedules);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>反馈详情</title>
+    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-g am-g-fixed am-margin-top">
+    <div class="am-u-sm-10 am-u-sm-centered">
+        <div class="am-panel am-panel-success">
+            <div class="am-panel-hd">
+                <h3 class="am-panel-title"><i class="am-icon-file-text"></i> 课后反馈详情</h3>
+            </div>
+            <div class="am-panel-bd">
+                <div class="am-g">
+                    <div class="am-u-sm-6">
+                        <p><strong>班级：</strong>{$feedback.class_name}</p>
+                        <p><strong>授课老师：</strong>{$feedback.teacher_name}</p>
+                        <p><strong>创建时间：</strong>{$feedback.create_time|date='Y-m-d H:i',###}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-warning">
+            <div class="am-panel-hd">
+                <h3 class="am-panel-title">反馈内容</h3>
+            </div>
+            <div class="am-panel-bd">
+                <div style="white-space:pre-wrap;line-height:1.8;">{$feedback.content}</div>
+                
+                <notempty name="feedback.attachments">
+                <div class="am-margin-top">
+                    <p><strong>附件：</strong></p>
+                    <volist name="feedback.attachments|explode=',',###" id="img">
+                    <img src="{$img}" class="am-img-thumbnail am-margin-right" style="max-width:200px;">
+                    </volist>
+                </div>
+                </notempty>
+            </div>
+        </div>
+        
+        <div class="am-panel am-panel-info">
+            <div class="am-panel-hd">
+                <h3 class="am-panel-title">班级学员 (<span id="studentCount">{:count($studentList)}</span>人)</h3>
+            </div>
+            <div class="am-panel-bd">
+                <table class="am-table am-table-bordered am-table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>手机号</th>
+                            <th>家长</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="studentList" id="vo">
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.name}</td>
+                            <td><if condition="$vo['sex'] eq 1">男<else/>女</if></td>
+                            <td>{$vo.phone}</td>
+                            <td>{$vo.parent_name|default='-'}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="am-text-center am-margin-top">
+            <a href="{:U('edit?id='.$feedback['id'])}" class="am-btn am-btn-primary am-radius">
+                <i class="am-icon-edit"></i> 编辑
+            </a>
+            <a href="{:U('index')}" class="am-btn am-btn-default am-radius">
+                <i class="am-icon-arrow-left"></i> 返回列表
+            </a>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

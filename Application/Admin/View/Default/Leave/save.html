@@ -1,0 +1,69 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Leave/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Leave/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						新增请假
+					<else />
+						编辑/审批请假
+					</if>
+				</span>
+				<a href="{{:U('Admin/Leave/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回</a>
+			</legend>
+			<div class="am-form-group">
+				<label>学员姓名</label>
+				<input type="text" name="student_name" placeholder="请输入学员姓名" minlength="2" maxlength="20" data-validation-message="请输入正确的学员姓名" class="am-radius" <notempty name="data"> value="{{$data.student_name}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>请假类型</label>
+				<select name="type" class="am-radius c-p" data-validation-message="请选择请假类型" required>
+					<option value="">请选择请假类型</option>
+					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>事假</option>
+					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>病假</option>
+					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>其他</option>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>开始日期</label>
+				<input type="text" name="start_date" class="am-radius" placeholder="请选择开始日期" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}" data-validation-message="请选择开始日期" <notempty name="data"> value="{{$data.start_date}}" </notempty> readonly required />
+			</div>
+			<div class="am-form-group">
+				<label>结束日期</label>
+				<input type="text" name="end_date" class="am-radius" placeholder="请选择结束日期" data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'days'}" data-validation-message="请选择结束日期" <notempty name="data"> value="{{$data.end_date}}" </notempty> readonly required />
+			</div>
+			<div class="am-form-group">
+				<label>请假原因</label>
+				<textarea name="reason" class="am-radius" placeholder="请输入请假原因" rows="4" data-validation-message="请输入请假原因" <notempty name="data">>{{$data.reason}}</notempty> required></textarea>
+			</div>
+			<div class="am-form-group">
+				<label>审批状态</label>
+				<select name="status" class="am-radius c-p" data-validation-message="请选择审批状态" required>
+					<option value="">请选择审批状态</option>
+					<option value="0" <if condition="isset($data['status']) and $data['status'] eq 0">selected</if>>待审批</option>
+					<option value="1" <if condition="isset($data['status']) and $data['status'] eq 1">selected</if>>已批准</option>
+					<option value="2" <if condition="isset($data['status']) and $data['status'] eq 2">selected</if>>已拒绝</option>
+					<option value="3" <if condition="isset($data['status']) and $data['status'] eq 3">selected</if>>已取消</option>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label>审批备注</label>
+				<textarea name="approve_remark" class="am-radius" placeholder="请输入审批备注" rows="3"><notempty name="data">{{$data.approve_remark}}</notempty></textarea>
+			</div>
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'提交中...'}">保存</button>
+			</div>
+		</form>
+        <!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+		
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

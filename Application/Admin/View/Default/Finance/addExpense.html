@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新增支出 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-8 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">💸 新增支出记录</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('addExpense')}" method="POST">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">支出标题 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" name="title" class="am-form-field" placeholder="如：5月员工工资" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">支出类型 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-9">
+                            <select name="type" class="am-form-field" required>
+                                <option value="">请选择</option>
+                                <option value="1">工资</option>
+                                <option value="2">房租</option>
+                                <option value="3">广告</option>
+                                <option value="4">物料采购</option>
+                                <option value="5">水电费</option>
+                                <option value="6">设备维护</option>
+                                <option value="7">其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">金额 <span class="am-text-danger">*</span></label>
+                        <div class="am-u-sm-9">
+                            <div class="am-input-group">
+                                <span class="am-input-group-label">¥</span>
+                                <input type="number" name="amount" class="am-form-field" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">支付方式</label>
+                        <div class="am-u-sm-9">
+                            <select name="pay_type" class="am-form-field">
+                                <option value="1">微信</option>
+                                <option value="2">支付宝</option>
+                                <option value="3">现金</option>
+                                <option value="4">银行卡</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">所属校区</label>
+                        <div class="am-u-sm-9">
+                            <select name="campus_id" class="am-form-field">
+                                <option value="0">总部/通用</option>
+                                <volist name="campuses" id="vo">
+                                <option value="{$vo}">{$vo}</option>
+                                </volist>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">经手人</label>
+                        <div class="am-u-sm-9">
+                            <input type="text" name="handler" class="am-form-field" placeholder="填写经手人姓名">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">备注</label>
+                        <div class="am-u-sm-9">
+                            <textarea name="remark" class="am-form-field" rows="3" placeholder="补充说明"></textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-offset-3">
+                            <button type="submit" class="am-btn am-btn-primary">保存</button>
+                            <a href="{:U('expense')}" class="am-btn am-btn-default">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

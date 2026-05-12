@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>处理退款 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <style>
+        .page-header { margin-bottom: 20px; }
+        .info-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .info-card h3 { margin-top: 0; color: #0e90d2; }
+        .am-form .am-form-group { margin-bottom: 15px; }
+        .am-form .am-form-label { font-weight: 500; }
+        .order-info-table { margin-bottom: 0; }
+        .amount-highlight { color: #dd514c; font-weight: bold; font-size: 18px; }
+    </style>
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-cf admin-main">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <div class="page-header">
+                    <h2>处理退款申请</h2>
+                </div>
+
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd am-cf">
+                        <span class="am-fl">原订单信息</span>
+                        <a href="{:U('Finance/refund')}" class="am-btn am-btn-sm am-btn-default am-fr">返回列表</a>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table order-info-table">
+                            <tr>
+                                <th width="15%">订单号</th>
+                                <td width="35%">{$order.order_no}</td>
+                                <th width="15%">学员姓名</th>
+                                <td width="35%">{$order.student_name}</td>
+                            </tr>
+                            <tr>
+                                <th>课程名称</th>
+                                <td>{$order.course_name}</td>
+                                <th>订单金额</th>
+                                <td class="amount-highlight">¥{$order.money}</td>
+                            </tr>
+                            <tr>
+                                <th>支付方式</th>
+                                <td>{$order.pay_type_text}</td>
+                                <th>支付时间</th>
+                                <td>{:date('Y-m-d H:i', $order['pay_time'])}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">退款申请信息</div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="{:U('Finance/refund_update')}" method="post">
+                            <input type="hidden" name="id" value="{$refund.id}">
+                            <input type="hidden" name="order_id" value="{$refund.order_id}">
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">申请人</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" value="{$refund.applicant_name}" disabled class="am-form-field">
+                                </div>
+                                <label class="am-u-sm-2 am-form-label">申请时间</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" value="{:date('Y-m-d H:i', $refund['add_time'])}" disabled class="am-form-field">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">原订单金额</label>
+                                <div class="am-u-sm-4">
+                                    <input type="text" value="¥{$order.money}" disabled class="am-form-field">
+                                </div>
+                                <label class="am-u-sm-2 am-form-label am-text-danger">退款金额</label>
+                                <div class="am-u-sm-4">
+                                    <input type="number" name="refund_amount" step="0.01" value="{$refund.refund_amount}" required>
+                                    <span class="am-form-cs">建议退款：¥{$suggest_refund|default=$refund['refund_amount']}</span>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">退款原因</label>
+                                <div class="am-u-sm-10">
+                                    <textarea name="reason" rows="3" required placeholder="请输入退款原因">{$refund.reason}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">备注</label>
+                                <div class="am-u-sm-10">
+                                    <textarea name="remark" rows="3" placeholder="处理备注">{$refund.remark}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-2 am-form-label">处理状态</label>
+                                <div class="am-u-sm-10">
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="status" value="2" <if condition="$refund['status'] eq 2">checked</if>> 同意退款
+                                    </label>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="status" value="3" <if condition="$refund['status'] eq 3">checked</if>> 拒绝退款
+                                    </label>
+                                    <if condition="$refund['status'] eq 1">
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="status" value="1" checked> 处理中
+                                    </label>
+                                    </if>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-10 am-u-sm-offset-2">
+                                    <if condition="$refund['status'] neq 2 and $refund['status'] neq 3">
+                                    <button type="submit" class="am-btn am-btn-primary">确认处理</button>
+                                    </if>
+                                    <a href="{:U('Finance/refund')}" class="am-btn am-btn-default">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="__PUBLIC__/Admin/js/datepicker/WdatePicker.js"></script>
+</body>
+</html>

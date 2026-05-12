@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>取消转校确认 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-modal am-modal-confirm" tabindex="-1" id="cancelModal">
+                    <div class="am-modal-dialog">
+                        <div class="am-modal-hd am-text-warning">
+                            <i class="am-icon-exclamation-triangle"></i> 取消确认
+                        </div>
+                        <div class="am-modal-bd">
+                            <h4>确定要取消转校申请吗？</h4>
+                            <if condition="$info">
+                            <div class="am-alert am-alert-secondary am-margin-top">
+                                <p><strong>转校信息：</strong></p>
+                                <p>学员：{$info.student_name}</p>
+                                <p>原校区：{$info.from_campus}</p>
+                                <p>目标校区：{$info.to_campus}</p>
+                                <p>申请时间：{$info.create_time|date='Y-m-d H:i',###}</p>
+                                <p>状态：
+                                    <if condition="$info['status'] eq 0">
+                                        <span class="am-badge am-badge-warning">待审核</span>
+                                    <else/>
+                                        <span class="am-badge am-badge-default">{$info.status_text}</span>
+                                    </if>
+                                </p>
+                            </div>
+                            <p class="am-text-warning am-margin-top"><i class="am-icon-info-circle"></i> 取消后如需再次申请，请重新发起。</p>
+                            </if>
+                        </div>
+                        <div class="am-modal-footer">
+                            <span class="am-modal-btn" data-am-modal-confirm onclick="location.href='__CONTROLLER__/cancel/id/{$info.id}'">
+                                <i class="am-icon-check"></i> 确定取消
+                            </span>
+                            <span class="am-modal-btn" data-am-modal-cancel onclick="location.href='__CONTROLLER__/index'">
+                                <i class="am-icon-close"></i> 返回
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <notpresent name="info">
+                <div class="am-alert am-alert-danger">
+                    <i class="am-icon-times-circle"></i> 转校申请不存在或已被处理
+                </div>
+                <div class="am-text-center am-margin-top">
+                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default">
+                        <i class="am-icon-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+                </notpresent>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    <if condition="$info">
+    $('#cancelModal').modal('open');
+    </if>
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>添加积分规则 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="admin-content">
+    <div class="am-u-sm-8 am-u-sm-centered">
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-hd">添加积分规则</div>
+            <div class="am-panel-bd">
+                <form class="am-form am-form-horizontal" action="{:U('addRule')}" method="POST">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">规则名称</label>
+                        <div class="am-u-sm-9">
+                            <input type="text" name="name" class="am-form-field" placeholder="如：每日签到" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">积分值</label>
+                        <div class="am-u-sm-9">
+                            <input type="number" name="value" class="am-form-field" placeholder="输入积分数值，如：5" required>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">规则说明</label>
+                        <div class="am-u-sm-9">
+                            <textarea name="remark" class="am-form-field" rows="3" placeholder="描述规则的触发条件和使用说明"></textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3">状态</label>
+                        <div class="am-u-sm-9">
+                            <select name="status" class="am-form-field">
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-offset-3">
+                            <button type="submit" class="am-btn am-btn-primary">保存</button>
+                            <a href="{:U('rules')}" class="am-btn am-btn-default">取消</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

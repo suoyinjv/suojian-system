@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>活动统计 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g">
+            <!-- 顶部4个统计卡片 -->
+            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-bd am-text-center">
+                        <i class="am-icon-ticket am-icon-lg am-text-success"></i>
+                        <h2>{$total_activities|default=0}</h2>
+                        <p>活动总数</p>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-bd am-text-center">
+                        <i class="am-icon-users am-icon-lg am-text-success"></i>
+                        <h2>{$total_participants|default=0}</h2>
+                        <p>参与人次</p>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-bd am-text-center">
+                        <i class="am-icon-check am-icon-lg am-text-success"></i>
+                        <h2>{$valid_activities|default=0}</h2>
+                        <p>进行中活动</p>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                <div class="am-panel am-panel-danger">
+                    <div class="am-panel-bd am-text-center">
+                        <i class="am-icon-gift am-icon-lg am-text-success"></i>
+                        <h2>{$coupon_usage|default=0}</h2>
+                        <p>优惠券发放</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 按活动统计表格 -->
+            <div class="am-u-sm-12">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">各活动统计明细</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>活动名称</th>
+                                    <th>类型</th>
+                                    <th>时间范围</th>
+                                    <th>参与人数</th>
+                                    <th>总名额</th>
+                                    <th>使用率</th>
+                                    <th>优惠券发放</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist name="activity_stats" id="vo">
+                                <tr>
+                                    <td>{$vo.title}</td>
+                                    <td>{$vo.type_text}</td>
+                                    <td>{$vo.start_time} ~ {$vo.end_time}</td>
+                                    <td>{$vo.used_count}</td>
+                                    <td>{$vo.total_count}</td>
+                                    <td>{$vo.usage_rate}%</td>
+                                    <td>{$vo.coupon_count}</td>
+                                    <td>
+                                        <a href="{:U('detail', array('id'=>$vo['id']))}">详情</a>
+                                        <a href="{:U('records', array('activity_id'=>$vo['id']))}">记录</a>
+                                    </td>
+                                </tr>
+                                </volist>
+                                <if condition="empty($activity_stats)">
+                                <tr>
+                                    <td colspan="8" class="am-text-center">暂无数据</td>
+                                </tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

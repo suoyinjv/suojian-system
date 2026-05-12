@@ -1,0 +1,133 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- filter form start -->
+		<form method="get" class="am-form am-form-horizontal">
+			<div class="am-g am-g-collapse">
+				<div class="am-u-sm-2">
+					<div class="am-form-group">
+						<select name="course_id" class="am-radius">
+							<option value="">全部课程</option>
+							<volist name="course_list" id="v">
+								<option value="{$v.id}" {:I('course_id')==$v['id']?'selected':''}>{$v.name}</option>
+							</volist>
+						</select>
+					</div>
+				</div>
+				<div class="am-u-sm-2">
+					<div class="am-form-group">
+						<select name="teacher_id" class="am-radius">
+							<option value="">全部老师</option>
+							<volist name="teacher_list" id="v">
+								<option value="{$v.id}" {:I('teacher_id')==$v['id']?'selected':''}>{$v.name}</option>
+							</volist>
+						</select>
+					</div>
+				</div>
+				<div class="am-u-sm-2">
+					<div class="am-form-group">
+						<select name="type" class="am-radius">
+							<option value="">全部类型</option>
+							<option value="1" {:I('type')==1?'selected':''}>课堂表现</option>
+							<option value="2" {:I('type')==2?'selected':''}>课后反馈</option>
+							<option value="3" {:I('type')==3?'selected':''}>阶段总结</option>
+							<option value="4" {:I('type')==4?'selected':''}>学习建议</option>
+						</select>
+					</div>
+				</div>
+				<div class="am-u-sm-2">
+					<div class="am-form-group">
+						<input type="text" name="keyword" class="am-radius" placeholder="学员姓名" value="{:I('keyword')}" />
+					</div>
+				</div>
+				<div class="am-u-sm-2">
+					<div class="am-form-group">
+						<button type="submit" class="am-btn am-btn-primary am-radius">筛选</button>
+						<a href="{:U('Admin/Review/Statistics')}" class="am-btn am-btn-default am-radius">重置</a>
+					</div>
+				</div>
+			</div>
+		</form>
+		<!-- filter form end -->
+
+		<!-- stat cards start -->
+		<div class="am-g am-g-collapse m-t-15">
+			<div class="am-u-sm-3">
+				<div class="dashboard-card am-text-center">
+					<p class="dashboard-num">{$total_count|default=0}</p>
+					<p class="dashboard-text">总点评数</p>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="dashboard-card am-text-center">
+					<p class="dashboard-num">{$avg_score|default='0.0'}</p>
+					<p class="dashboard-text">平均评分</p>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="dashboard-card am-text-center">
+					<p class="dashboard-num">{$student_count|default=0}</p>
+					<p class="dashboard-text">被点评学员数</p>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="dashboard-card am-text-center">
+					<p class="dashboard-num">{$five_star_count|default=0}</p>
+					<p class="dashboard-text">五星点评数</p>
+				</div>
+			</div>
+		</div>
+		<!-- stat cards end -->
+
+		<!-- table start -->
+		<table class="am-table am-table-bordered am-table-striped am-table-hover am-table-centered m-t-15">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>学员姓名</th>
+					<th>课程数</th>
+					<th>点评次数</th>
+					<th>平均评分</th>
+					<th>最后点评时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<volist name="list" id="item" key="k">
+				<tr>
+					<td>{$k}</td>
+					<td>{$item.student_name}</td>
+					<td>{$item.course_count|default=0}</td>
+					<td>{$item.review_count|default=0}</td>
+					<td>
+						<span class="am-badge am-badge-warning">
+							<php>echo sprintf('%.1f', $item['avg_score'] ?: 0);</php>
+						</span>
+					</td>
+					<td>{$item.last_review_time|default='—'}</td>
+					<td>
+						<a href="{:U('Admin/Review/Index?student_id='.$item['student_id'])}" class="am-btn am-btn-xs am-btn-primary am-radius">查看点评</a>
+					</td>
+				</tr>
+				</volist>
+				<tr>
+					<td colspan="3" class="am-text-right"><strong>汇总</strong></td>
+					<td><strong>{$total_count|default=0}</strong></td>
+					<td><strong>{$avg_score|default='0.0'}</strong></td>
+					<td>—</td>
+					<td>—</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- table end -->
+
+		{$page}
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
