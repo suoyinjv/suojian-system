@@ -205,4 +205,217 @@ class LiveController extends CommonController {
         M('live_booking')->where(['live_id'=>$id])->delete();
         $this->success('删除成功');
     }
+
+    /**
+     * 备课资源管理
+     */
+    public function resource() {
+        $live_id = I('live_id', 0, 'intval');
+        $page = I('p', 1, 'intval');
+        $rows = 20;
+
+        $where = [];
+        if ($live_id > 0) {
+            $where['course_id'] = $live_id;
+        }
+
+        $count = D('LiveResource')->where($where)->count();
+        $list = D('LiveResource')->where($where)
+            ->order('id DESC')
+            ->page($page, $rows)
+            ->select();
+
+        $type_map = ['doc'=>'文档', 'ppt'=>'PPT', 'img'=>'图片', 'video'=>'视频', 'audio'=>'音频'];
+
+        // 获取关联课程/教师信息
+        $course_ids = array_unique(array_column($list, 'course_id'));
+        $teacher_ids = array_unique(array_column($list, 'teacher_id'));
+        $courses = $course_ids ? M('live_course')->where(['id'=>['in', $course_ids]])->getField('id,title', true) : [];
+        $teachers = $teacher_ids ? M('teacher')->where(['id'=>['in', $teacher_ids]])->getField('id,teacher_name', true) : [];
+
+        foreach ($list as &$item) {
+            $item['type_text'] = $type_map[$item['type']] ?: $item['type'];
+            $item['course_title'] = $courses[$item['course_id']] ?: '-';
+            $item['teacher_name'] = $teachers[$item['teacher_id']] ?: '-';
+            $item['create_time'] = $item['create_time'] ? date('Y-m-d H:i', $item['create_time']) : '-';
+            $item['file_size_text'] = $item['file_size'] > 0 ? round($item['file_size']/1024, 1) . 'KB' : '-';
+        }
+
+        // 获取直播课程列表供筛选
+        $live_list = M('live_course')->field('id,title')->select();
+
+        $this->assign('list', $list);
+        $this->assign('page', getPage($count, $rows));
+        $this->assign('live_list', $live_list);
+        $this->assign('live_id', $live_id);
+        $this->assign('type_map', $type_map);
+        $this->display();
+    }
+
+    /**
+     * 上传备课资源
+     */
+    public function resourceUpload() {
+        if (!IS_POST) {
+            $this->error(L('common_unauthorized_access'));
+        }
+
+        $course_id = I('course_id', 0, 'intval');
+        $teacher_id = I('teacher_id', 0, 'intval');
+        $title = I('title', '', 'trim');
+
+        if ($course_id <= 0) {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'请选择关联课程']);
+        }
+        if (empty($title)) {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'请输入资源名称']);
+        }
+
+        // 上传文件
+        $config = [
+            'maxSize'    => 50 * 1024 * 1024, // 50MB
+            'rootPath'   => './Uploads/Live/Resource/',
+            'savePath'   => date('Ymd').'/',
+            'saveName'   => ['uniqid', ''],
+            'exts'       => ['jpg','jpeg','png','gif','mp4','avi','mov','mp3','wav','doc','docx','ppt','pptx','pdf','txt'],
+            'autoSub'    => true,
+            'subName'    => ['date', 'Ym']
+        ];
+
+        $upload = new \Think\Upload($config);
+        $info = $upload->uploadOne($_FILES['file']);
+
+        if (!$info) {
+            $this->ajaxReturn(['code'=>0, 'msg'=>$upload->getError()]);
+        }
+
+        // 识别类型
+        $ext = strtolower($info['ext']);
+        $type_map = [
+            'doc'=>'doc', 'docx'=>'doc', 'ppt'=>'ppt', 'pptx'=>'ppt',
+            'jpg'=>'img', 'jpeg'=>'img', 'png'=>'img', 'gif'=>'img',
+            'mp4'=>'video', 'avi'=>'video', 'mov'=>'video',
+            'mp3'=>'audio', 'wav'=>'audio', 'aac'=>'audio',
+            'pdf'=>'doc', 'txt'=>'doc'
+        ];
+        $file_type = $type_map[$ext] ?: 'doc';
+        $file_url = '/Uploads/Live/Resource/'.$info['savepath'].$info['savename'];
+
+        $data = [
+            'course_id'   => $course_id,
+            'teacher_id'  => $teacher_id,
+            'title'       => $title,
+            'type'        => $file_type,
+            'file_url'    => $file_url,
+            'file_size'   => $info['size'] ?: 0,
+        ];
+
+        D('LiveResource')->saveData($data);
+        $this->ajaxReturn(['code'=>1, 'msg'=>'上传成功']);
+    }
+
+    /**
+     * 删除备课资源
+     */
+    public function resourceDelete() {
+        if (!IS_AJAX) {
+            $this->error(L('common_unauthorized_access'));
+        }
+
+        $id = I('id', 0, 'intval');
+        $result = D('LiveResource')->deleteData($id);
+
+        if ($result) {
+            $this->ajaxReturn(['code'=>1, 'msg'=>'删除成功']);
+        } else {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'删除失败']);
+        }
+    }
+
+    /**
+     * 回放管理列表
+     */
+    public function replay() {
+        $course_id = I('course_id', 0, 'intval');
+        $page = I('p', 1, 'intval');
+        $rows = 20;
+
+        $where = [];
+        if ($course_id > 0) {
+            $where['course_id'] = $course_id;
+        }
+
+        $count = D('LiveReplay')->where($where)->count();
+        $list = D('LiveReplay')->where($where)
+            ->order('id DESC')
+            ->page($page, $rows)
+            ->select();
+
+        // 获取关联课程信息
+        $course_ids = array_unique(array_column($list, 'course_id'));
+        $courses = $course_ids ? M('live_course')->where(['id'=>['in', $course_ids]])->getField('id,title', true) : [];
+
+        foreach ($list as &$item) {
+            $item['course_title'] = $courses[$item['course_id']] ?: '-';
+            $item['duration_text'] = $item['duration'] > 0 ? gmdate('H:i:s', $item['duration']) : '-';
+            $item['create_time'] = $item['create_time'] ? date('Y-m-d H:i', $item['create_time']) : '-';
+        }
+
+        // 获取课程列表供筛选
+        $course_list = M('live_course')->field('id,title')->select();
+
+        $this->assign('list', $list);
+        $this->assign('page', getPage($count, $rows));
+        $this->assign('course_list', $course_list);
+        $this->assign('course_id', $course_id);
+        $this->display();
+    }
+
+    /**
+     * 添加回放记录
+     */
+    public function replayAdd() {
+        if (IS_POST) {
+            $data = [
+                'course_id'  => I('course_id', 0, 'intval'),
+                'title'      => I('title', '', 'trim'),
+                'session_id' => I('session_id', '', 'trim'),
+                'duration'   => I('duration', 0, 'intval'),
+                'url'        => I('url', '', 'trim'),
+            ];
+
+            if (empty($data['title'])) {
+                $this->ajaxReturn(['code'=>0, 'msg'=>'回放标题不能为空']);
+            }
+
+            $result = D('LiveReplay')->saveData($data);
+            if ($result) {
+                $this->ajaxReturn(['code'=>1, 'msg'=>'添加成功']);
+            } else {
+                $this->ajaxReturn(['code'=>0, 'msg'=>'添加失败']);
+            }
+        }
+
+        $courses = M('live_course')->field('id,title')->select();
+        $this->assign('courses', $courses);
+        $this->display();
+    }
+
+    /**
+     * 删除回放记录
+     */
+    public function replayDelete() {
+        if (!IS_AJAX) {
+            $this->error(L('common_unauthorized_access'));
+        }
+
+        $id = I('id', 0, 'intval');
+        $result = D('LiveReplay')->deleteData($id);
+
+        if ($result) {
+            $this->ajaxReturn(['code'=>1, 'msg'=>'删除成功']);
+        } else {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'删除失败']);
+        }
+    }
 }
