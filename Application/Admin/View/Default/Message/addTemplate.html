@@ -1,85 +1,85 @@
-<include file="Public/Header" />
+
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
 		<!-- table nav start -->
-		<include file="Nav" />
+		
 		<!-- table nav end -->
 
 		<div class="am-panel am-panel-primary">
 			<div class="am-panel-hd">
 				<h3 class="am-panel-title">
-					<i class="am-icon-plus"></i> <present name="data.id">{{:L('message_edit_template')}}<else />{{:L('message_add_template')}}</present>
+					<i class="am-icon-plus"></i> <present name="data.id"><?php echo L('message_edit_template'); ?><?php else: ?><?php echo L('message_add_template'); ?><?php endif; ?>
 				</h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form am-form-horizontal form-validation view-save" action="{{:U('Admin/Message/SaveTemplate')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Message/Template')}}">
+				<form class="am-form am-form-horizontal form-validation view-save" action="<?php echo U('Admin/Message/SaveTemplate'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/Template'); ?>">
 
 					<present name="data.id">
-					<input type="hidden" name="id" value="{$data.id}" />
-					</present>
+					<input type="hidden" name="id" value="<?php echo $data['id']; ?>" />
+					<?php endif; ?>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-2 am-text-right">{{:L('message_template_name')}} <span class="am-text-danger">*</span></label>
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_name'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-8">
-							<input type="text" name="name" class="am-form-field am-radius" placeholder="{{:L('message_template_name_tips')}}" value="<present name="data">{$data.name}</present>" required data-validation-message="{{:L('message_template_name_required')}}" />
+							<input type="text" name="name" class="am-form-field am-radius" placeholder="<?php echo L('message_template_name_tips'); ?>" value="<?php if(isset($$data)): ?><?php echo $data['name']; ?><?php endif; ?>" required data-validation-message="<?php echo L('message_template_name_required'); ?>" />
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-2 am-text-right">{{:L('message_template_type')}}</label>
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_type'); ?></label>
 						<div class="am-u-sm-8">
 							<select name="type" class="am-form-field am-radius">
-								<option value="1" <if condition="isset($data) and $data['type'] eq 1">selected</if>>{{:L('message_type_notice')}}</option>
-								<option value="2" <if condition="isset($data) and $data['type'] eq 2">selected</if>>{{:L('message_type_marketing')}}</option>
-								<option value="3" <if condition="isset($data) and $data['type'] eq 3">selected</if>>{{:L('message_type_reminder')}}</option>
-								<option value="4" <if condition="isset($data) and $data['type'] eq 4">selected</if>>{{:L('message_type_other')}}</option>
+								<option value="1" <?php if(isset($data) and $data['type'] == 1): ?>selected<?php endif; ?>><?php echo L('message_type_notice'); ?></option>
+								<option value="2" <?php if(isset($data) and $data['type'] == 2): ?>selected<?php endif; ?>><?php echo L('message_type_marketing'); ?></option>
+								<option value="3" <?php if(isset($data) and $data['type'] == 3): ?>selected<?php endif; ?>><?php echo L('message_type_reminder'); ?></option>
+								<option value="4" <?php if(isset($data) and $data['type'] == 4): ?>selected<?php endif; ?>><?php echo L('message_type_other'); ?></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-2 am-text-right">{{:L('message_send_channel')}}</label>
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_send_channel'); ?></label>
 						<div class="am-u-sm-8">
 							<select name="channel" class="am-form-field am-radius">
-								<option value="sms" <if condition="isset($data) and $data['channel'] eq 'sms'">selected</if>>{{:L('message_channel_sms')}}</option>
-								<option value="weixin" <if condition="isset($data) and $data['channel'] eq 'weixin'">selected</if>>{{:L('message_channel_weixin')}}</option>
-								<option value="both" <if condition="isset($data) and $data['channel'] eq 'both'">selected</if>>{{:L('message_channel_both')}}</option>
+								<option value="sms" <?php if(isset($data) and $data['channel'] == 'sms'): ?>selected<?php endif; ?>><?php echo L('message_channel_sms'); ?></option>
+								<option value="weixin" <?php if(isset($data) and $data['channel'] == 'weixin'): ?>selected<?php endif; ?>><?php echo L('message_channel_weixin'); ?></option>
+								<option value="both" <?php if(isset($data) and $data['channel'] == 'both'): ?>selected<?php endif; ?>><?php echo L('message_channel_both'); ?></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-2 am-text-right">{{:L('message_template_content')}} <span class="am-text-danger">*</span></label>
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_content'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-8">
-							<textarea name="content" class="am-form-field am-radius" rows="6" placeholder="{{:L('message_template_content_tips')}}" required data-validation-message="{{:L('message_template_content_required')}}"><present name="data">{$data.content}</present></textarea>
-							<p class="am-text-sm am-text-muted">{{:L('message_template_var_tips')}}: {name}, {course}, {date}, {time}, {class}</p>
+							<textarea name="content" class="am-form-field am-radius" rows="6" placeholder="<?php echo L('message_template_content_tips'); ?>" required data-validation-message="<?php echo L('message_template_content_required'); ?>"><?php if(isset($$data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
+							<p class="am-text-sm am-text-muted"><?php echo L('message_template_var_tips'); ?>: {name}, {course}, {date}, {time}, {class}</p>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-2 am-text-right">{{:L('message_template_status')}}</label>
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_status'); ?></label>
 						<div class="am-u-sm-8">
 							<select name="status" class="am-form-field am-radius">
-								<option value="1" <if condition="!isset($data) or $data['status'] eq 1">selected</if>>{{:L('common_status_on')}}</option>
-								<option value="0" <if condition="isset($data) and $data['status'] eq 0">selected</if>>{{:L('common_status_off')}}</option>
+								<option value="1" <?php if(!isset($data) or $data['status'] == 1): ?>selected<?php endif; ?>><?php echo L('common_status_on'); ?></option>
+								<option value="0" <?php if(isset($data) and $data['status'] == 0): ?>selected<?php endif; ?>><?php echo L('common_status_off'); ?></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="am-form-group">
 						<div class="am-u-sm-8 am-u-sm-offset-2">
-							<button type="submit" class="am-btn am-btn-primary btn-loading-example am-radius" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">
-								<i class="am-icon-check"></i> {{:L('common_operation_save')}}
+							<button type="submit" class="am-btn am-btn-primary btn-loading-example am-radius" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}">
+								<i class="am-icon-check"></i> <?php echo L('common_operation_save'); ?>
 							</button>
 						</div>
 					</div>
 
 					<div class="am-form-group">
 						<div class="am-u-sm-8 am-u-sm-offset-2">
-							<a href="{{:U('Admin/Message/Template')}}" class="am-btn am-btn-default am-radius">
-								<i class="am-icon-arrow-left"></i> {{:L('common_operation_cancel')}}
+							<a href="<?php echo U('Admin/Message/Template'); ?>" class="am-btn am-btn-default am-radius">
+								<i class="am-icon-arrow-left"></i> <?php echo L('common_operation_cancel'); ?>
 							</a>
 						</div>
 					</div>
@@ -91,5 +91,5 @@
 <!-- right content end  -->
 
 <!-- footer start -->
-<include file="Public/Footer" />
+
 <!-- footer end -->

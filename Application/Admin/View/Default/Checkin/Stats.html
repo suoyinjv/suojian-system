@@ -72,9 +72,9 @@
 							<foreach name="ranking_list" key="k" item="v">
 								<tr>
 									<td>
-										<if condition="$k eq 0"><span class="am-badge am-badge-warning">🥇</span>
-										<elseif condition="$k eq 1" /><span class="am-badge am-badge-secondary">🥈</span>
-										<elseif condition="$k eq 2" /><span class="am-badge am-badge-primary">🥉</span>
+										<if condition="$k == 0"><span class="am-badge am-badge-warning">🥇</span>
+										<elseif condition="$k == 1" /><span class="am-badge am-badge-secondary">🥈</span>
+										<elseif condition="$k == 2" /><span class="am-badge am-badge-primary">🥉</span>
 										<else />{{$k+1}}
 										</if>
 									</td>

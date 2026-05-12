@@ -32,7 +32,7 @@
 				<select name="article_class_id" class="am-radius c-p" data-validation-message="{{:L('article_class_format')}}" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="article_class_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['article_class_id']) and $data['article_class_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['article_class_id']) and $data['article_class_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -42,7 +42,7 @@
 			</div>
 			<include file="Lib/Enable" />
 			<div class="am-form-group">
-				<label>{{:L('article_content_text')}}<span class="fs-12 fw-100 cr-999"><if condition="IsMobile()">（{{:L('article_content_format_mobile')}}）<else /><if condition="L('article_images_upload_format') neq ''">（{{:L('article_images_upload_format')}}）</if></if></span></label>
+				<label>{{:L('article_content_text')}}<span class="fs-12 fw-100 cr-999"><if condition="IsMobile()">（{{:L('article_content_format_mobile')}}）<else /><if condition="L('article_images_upload_format') != ''">（{{:L('article_images_upload_format')}}）</if></if></span></label>
 				<textarea class="am-radius am-validate" name="content" rows="5" minlength="50" maxlength="105000" <if condition="!IsMobile()">id="editor-tag" data-url="{{:U('Admin/Ueditor/Index', ['path_type'=>'Article'])}}" placeholder="{{:L('article_content_format')}}" <else /> placeholder="{{:L('article_content_format')}}{{:L('article_content_format_mobile')}}" </if> data-validation-message="{{:L('article_content_format')}}" required><notempty name="data">{{$data.content}}</notempty></textarea>
 			</div>
 			<div class="am-form-group">

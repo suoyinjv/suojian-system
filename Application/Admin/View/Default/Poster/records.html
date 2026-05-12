@@ -10,20 +10,20 @@
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
 					{{:L('common_more_screening')}}
-					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
 					<i class="am-icon-angle-down"></i>
 				</label>
-				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
 					<select name="template_id" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="0">全部模板</option>
 						<foreach name="template_list" item="v">
-							<option value="{{$v.id}}" <if condition="isset($param['template_id']) and $param['template_id'] eq $v['id']">selected</if>>{{$v.title}}</option>
+							<option value="{{$v.id}}" <if condition="isset($param['template_id']) and $param['template_id'] == $v['id']">selected</if>>{{$v.title}}</option>
 						</foreach>
 					</select>
 					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="-1">全部状态</option>
-						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>生成成功</option>
-						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>生成失败</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>生成成功</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>生成失败</option>
 					</select>
 					<div class="param-date param-where m-l-5">
 						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="生成时间开始" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
@@ -76,7 +76,7 @@
 							<td class="am-hide-sm-only">{{$v.student_name}}</td>
 							<td class="am-hide-sm-only">{{$v.template_title}}</td>
 							<td>
-								<if condition="$v['status'] eq 1">
+								<if condition="$v['status'] == 1">
 									<span class="am-text-success">成功</span>
 								<else />
 									<span class="am-text-danger" title="{{$v.error_msg}}">失败</span>
@@ -87,7 +87,7 @@
 								<a href="{{:U('Admin/Poster/Preview', array('id'=>$v['id']))}}">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '预览', trigger: 'hover focus'}"></button>
 								</a>
-								<if condition="$v['status'] eq 1">
+								<if condition="$v['status'] == 1">
 									<a href="{{$v.download_url}}">
 										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-download" data-am-popover="{content: '下载', trigger: 'hover focus'}"></button>
 									</a>

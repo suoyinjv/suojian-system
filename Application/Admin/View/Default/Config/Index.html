@@ -10,7 +10,7 @@
 				<select name="{{$data.admin_semester_id.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.admin_semester_id.error_tips}}" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="semester_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['admin_semester_id']['value']) and $data['admin_semester_id']['value'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['admin_semester_id']['value']) and $data['admin_semester_id']['value'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -18,7 +18,7 @@
 				<label>{{$data.admin_excel_charset.name}}<span class="fs-12 fw-100 cr-999">（{{$data.admin_excel_charset.describe}}）</span></label>
 				<select name="{{$data.admin_excel_charset.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.admin_excel_charset.error_tips}}" required>
 					<foreach name="common_excel_charset_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['admin_excel_charset']['value']) and $data['admin_excel_charset']['value'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['admin_excel_charset']['value']) and $data['admin_excel_charset']['value'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>

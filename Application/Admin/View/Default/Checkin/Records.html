@@ -10,14 +10,14 @@
 				<select name="activity_id" class="am-radius c-p m-l-5">
 					<option value="">全部活动</option>
 					<foreach name="activity_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($param['activity_id']) and $param['activity_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($param['activity_id']) and $param['activity_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 				<select name="status" class="am-radius c-p m-l-5">
 					<option value="-1">全部状态</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审核</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已通过</option>
-					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待审核</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已通过</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已拒绝</option>
 				</select>
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">搜索</button>
 			</div>
@@ -55,23 +55,23 @@
 							<td>{{$v.activity_name}}</td>
 							<td>{{$v.checkin_time}}</td>
 							<td>
-								<if condition="$v['content_type'] eq 'text'">{{$v.content}}
-								<elseif condition="$v['content_type'] eq 'image'" />
+								<if condition="$v['content_type'] == 'text'">{{$v.content}}
+								<elseif condition="$v['content_type'] == 'image'" />
 									<img src="{{$v.content}}" class="am-radius" style="max-width: 100px; max-height: 60px;" />
-								<elseif condition="$v['content_type'] eq 'audio'" />
+								<elseif condition="$v['content_type'] == 'audio'" />
 									<a href="{{$v.content}}" target="_blank" class="am-icon-play-circle"> 播放音频</a>
 								<else />
 									<span class="am-text-muted">答题</span>
 								</if>
 							</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge am-badge-warning">待审核</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已通过</span>
+								<if condition="$v['status'] == 0"><span class="am-badge am-badge-warning">待审核</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-success">已通过</span>
 								<else /><span class="am-badge am-badge-danger">已拒绝</span>
 								</if>
 							</td>
 							<td class="view-operation">
-								<if condition="$v['status'] eq 0">
+								<if condition="$v['status'] == 0">
 									<button class="am-btn am-btn-xs am-btn-success am-radius am-icon-check" onclick="auditRecord({{$v.id}}, 1)"></button>
 									<button class="am-btn am-btn-xs am-btn-danger am-radius am-icon-times" onclick="auditRecord({{$v.id}}, 2)"></button>
 								<else />

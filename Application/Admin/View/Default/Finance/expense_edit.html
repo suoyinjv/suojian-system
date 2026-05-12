@@ -45,7 +45,7 @@
                                     <select name="type_id" required>
                                         <option value="">请选择</option>
                                         <volist name="type_list" id="t">
-                                        <option value="{$t.id}" <if condition="$expense['type_id'] eq $t['id']">selected</if>>{$t.name}</option>
+                                        <option value="{$t.id}" <if condition="$expense['type_id'] == $t['id']">selected</if>>{$t.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -59,11 +59,11 @@
                                 <label class="am-u-sm-2 am-form-label">付款方式</label>
                                 <div class="am-u-sm-4">
                                     <select name="pay_method">
-                                        <option value="1" <if condition="$expense['pay_method'] eq 1">selected</if>>现金</option>
-                                        <option value="2" <if condition="$expense['pay_method'] eq 2">selected</if>>银行转账</option>
-                                        <option value="3" <if condition="$expense['pay_method'] eq 3">selected</if>>微信支付</option>
-                                        <option value="4" <if condition="$expense['pay_method'] eq 4">selected</if>>支付宝</option>
-                                        <option value="5" <if condition="$expense['pay_method'] eq 5">selected</if>>其他</option>
+                                        <option value="1" <if condition="$expense['pay_method'] == 1">selected</if>>现金</option>
+                                        <option value="2" <if condition="$expense['pay_method'] == 2">selected</if>>银行转账</option>
+                                        <option value="3" <if condition="$expense['pay_method'] == 3">selected</if>>微信支付</option>
+                                        <option value="4" <if condition="$expense['pay_method'] == 4">selected</if>>支付宝</option>
+                                        <option value="5" <if condition="$expense['pay_method'] == 5">selected</if>>其他</option>
                                     </select>
                                 </div>
                             </div>

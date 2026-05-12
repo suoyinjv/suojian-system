@@ -1,8 +1,8 @@
 <ul class="am-nav am-nav-pills table-nav m-b-10">
-	<li <if condition="$nav_type eq 'sms'">class="am-active"</if> data-type="sms">
-		<a href="{{:U('Admin/Sms/Index', ['type'=>'sms'])}}">{{:L('sms_sms_nav_name')}}</a>
+	<li <?php if($nav_type == 'sms'): ?>class="am-active"<?php endif; ?> data-type="sms">
+		<a href="<?php echo U('Admin/Sms/Index', ['type'=>'sms']); ?>"><?php echo L('sms_sms_nav_name'); ?></a>
 	</li>
-	<li <if condition="$nav_type eq 'message'">class="am-active"</if> data-type="message">
-		<a href="{{:U('Admin/Sms/Index', ['type'=>'message'])}}">{{:L('sms_message_nav_name')}}</a>
+	<li <?php if($nav_type == 'message'): ?>class="am-active"<?php endif; ?> data-type="message">
+		<a href="<?php echo U('Admin/Sms/Index', ['type'=>'message']); ?>"><?php echo L('sms_message_nav_name'); ?></a>
 	</li>
 </ul>

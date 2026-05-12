@@ -23,7 +23,7 @@
                                     <select name="student_id" class="am-form-field" required>
                                         <option value="">请选择学员</option>
                                         <volist name="studentList" id="student">
-                                        <option value="{$student.id}" <if condition="$info['student_id'] eq $student['id']">selected</if>>{$student.name} ({$student.student_no})</option>
+                                        <option value="{$student.id}" <if condition="$info['student_id'] == $student['id']">selected</if>>{$student.name} ({$student.student_no})</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -35,7 +35,7 @@
                                     <select name="from_campus_id" class="am-form-field" required>
                                         <option value="">请选择原校区</option>
                                         <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}" <if condition="$info['from_campus_id'] eq $campus['id']">selected</if>>{$campus.name}</option>
+                                        <option value="{$campus.id}" <if condition="$info['from_campus_id'] == $campus['id']">selected</if>>{$campus.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -47,7 +47,7 @@
                                     <select name="to_campus_id" class="am-form-field" required>
                                         <option value="">请选择目标校区</option>
                                         <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}" <if condition="$info['to_campus_id'] eq $campus['id']">selected</if>>{$campus.name}</option>
+                                        <option value="{$campus.id}" <if condition="$info['to_campus_id'] == $campus['id']">selected</if>>{$campus.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -57,10 +57,10 @@
                                 <label class="am-u-sm-3 am-text-right">申请状态</label>
                                 <div class="am-u-sm-7">
                                     <select name="status" class="am-form-field">
-                                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>待审核</option>
-                                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>已通过</option>
-                                        <option value="2" <if condition="$info['status'] eq 2">selected</if>>已拒绝</option>
-                                        <option value="3" <if condition="$info['status'] eq 3">selected</if>>已取消</option>
+                                        <option value="0" <if condition="$info['status'] == 0">selected</if>>待审核</option>
+                                        <option value="1" <if condition="$info['status'] == 1">selected</if>>已通过</option>
+                                        <option value="2" <if condition="$info['status'] == 2">selected</if>>已拒绝</option>
+                                        <option value="3" <if condition="$info['status'] == 3">selected</if>>已取消</option>
                                     </select>
                                 </div>
                             </div>

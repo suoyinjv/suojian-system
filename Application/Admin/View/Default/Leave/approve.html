@@ -10,23 +10,23 @@
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">查询</button>
 				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
 					更多筛选
-					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
 					<i class="am-icon-angle-down"></i>
 				</label>
 
-				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
 					<select class="am-radius c-p m-t-10 m-l-5 param-where" name="type">
 						<option value="">请假类型</option>
-						<option value="1" <if condition="isset($param['type']) and $param['type'] eq 1">selected</if>>事假</option>
-						<option value="2" <if condition="isset($param['type']) and $param['type'] eq 2">selected</if>>病假</option>
-						<option value="3" <if condition="isset($param['type']) and $param['type'] eq 3">selected</if>>其他</option>
+						<option value="1" <if condition="isset($param['type']) and $param['type'] == 1">selected</if>>事假</option>
+						<option value="2" <if condition="isset($param['type']) and $param['type'] == 2">selected</if>>病假</option>
+						<option value="3" <if condition="isset($param['type']) and $param['type'] == 3">selected</if>>其他</option>
 					</select>
 					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="-1">审批状态</option>
-						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审批</option>
-						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已批准</option>
-						<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
-						<option value="3" <if condition="isset($param['status']) and $param['status'] eq 3">selected</if>>已取消</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待审批</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已批准</option>
+						<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已拒绝</option>
+						<option value="3" <if condition="isset($param['status']) and $param['status'] == 3">selected</if>>已取消</option>
 					</select>
 					<div class="param-date param-where m-l-5">
 						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="开始日期" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
@@ -64,8 +64,8 @@
 						<tr id="data-list-{{$v.id}}">
 							<td>{{$v.student_name}}</td>
 							<td class="am-hide-sm-only">
-								<if condition="$v['type'] eq 1">事假
-								<elseif condition="$v['type'] eq 2" />病假
+								<if condition="$v['type'] == 1">事假
+								<elseif condition="$v['type'] == 2" />病假
 								<else />其他
 								</if>
 							</td>
@@ -73,9 +73,9 @@
 							<td class="am-hide-sm-only">{{$v.end_date}}</td>
 							<td class="am-hide-sm-only">{{$v.days}}天</td>
 							<td class="am-hide-sm-only">
-								<if condition="$v['status'] eq 0"><span class="am-badge">待审批</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已批准</span>
-								<elseif condition="$v['status'] eq 2" /><span class="am-badge am-badge-danger">已拒绝</span>
+								<if condition="$v['status'] == 0"><span class="am-badge">待审批</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-success">已批准</span>
+								<elseif condition="$v['status'] == 2" /><span class="am-badge am-badge-danger">已拒绝</span>
 								<else /><span class="am-badge am-badge-default">已取消</span>
 								</if>
 							</td>
@@ -83,7 +83,7 @@
 								<a href="{{:U('Admin/Leave/Detail', array('id'=>$v['id']))}}">
 									<button class="am-btn am-btn-primary am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
 								</a>
-								<if condition="$v['status'] eq 0">
+								<if condition="$v['status'] == 0">
 									<button class="am-btn am-btn-success am-btn-xs am-radius am-icon-check approve-btn" data-id="{{$v.id}}" data-am-popover="{content: '批准', trigger: 'hover focus'}"></button>
 									<button class="am-btn am-btn-danger am-btn-xs am-radius am-icon-close reject-btn" data-id="{{$v.id}}" data-am-popover="{content: '拒绝', trigger: 'hover focus'}"></button>
 								</if>

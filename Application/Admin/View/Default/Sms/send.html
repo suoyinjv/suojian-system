@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>发送短信</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
 </head>
 <body>
 <div class="panel panel-default">
@@ -28,7 +28,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary">发送</button>
-                    <a href="{:U('log')}" class="btn btn-default">发送记录</a>
+                    <a href="<?php echo U('log'); ?>" class="btn btn-default">发送记录</a>
                 </div>
             </div>
         </form>

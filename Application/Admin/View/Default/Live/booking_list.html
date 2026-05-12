@@ -63,22 +63,22 @@
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
 					{{:L('common_more_screening')}}
-					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
 					<i class="am-icon-angle-down"></i>
 				</label>
 
-				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
 					<select name="live_id" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="0">所属直播课</option>
 						<foreach name="live_list" item="v">
-							<option value="{{$v.id}}" <if condition="isset($param['live_id']) and $param['live_id'] eq $v['id']">selected</if>>{{$v.title}}</option>
+							<option value="{{$v.id}}" <if condition="isset($param['live_id']) and $param['live_id'] == $v['id']">selected</if>>{{$v.title}}</option>
 						</foreach>
 					</select>
 					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="-1">预约状态</option>
-						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审核</option>
-						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已通过</option>
-						<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待审核</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已通过</option>
+						<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已拒绝</option>
 					</select>
 					<div class="param-date param-where m-l-5">
 						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="预约时间开始" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
@@ -120,7 +120,7 @@
 								</switch>
 							</td>
 							<td class="view-operation">
-								<if condition="$v['status'] eq 0">
+								<if condition="$v['status'] == 0">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-check submit-audit" data-url="{{:U('Admin/Live/BookingAudit')}}" data-status="1" data-id="{{$v.id}}" data-am-popover="{content: '通过', trigger: 'hover focus'}"></button>
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-times submit-audit" data-url="{{:U('Admin/Live/BookingAudit')}}" data-status="2" data-id="{{$v.id}}" data-am-popover="{content: '拒绝', trigger: 'hover focus'}"></button>
 								</if>

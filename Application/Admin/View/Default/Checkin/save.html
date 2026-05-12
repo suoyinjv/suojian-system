@@ -23,8 +23,8 @@
                         <label class="am-u-sm-2 am-form-label">打卡类型</label>
                         <div class="am-u-sm-4">
                             <select name="type" class="am-form-field">
-                                <option value="daily" <if condition="$data['type'] eq 'daily'">selected</if>>日常签到</option>
-                                <option value="lesson" <if condition="$data['type'] eq 'lesson'">selected</if>>课次打卡</option>
+                                <option value="daily" <if condition="$data['type'] == 'daily'">selected</if>>日常签到</option>
+                                <option value="lesson" <if condition="$data['type'] == 'lesson'">selected</if>>课次打卡</option>
                             </select>
                         </div>
                         <label class="am-u-sm-2 am-form-label">关联课程</label>
@@ -32,7 +32,7 @@
                             <select name="course_id" class="am-form-field">
                                 <option value="">不限定课程</option>
                                 <volist name="course_list" id="vo">
-                                <option value="{$vo.id}" <if condition="$data['course_id'] eq $vo['id']">selected</if>>{$vo.course_name}</option>
+                                <option value="{$vo.id}" <if condition="$data['course_id'] == $vo['id']">selected</if>>{$vo.course_name}</option>
                                 </volist>
                             </select>
                         </div>

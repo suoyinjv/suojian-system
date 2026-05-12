@@ -9,10 +9,10 @@
 				<input type="text" class="am-radius form-keyword" placeholder="订单号/学员姓名" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
 				<select name="type" class="am-radius c-p m-l-5">
 					<option value="">全部类型</option>
-					<option value="1" <if condition="isset($param['type']) and $param['type'] eq 1">selected</if>>课程报名</option>
-					<option value="2" <if condition="isset($param['type']) and $param['type'] eq 2">selected</if>>资料购买</option>
-					<option value="3" <if condition="isset($param['type']) and $param['type'] eq 3">selected</if>>续费</option>
-					<option value="4" <if condition="isset($param['type']) and $param['type'] eq 4">selected</if>>其他</option>
+					<option value="1" <if condition="isset($param['type']) and $param['type'] == 1">selected</if>>课程报名</option>
+					<option value="2" <if condition="isset($param['type']) and $param['type'] == 2">selected</if>>资料购买</option>
+					<option value="3" <if condition="isset($param['type']) and $param['type'] == 3">selected</if>>续费</option>
+					<option value="4" <if condition="isset($param['type']) and $param['type'] == 4">selected</if>>其他</option>
 				</select>
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 			</div>
@@ -42,17 +42,17 @@
 							<td>{{$v.student_name}}</td>
 							<td class="am-text-primary">¥{{$v.amount}}</td>
 							<td>
-								<if condition="$v['type'] eq 1"><span class="am-badge am-badge-primary">课程报名</span>
-								<elseif condition="$v['type'] eq 2" /><span class="am-badge am-badge-success">资料购买</span>
-								<elseif condition="$v['type'] eq 3" /><span class="am-badge am-badge-warning">续费</span>
+								<if condition="$v['type'] == 1"><span class="am-badge am-badge-primary">课程报名</span>
+								<elseif condition="$v['type'] == 2" /><span class="am-badge am-badge-success">资料购买</span>
+								<elseif condition="$v['type'] == 3" /><span class="am-badge am-badge-warning">续费</span>
 								<else /><span class="am-badge am-badge-secondary">其他</span>
 								</if>
 							</td>
 							<td>{{$v.pay_method}}</td>
 							<td>{{$v.add_time}}</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge">待支付</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已支付</span>
+								<if condition="$v['status'] == 0"><span class="am-badge">待支付</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-success">已支付</span>
 								<else /><span class="am-badge am-badge-danger">已退款</span>
 								</if>
 							</td>

@@ -4,7 +4,7 @@
 	<div>
 		<foreach name="common_is_new_window_open_list" item="v">
 			<label class="am-radio-inline m-r-10">
-				<input type="radio" name="is_new_window_open" value="{{$v.id}}" <if condition="isset($data['is_new_window_open']) and $data['is_new_window_open'] eq $v['id']">checked="checked"<else /><if condition="!isset($data['is_new_window_open']) and isset($v['checked']) and $v['checked'] eq true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+				<input type="radio" name="is_new_window_open" value="{{$v.id}}" <if condition="isset($data['is_new_window_open']) and $data['is_new_window_open'] == $v['id']">checked="checked"<else /><if condition="!isset($data['is_new_window_open']) and isset($v['checked']) and $v['checked'] == true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
 			</label>
 		</foreach>
 	</div>

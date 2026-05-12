@@ -1,0 +1,81 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>短信模板管理</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <div class="am-panel am-panel-success">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-file-text"></i> 短信模板
+                            <a href="<?php echo U('addTemplate'); ?>" class="am-btn am-btn-xs am-btn-primary am-radius am-fr">
+                                <i class="am-icon-plus"></i> 添加模板
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>模板名称</th>
+                                    <th>模板内容</th>
+                                    <th>类型</th>
+                                    <th>状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($$list as $$vo): ?>
+                                <tr>
+                                    <td><?php echo $vo['id']; ?></td>
+                                    <td><?php echo $vo['name']; ?></td>
+                                    <td class="am-text-truncate" style="max-width:300px;"><?php echo $vo['content']; ?></td>
+                                    <td>
+                                        <?php if($vo['type'] == 1): ?>
+                                            <span class="am-badge am-badge-primary">通知</span>
+                                        <?php elseif($vo['type'] == 2): ?>
+                                            <span class="am-badge am-badge-warning">营销</span>
+                                        <?php else: ?>
+                                            <span class="am-badge am-badge-default">验证码</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if($vo['status'] == 1): ?>
+                                            <span class="am-badge am-badge-success">启用</span>
+                                        <?php else: ?>
+                                            <span class="am-badge am-badge-default">禁用</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>{$vo.create_time|date='Y-m-d',###}</td>
+                                    <td>
+                                        <a href="<?php echo U('editTemplate?id='.$vo['id']); ?>">编辑</a>
+                                        <a href="<?php echo U('deleteTemplate?id='.$vo['id']); ?>" onclick="return confirm('确定删除?')">删除</a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                <?php if(!isset($$list)): ?>
+                                <tr><td colspan="7" class="text-center">暂无模板</td></tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                        
+                        <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default">
+                            <i class="am-icon-arrow-left"></i> 返回发送页面
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

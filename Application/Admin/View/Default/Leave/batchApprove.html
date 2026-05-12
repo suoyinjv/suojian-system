@@ -63,13 +63,13 @@
                             </volist>
                         </tbody>
                     </table>
-                    <if condition="count($list) eq 0">
+                    <if condition="count($list) == 0">
                     <div class="am-text-center am-padding-lg am-text-muted">暂无可审批的请假申请</div>
                     </if>
                 </div>
             </div>
             
-            <if condition="count($list) gt 0">
+            <if condition="count($list) > 0">
             <div class="am-g" style="margin-top: 15px;">
                 <div class="am-u-sm-12 am-text-center">
                     <button type="button" class="am-btn am-btn-success am-radius" onclick="batchApprove(1)">

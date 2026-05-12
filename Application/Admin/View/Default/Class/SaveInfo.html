@@ -26,7 +26,7 @@
 				<select name="campus_id" class="am-radius" required>
 					<option value="">请选择校区</option>
 					<volist name="campus_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['campus_id']) and $data['campus_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['campus_id']) and $data['campus_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</volist>
 				</select>
 			</div>
@@ -36,7 +36,7 @@
 				<select name="teacher_id" class="am-radius">
 					<option value="">请选择班主任</option>
 					<volist name="teacher_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</volist>
 				</select>
 			</div>
@@ -50,10 +50,10 @@
 				<label>状态</label>
 				<div>
 					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="1" <if condition="!isset($data['status']) or $data['status'] eq 1">checked="checked"</if> data-am-ucheck /> 启用
+						<input type="radio" name="status" value="1" <if condition="!isset($data['status']) or $data['status'] == 1">checked="checked"</if> data-am-ucheck /> 启用
 					</label>
 					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="0" <if condition="isset($data['status']) and $data['status'] eq 0">checked="checked"</if> data-am-ucheck /> 禁用
+						<input type="radio" name="status" value="0" <if condition="isset($data['status']) and $data['status'] == 0">checked="checked"</if> data-am-ucheck /> 禁用
 					</label>
 				</div>
 			</div>

@@ -23,10 +23,10 @@
 			<tbody>
 				<if condition="!empty($list)">
 					<foreach name="list" item="v">
-						<tr id="data-list-{{$v.id}}" <if condition="$v['is_enable'] eq 0">class="am-active"</if>>
+						<tr id="data-list-{{$v.id}}" <if condition="$v['is_enable'] == 0">class="am-active"</if>>
 							<td>{{$v.name}}</td>
 							<td>
-								<span <if condition="$v['is_enable'] eq 0">class="cr-ccc"</if>>{{:L('common_is_enable_tips')[$v['is_enable']]['name']}}</span>
+								<span <if condition="$v['is_enable'] == 0">class="cr-ccc"</if>>{{:L('common_is_enable_tips')[$v['is_enable']]['name']}}</span>
 							</td>
 							<td class="power-text">
 								<if condition="!empty($v['item'])">
@@ -37,7 +37,7 @@
 							</td>
 							<td class="am-hide-sm-only">{{:date('Y-m-d H:i:s', $v['add_time'])}}</td>
 							<td>
-								<if condition="$v['id'] eq 1">
+								<if condition="$v['id'] == 1">
 									<span class="cr-ccc">{{:L('common_do_not_operate')}}</span>
 								<else />
 									<a href="{{:U('Admin/Power/RoleSaveInfo', array('id'=>$v['id']))}}">

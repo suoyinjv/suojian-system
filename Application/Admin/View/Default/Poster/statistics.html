@@ -119,9 +119,9 @@
 					<form action="{{:U('Admin/Poster/Statistics')}}" method="POST" class="fr">
 						<div class="am-btn-group am-fr">
 							<select name="date_range" class="am-radius am-btn am-btn-default am-btn-sm">
-								<option value="7" <if condition="isset($date_range) and $date_range eq 7">selected</if>>近7天</option>
-								<option value="30" <if condition="!isset($date_range) or $date_range eq 30">selected</if>>近30天</option>
-								<option value="90" <if condition="isset($date_range) and $date_range eq 90">selected</if>>近90天</option>
+								<option value="7" <if condition="isset($date_range) and $date_range == 7">selected</if>>近7天</option>
+								<option value="30" <if condition="!isset($date_range) or $date_range == 30">selected</if>>近30天</option>
+								<option value="90" <if condition="isset($date_range) and $date_range == 90">selected</if>>近90天</option>
 							</select>
 							<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius"><i class="am-icon-refresh"></i> 刷新</button>
 						</div>
@@ -145,9 +145,9 @@
 								<foreach name="ranking" item="v" key="k">
 									<tr>
 										<td>
-											<if condition="$k eq 0"><span class="am-badge am-badge-danger">🥇 1</span>
-											<elseif condition="$k eq 1" /><span class="am-badge am-badge-warning">🥈 2</span>
-											<elseif condition="$k eq 2" /><span class="am-badge am-badge-secondary">🥉 3</span>
+											<if condition="$k == 0"><span class="am-badge am-badge-danger">🥇 1</span>
+											<elseif condition="$k == 1" /><span class="am-badge am-badge-warning">🥈 2</span>
+											<elseif condition="$k == 2" /><span class="am-badge am-badge-secondary">🥉 3</span>
 											<else /><span class="am-badge am-badge-default">{{$k+1}}</span>
 											</if>
 										</td>

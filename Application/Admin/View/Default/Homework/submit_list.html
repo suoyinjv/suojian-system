@@ -61,14 +61,14 @@
                         <td>{$vo.student_name}</td>
                         <td>{$vo.submit_time}</td>
                         <td>
-                            <if condition="$vo['status'] eq 0">
+                            <if condition="$vo['status'] == 0">
                             <span class="am-badge am-badge-warning">待批改</span>
                             <else/>
                             <span class="am-badge am-badge-success">已批改</span>
                             </if>
                         </td>
                         <td>
-                            <if condition="$vo['status'] eq 1">
+                            <if condition="$vo['status'] == 1">
                             {$vo.score|default='-'}/{$vo.total_score|default=100}
                             <else/>
                             -

@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>校区管理 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
     <div class="admin-content">
         <div class="am-u-sm-12">
             <div class="am-btn-toolbar">
-                <a href="__CONTROLLER__/add" class="am-btn am-btn-primary am-radius">
+                <a href="/add" class="am-btn am-btn-primary am-radius">
                     <i class="am-icon-plus"></i> 添加校区
                 </a>
-                <a href="__CONTROLLER__/crossCampusStudent" class="am-btn am-btn-success am-radius">
+                <a href="/crossCampusStudent" class="am-btn am-btn-success am-radius">
                     <i class="am-icon-users"></i> 跨校学员
                 </a>
-                <a href="__CONTROLLER__/crossCampusTeacher" class="am-btn am-btn-warning am-radius">
+                <a href="/crossCampusTeacher" class="am-btn am-btn-warning am-radius">
                     <i class="am-icon-user"></i> 跨校老师
                 </a>
             </div>
@@ -37,31 +37,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <volist name="list" id="vo">
+                    <?php foreach($$list as $$vo): ?>
                     <tr>
-                        <td>{$vo.id}</td>
-                        <td>{$vo.name}</td>
-                        <td>{$vo.code}</td>
-                        <td>{$vo.address}</td>
-                        <td>{$vo.phone}</td>
-                        <td>{$vo.principal}</td>
-                        <td><span class="am-badge am-badge-primary">{$vo.student_count}</span></td>
-                        <td><span class="am-badge am-badge-success">{$vo.teacher_count}</span></td>
-                        <td><span class="am-badge am-badge-warning">{$vo.class_count}</span></td>
-                        <td>{$vo.status_text}</td>
+                        <td><?php echo $vo['id']; ?></td>
+                        <td><?php echo $vo['name']; ?></td>
+                        <td><?php echo $vo['code']; ?></td>
+                        <td><?php echo $vo['address']; ?></td>
+                        <td><?php echo $vo['phone']; ?></td>
+                        <td><?php echo $vo['principal']; ?></td>
+                        <td><span class="am-badge am-badge-primary"><?php echo $vo['student_count']; ?></span></td>
+                        <td><span class="am-badge am-badge-success"><?php echo $vo['teacher_count']; ?></span></td>
+                        <td><span class="am-badge am-badge-warning"><?php echo $vo['class_count']; ?></span></td>
+                        <td><?php echo $vo['status_text']; ?></td>
                         <td>
-                            <a href="__CONTROLLER__/overview/id/{$vo.id}">数据</a>
-                            <a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
-                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/{$vo.id}')">删除</a>
+                            <a href="/overview/id/<?php echo $vo['id']; ?>">数据</a>
+                            <a href="/edit/id/<?php echo $vo['id']; ?>">编辑</a>
+                            <a href="javascript:;" onclick="deleteConfirm('/delete/id/<?php echo $vo['id']; ?>')">删除</a>
                         </td>
                     </tr>
-                    </volist>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 function deleteConfirm(url) {
     if(confirm('确定要删除吗？')) {

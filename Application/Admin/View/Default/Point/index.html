@@ -55,7 +55,7 @@
                     <td>{$item.id}</td>
                     <td>{$item.student_name}</td>
                     <td>
-                        <if condition="$item.type eq 'earn'">
+                        <if condition="$item.type == 'earn'">
                             <span class="label label-success">获取</span>
                         <else/>
                             <span class="label label-warning">消费</span>

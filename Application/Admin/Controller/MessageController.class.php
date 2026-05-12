@@ -57,7 +57,7 @@ class MessageController extends CommonController {
         $this->assign('templates', $templates);
         
         // 获取学员列表
-        $students = M('student')->field('id,student_name')->limit(100)->select();
+        $students = M('student')->field('id,username')->limit(100)->select();
         $this->assign('students', $students);
         
         $this->display();
@@ -143,7 +143,7 @@ class MessageController extends CommonController {
             $course = M('course')->find($att['course_id']);
             
             // 发送通知
-            $content = "【考勤通知】{$student['student_name']}同学于{$date} {$att['status_text']}课程：{$course['course_name']}";
+            $content = "【考勤通知】{$student['username']}同学于{$date} {$att['status_text']}课程：{$course['course_name']}";
             
             M('message_log')->add([
                 'receiver_id' => $student['id'],
@@ -173,7 +173,7 @@ class MessageController extends CommonController {
             $student = M('student')->find($pkg['student_id']);
             $package = M('package')->find($pkg['package_id']);
             
-            $content = "【课时预警】{$student['student_name']}同学您好，您购买的{$package['name']}剩余课时不足{$pkg['balance_hours']}节，请及时续费！";
+            $content = "【课时预警】{$student['username']}同学您好，您购买的{$package['name']}剩余课时不足{$pkg['balance_hours']}节，请及时续费！";
             
             M('message_log')->add([
                 'receiver_id' => $student['id'],
@@ -194,6 +194,6 @@ class MessageController extends CommonController {
      * 消息中心首页 - 转向发送页面
      */
     public function index() {
-        $this->redirect('send');
+        redirect(U('send'));
     }
 }

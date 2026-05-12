@@ -142,7 +142,7 @@
 			<tbody>
 				<if condition="!empty($list)">
 					<foreach name="list" item="v">
-						<tr id="data-list-{{$v.id}}" <if condition="$v['is_show'] eq 0">class="am-active"</if>>
+						<tr id="data-list-{{$v.id}}" <if condition="$v['is_show'] == 0">class="am-active"</if>>
 							<td>{{$v.name}}
 								<a href="{{$v.url}}" target="_blank">
 									<i class="am-icon-external-link"></i>
@@ -150,7 +150,7 @@
 							</td>
 							<td>{{:L('common_nav_type_list')[$v['data_type']]}}</td>
 							<td>
-								<a href="javascript:;" class="am-icon-btn am-icon-check submit-state <if condition="$v['is_show'] eq 1">am-success<else />am-default</if>" data-url="{{:U('Admin/NavFooter/StateUpdate')}}" data-id="{{$v.id}}" data-state="{{$v['is_show']}}"></a>
+								<a href="javascript:;" class="am-icon-btn am-icon-check submit-state <if condition="$v['is_show'] == 1">am-success<else />am-default</if>" data-url="{{:U('Admin/NavFooter/StateUpdate')}}" data-id="{{$v.id}}" data-state="{{$v['is_show']}}"></a>
 							</td>
 							<td>
 								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit submit-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}" data-am-modal="{target: '#nav-{{$v.data_type}}-save-win'}" data-json='{{:json_encode($v)}}' data-tag="nav-{{$v.data_type}}-save-win"></button>

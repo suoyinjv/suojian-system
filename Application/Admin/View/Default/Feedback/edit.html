@@ -20,7 +20,7 @@
                         <select name="class_id" class="am-form-field" required>
                             <option value="">请选择班级</option>
                             <volist name="classes" id="vo">
-                            <option value="{$vo.id}" <if condition="$info['class_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                            <option value="{$vo.id}" <if condition="$info['class_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                             </volist>
                         </select>
                     </div>
@@ -32,7 +32,7 @@
                         <select name="teacher_id" class="am-form-field" required>
                             <option value="">请选择老师</option>
                             <volist name="teachers" id="vo">
-                            <option value="{$vo.id}" <if condition="$info['teacher_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                            <option value="{$vo.id}" <if condition="$info['teacher_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                             </volist>
                         </select>
                     </div>

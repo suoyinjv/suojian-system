@@ -23,7 +23,7 @@
 				<label>{{$data.common_timezone.name}}<span class="fs-12 fw-100 cr-999">（{{$data.common_timezone.describe}}）</span></label>
 				<select name="{{$data.common_timezone.only_tag}}" class="am-radius chosen-select c-p" data-placeholder="{{$data.common_timezone.name}}" data-validation-message="{{$data.common_timezone.error_tips}}" required>
 					<foreach name="site_timezone_list" key="k" item="v">
-						<option value="{{$k}}" <if condition="isset($data['common_timezone']['value']) and $data['common_timezone']['value'] eq $k">selected</if>>{{$v}}</option>
+						<option value="{{$k}}" <if condition="isset($data['common_timezone']['value']) and $data['common_timezone']['value'] == $k">selected</if>>{{$v}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -47,7 +47,7 @@
 				<label>{{$data.home_site_state.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_site_state.describe}}）</span></label>
 				<select name="{{$data.home_site_state.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_site_state.error_tips}}" required>
 					<foreach name="site_site_state_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_site_state']['value']) and $data['home_site_state']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_site_state']['value']) and $data['home_site_state']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -68,7 +68,7 @@
 				<label>{{$data.home_user_login_state.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_user_login_state.describe}}）</span></label>
 				<select name="{{$data.home_user_login_state.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_user_login_state.error_tips}}" required>
 					<foreach name="site_user_login_state_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_user_login_state']['value']) and $data['home_user_login_state']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_user_login_state']['value']) and $data['home_user_login_state']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -84,7 +84,7 @@
 				<label>{{$data.home_img_verify_state.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_img_verify_state.describe}}）</span></label>
 				<select name="{{$data.home_img_verify_state.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_img_verify_state.error_tips}}" required>
 					<foreach name="site_img_verify_state_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_img_verify_state']['value']) and $data['home_img_verify_state']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_img_verify_state']['value']) and $data['home_img_verify_state']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>

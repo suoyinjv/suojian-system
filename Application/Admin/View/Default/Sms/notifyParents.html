@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>批量通知家长</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -14,7 +14,7 @@
                     <div class="am-panel-hd">
                         <h3 class="am-panel-title">
                             <i class="am-icon-bullhorn"></i> 批量通知家长
-                            <a href="{:U('notifyParent')}" class="am-btn am-btn-xs am-btn-default am-fr">
+                            <a href="<?php echo U('notifyParent'); ?>" class="am-btn am-btn-xs am-btn-default am-fr">
                                 <i class="am-icon-user"></i> 单个通知
                             </a>
                         </h3>
@@ -99,7 +99,7 @@
                                     <button type="submit" class="am-btn am-btn-primary">
                                         <i class="am-icon-send"></i> 批量发送
                                     </button>
-                                    <a href="{:U('send')}" class="am-btn am-btn-default">返回</a>
+                                    <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default">返回</a>
                                 </div>
                             </div>
                         </form>
@@ -117,8 +117,8 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
     loadClasses();
@@ -128,7 +128,7 @@ $(function() {
 
     // 加载班级列表
     function loadClasses() {
-        $.get('__CONTROLLER__/getClassList?json=1', function(res) {
+        $.get('/getClassList?json=1', function(res) {
             var html = '<option value="">请选择班级</option>';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -141,7 +141,7 @@ $(function() {
 
     // 加载课程列表
     function loadCourses() {
-        $.get('__CONTROLLER__/getCourseList?json=1', function(res) {
+        $.get('/getCourseList?json=1', function(res) {
             var html = '<option value="">请选择课程</option>';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -154,7 +154,7 @@ $(function() {
 
     // 加载学生列表
     function loadStudents() {
-        $.get('__CONTROLLER__/getStudentList?json=1', function(res) {
+        $.get('/getStudentList?json=1', function(res) {
             var html = '';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -167,7 +167,7 @@ $(function() {
 
     // 加载模板列表
     function loadTemplates() {
-        $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+        $.get('/templateLists?json=1', function(res) {
             var html = '<option value="">不使用模板</option>';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -193,7 +193,7 @@ $(function() {
     $('#classSelect').change(function() {
         var classId = $(this).val();
         if (classId) {
-            $.get('__CONTROLLER__/getClassStudents?class_id=' + classId + '&json=1', function(res) {
+            $.get('/getClassStudents?class_id=' + classId + '&json=1', function(res) {
                 updateReceiverPreview(res.data || []);
             });
         } else {
@@ -205,7 +205,7 @@ $(function() {
     $('#courseSelect').change(function() {
         var courseId = $(this).val();
         if (courseId) {
-            $.get('__CONTROLLER__/getCourseStudents?course_id=' + courseId + '&json=1', function(res) {
+            $.get('/getCourseStudents?course_id=' + courseId + '&json=1', function(res) {
                 updateReceiverPreview(res.data || []);
             });
         } else {
@@ -255,7 +255,7 @@ $(function() {
     $('#templateSelect').change(function() {
         var id = $(this).val();
         if (id) {
-            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+            $.get('/getTemplate?id=' + id, function(res) {
                 if (res.data) {
                     $('#smsContent').val(res.data.content);
                     var vars = res.data.content.match(/\{(\w+)\}/g) || [];
@@ -285,10 +285,10 @@ $(function() {
         if (!confirm('即将向 ' + count + ' 位家长发送短信，确定继续?')) return false;
 
         var formData = $(this).serialize();
-        $.post('__SELF__', formData, function(res) {
+        $.post('', formData, function(res) {
             alert(res.msg);
             if (res.code) {
-                location.href = '__CONTROLLER__/log';
+                location.href = '/log';
             }
         });
         return false;

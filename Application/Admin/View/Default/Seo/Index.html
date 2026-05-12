@@ -9,7 +9,7 @@
 				<label>{{$data.home_seo_url_model.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_seo_url_model.describe}}）</span></label>
 				<select name="{{$data.home_seo_url_model.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_seo_url_model.error_tips}}" required>
 					<foreach name="seo_url_model_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_seo_url_model']['value']) and $data['home_seo_url_model']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_seo_url_model']['value']) and $data['home_seo_url_model']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -33,7 +33,7 @@
 				<label>{{$data.home_seo_channel_browser.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_seo_channel_browser.describe}}）</span></label>
 				<select name="{{$data.home_seo_channel_browser.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_seo_channel_browser.error_tips}}" required>
 					<foreach name="seo_channel_browser_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_seo_channel_browser']['value']) and $data['home_seo_channel_browser']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_seo_channel_browser']['value']) and $data['home_seo_channel_browser']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -41,7 +41,7 @@
 				<label>{{$data.home_seo_article_browser.name}}<span class="fs-12 fw-100 cr-999">（{{$data.home_seo_article_browser.describe}}）</span></label>
 				<select name="{{$data.home_seo_article_browser.only_tag}}" class="am-radius c-p" data-validation-message="{{$data.home_seo_article_browser.error_tips}}" required>
 					<foreach name="seo_article_browser_list" item="v">
-						<option value="{{$v.value}}" <if condition="isset($data['home_seo_article_browser']['value']) and $data['home_seo_article_browser']['value'] eq $v['value']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.value}}" <if condition="isset($data['home_seo_article_browser']['value']) and $data['home_seo_article_browser']['value'] == $v['value']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>

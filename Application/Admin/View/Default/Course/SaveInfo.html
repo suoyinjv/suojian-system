@@ -21,11 +21,11 @@
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="class_list" item="v">
 						<if condition="empty($v['item'])">
-							<option value="{{$v.id}}" <if condition="isset($data['class_id']) and $data['class_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+							<option value="{{$v.id}}" <if condition="isset($data['class_id']) and $data['class_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 						<else />
 							<optgroup label="{{$v.name}}">
 								<foreach name="v.item" item="vs">
-									<option value="{{$vs.id}}" <if condition="isset($data['class_id']) and $data['class_id'] eq $vs['id']">selected</if>>{{$vs.name}}</option>
+									<option value="{{$vs.id}}" <if condition="isset($data['class_id']) and $data['class_id'] == $vs['id']">selected</if>>{{$vs.name}}</option>
 								</foreach>
 							</optgroup>
 						</if>
@@ -37,7 +37,7 @@
 				<select name="subject_id" class="am-radius c-p" data-validation-message="{{:L('course_subject_format')}}" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="subject_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['subject_id']) and $data['subject_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['subject_id']) and $data['subject_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -46,7 +46,7 @@
 				<select name="week_id" class="am-radius c-p" data-validation-message="{{:L('course_week_format')}}" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="week_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['week_id']) and $data['week_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['week_id']) and $data['week_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -55,7 +55,7 @@
 				<select name="interval_id" class="am-radius c-p" data-validation-message="{{:L('course_interval_format')}}" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="interval_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['interval_id']) and $data['interval_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['interval_id']) and $data['interval_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -65,11 +65,11 @@
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="room_list" item="v">
 						<if condition="empty($v['item'])">
-							<option value="{{$v.id}}" <if condition="isset($data['room_id']) and $data['room_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+							<option value="{{$v.id}}" <if condition="isset($data['room_id']) and $data['room_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 						<else />
 							<optgroup label="{{$v.name}}">
 								<foreach name="v.item" item="vs">
-									<option value="{{$vs.id}}" <if condition="isset($data['room_id']) and $data['room_id'] eq $vs['id']">selected</if>>{{$vs.name}}</option>
+									<option value="{{$vs.id}}" <if condition="isset($data['room_id']) and $data['room_id'] == $vs['id']">selected</if>>{{$vs.name}}</option>
 								</foreach>
 							</optgroup>
 						</if>

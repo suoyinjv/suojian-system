@@ -77,7 +77,7 @@
 								<div class="am-u-sm-10">
 									<select name="sort_type" class="am-radius" required>
 										<foreach name="common_view_sort_list" key="k" item="v">
-											<option value="{{$k}}" <if condition="$v['checked'] eq true">selected</if>>{{$v.name}}</option>
+											<option value="{{$k}}" <if condition="$v['checked'] == true">selected</if>>{{$v.name}}</option>
 										</foreach>
 									</select>
 								</div>
@@ -87,7 +87,7 @@
 								<div class="am-u-sm-10">
 									<select name="add_time_interval" class="am-radius" required>
 										<foreach name="common_view_time_list" key="k" item="v">
-											<option value="{{$k}}" <if condition="$v['checked'] eq true">selected</if>>{{$v.name}}</option>
+											<option value="{{$k}}" <if condition="$v['checked'] == true">selected</if>>{{$v.name}}</option>
 										</foreach>
 									</select>
 								</div>
@@ -97,7 +97,7 @@
 								<div class="am-u-sm-10">
 									<select name="upd_time_interval" class="am-radius" required>
 										<foreach name="common_view_time_list" key="k" item="v">
-											<option value="{{$k}}" <if condition="$v['checked'] eq true">selected</if>>{{$v.name}}</option>
+											<option value="{{$k}}" <if condition="$v['checked'] == true">selected</if>>{{$v.name}}</option>
 										</foreach>
 									</select>
 								</div>
@@ -109,7 +109,7 @@
 										<foreach name="common_view_title_style_list" item="v">
 											<optgroup label="{{$v.name}}">
 												<foreach name="v.item" item="vs">
-													<option value="{{$vs.value}}" <if condition="$vs['checked'] eq true">selected</if>>{{$vs.name}}</option>
+													<option value="{{$vs.value}}" <if condition="$vs['checked'] == true">selected</if>>{{$vs.name}}</option>
 												</foreach>
 											</optgroup>
 										</foreach>
@@ -121,7 +121,7 @@
 								<div class="am-u-sm-10">
 									<select name="link_open_way" class="am-radius" required>
 										<foreach name="common_view_link_open_way_list" key="k" item="v">
-											<option value="{{$k}}" <if condition="$v['checked'] eq true">selected</if>>{{$v.name}}</option>
+											<option value="{{$k}}" <if condition="$v['checked'] == true">selected</if>>{{$v.name}}</option>
 										</foreach>
 									</select>
 								</div>
@@ -131,7 +131,7 @@
 								<div class="am-u-sm-10">
 									<select name="date_format" class="am-radius" required>
 										<foreach name="common_view_date_format_list" key="k" item="v">
-											<option value="{{$k}}" <if condition="$v['checked'] eq true">selected</if>>{{$v.name}}</option>
+											<option value="{{$k}}" <if condition="$v['checked'] == true">selected</if>>{{$v.name}}</option>
 										</foreach>
 									</select>
 								</div>
@@ -198,13 +198,13 @@
 	<div class="content">
 		<!-- layout nav start -->
 		<ul class="am-nav am-nav-pills table-nav">
-			<li <if condition="$layout_type eq 'home'">class="am-active"</if>>
+			<li <if condition="$layout_type == 'home'">class="am-active"</if>>
 				<a href="{{:U('Admin/View/Index', ['type'=>'home'])}}">{{:L('view_nav_home')}}</a>
 			</li>
-			<li <if condition="$layout_type eq 'channel'">class="am-active"</if>>
+			<li <if condition="$layout_type == 'channel'">class="am-active"</if>>
 				<a href="{{:U('Admin/View/Index', ['type'=>'channel'])}}">{{:L('view_nav_channel')}}</a>
 			</li>
-			<li <if condition="$layout_type eq 'detail'">class="am-active"</if>>
+			<li <if condition="$layout_type == 'detail'">class="am-active"</if>>
 				<a href="{{:U('Admin/View/Index', ['type'=>'detail'])}}">{{:L('view_nav_detail')}}</a>
 			</li>
 			<div class="fr layout-nav-operation">
@@ -281,14 +281,14 @@
 					<foreach name="data" item="v">
 						<switch name="v.value">
 							<case value="100">
-								<div class="layout-view <if condition="$v['is_enable'] eq 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
+								<div class="layout-view <if condition="$v['is_enable'] == 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
 									<div class="layout-content-submit drag-submit">
 										<if condition="C('IS_DEVELOP')">
 											<if condition="!empty($v['item'][0]['id'])">
 												<div class="fl data-variable">$data_{{$v['item'][0]['id']}}</div>
 											</if>
 										</if>
-										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] eq 1">checked="true"</if> />
+										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] == 1">checked="true"</if> />
 										<if condition="!empty($v['item'][0])">
 											<button type="button" class="am-btn am-btn-secondary am-radius layout-submit-edit am-btn-xs m-r-5" data-am-modal="{target: '#layout-module-win'}" data-id="{{$v['item'][0]['id']}}" data-value="{data-value}" data-tag="layout-content-{{$v['item'][0]['id']}}" data-json='{{$v['item'][0]['json']}}'>{{:L("common_operation_edit")}}</button>
 											<button type="button" class="am-btn am-btn-danger am-radius am-btn-xs layout-submit-delete" data-id="{{$v.id}}" data-type="layout">{{:L("common_operation_remove")}}</button>
@@ -301,9 +301,9 @@
 							</case>
 							<case value="122|123|124|236">
 								<php>list($t1, $t2, $t3) = str_split($v['value']);</php>
-								<div class="layout-view <if condition="$v['is_enable'] eq 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
+								<div class="layout-view <if condition="$v['is_enable'] == 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
 									<div class="layout-content-submit drag-submit">
-										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] eq 1">checked="true"</if> />
+										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] == 1">checked="true"</if> />
 										<button type="button" class="am-btn am-btn-success am-radius layout-submit-add am-btn-xs m-r-5" data-id="{{$v.id}}" data-value="{{$v.value}}" data-tag="layout-content-{{$v.value}}-{{$v.id}}" data-html='<li class="layout-item"><div class="layout-content-submit"><button type="button" class="am-btn am-btn-secondary am-radius layout-submit-edit am-btn-xs m-r-5" data-am-modal="{target: {layout-module-win}}" data-id="{data-module-id}" data-value="{data-value}" data-tag="{content-module-id}">{{:L("common_operation_edit")}}</button><button type="button"class="am-btn am-btn-danger am-radius am-btn-xs layout-submit-delete" data-id="{data-module-id}" data-type="module">{{:L("common_operation_remove")}}</button></div><div class="layout-100-{{$v.value}}-item" id="{content-module-id}"></div></li>'>{{:L("common_operation_add2")}}</button>
 										<button type="button"class="am-btn am-btn-danger am-radius am-btn-xs layout-submit-delete" data-id="{{$v.id}}" data-type="layout">{{:L("common_operation_remove")}}</button>
 									</div>
@@ -327,9 +327,9 @@
 							</case>
 							<case value="84|48|633|363|336">
 								<php>$t_all = str_split($v['value']);</php>
-								<div class="layout-view <if condition="$v['is_enable'] eq 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
+								<div class="layout-view <if condition="$v['is_enable'] == 0">layout-view-hidden</if>" data-layout-id="{{$v.id}}">
 									<div class="layout-content-submit drag-submit">
-										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] eq 1">checked="true"</if> />
+										<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$v.id}}" <if condition="$v['is_enable'] == 1">checked="true"</if> />
 										<button type="button"class="am-btn am-btn-danger am-radius am-btn-xs layout-submit-delete" data-id="{{$v.id}}" data-type="layout">{{:L("common_operation_remove")}}</button>
 									</div>
 									<div class="layout-100-{{$v.value}} o-h">
@@ -361,12 +361,12 @@
 		<div class="site-oneself">
 			<!-- link start -->
 			<if condition="!empty($link['layout'])">
-				<div class="layout-view <if condition="$link['layout']['is_enable'] eq 0">layout-view-hidden</if>">
+				<div class="layout-view <if condition="$link['layout']['is_enable'] == 0">layout-view-hidden</if>">
 					<div class="layout-content-submit">
 						<if condition="C('IS_DEVELOP')">
 							<div class="fl data-variable">$link</div>
 						</if>
-						<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$link.layout.id}}" <if condition="$link['layout']['is_enable'] eq 1">checked="true"</if> />
+						<input type="checkbox" name="switch-checkbox" data-size="xs" data-on-color="success" data-off-color="warning" data-off-text="{{:L("common_operation_off_text")}}" data-on-text="{{:L("common_operation_on_text")}}" data-id="{{$link.layout.id}}" <if condition="$link['layout']['is_enable'] == 1">checked="true"</if> />
 					</div>
 					<div class="layout-100">
 						<div class="my-link o-h">
@@ -374,7 +374,7 @@
 							<if condition="!empty($link['data'])">
 								<ul>
 									<foreach name="link.data" item="v">
-										<li><a href="{{$v.url}}" <if condition="$v['is_new_window_open'] eq 1">target="_blank"</if> title="{{$v.describe}}">{{$v.name}}</a></li>
+										<li><a href="{{$v.url}}" <if condition="$v['is_new_window_open'] == 1">target="_blank"</if> title="{{$v.describe}}">{{$v.name}}</a></li>
 									</foreach>
 								</ul>
 							</if>

@@ -28,7 +28,7 @@
                         <select name="year" class="am-form-field">
                             <option value="">全部年份</option>
                             <volist name="yearList" id="year">
-                            <option value="{$year}" <if condition="I('year') eq $year">selected</if>>{$year}年</option>
+                            <option value="{$year}" <if condition="I('year') == $year">selected</if>>{$year}年</option>
                             </volist>
                         </select>
                     </div>
@@ -62,11 +62,11 @@
                             <td>{$vo.create_time|date='Y-m-d',###}</td>
                             <td>{$vo.complete_time|date='Y-m-d',###}</td>
                             <td>
-                                <if condition="$vo['status'] eq 1">
+                                <if condition="$vo['status'] == 1">
                                     <span class="am-badge am-badge-success"><i class="am-icon-check"></i> 已完成</span>
-                                <elseif condition="$vo['status'] eq 2"/>
+                                <elseif condition="$vo['status'] == 2"/>
                                     <span class="am-badge am-badge-danger"><i class="am-icon-times"></i> 已拒绝</span>
-                                <elseif condition="$vo['status'] eq 3"/>
+                                <elseif condition="$vo['status'] == 3"/>
                                     <span class="am-badge am-badge-default"><i class="am-icon-ban"></i> 已取消</span>
                                 </if>
                             </td>

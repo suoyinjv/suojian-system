@@ -15,7 +15,7 @@
                                 <volist name="daily_revenue" id="vo">
                                 <tr><td>{{$vo.date}}</td><td>{{$vo.cnt}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
                                 </volist>
-                                <if condition="count($daily_revenue) eq 0">
+                                <if condition="count($daily_revenue) == 0">
                                 <tr><td colspan="3" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>
@@ -32,15 +32,15 @@
                             <tbody>
                                 <volist name="pay_type_stats" id="vo">
                                 <tr><td>
-                                    <if condition="$vo['pay_type'] eq 1">微信
-                                    <elseif condition="$vo['pay_type'] eq 2"/>支付宝
-                                    <elseif condition="$vo['pay_type'] eq 3"/>银行卡
-                                    <elseif condition="$vo['pay_type'] eq 4"/>现金
+                                    <if condition="$vo['pay_type'] == 1">微信
+                                    <elseif condition="$vo['pay_type'] == 2"/>支付宝
+                                    <elseif condition="$vo['pay_type'] == 3"/>银行卡
+                                    <elseif condition="$vo['pay_type'] == 4"/>现金
                                     <else/>其他
                                     </if>
                                 </td><td>{{$vo.cnt}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
                                 </volist>
-                                <if condition="count($pay_type_stats) eq 0">
+                                <if condition="count($pay_type_stats) == 0">
                                 <tr><td colspan="3" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>
@@ -60,7 +60,7 @@
                                 <volist name="course_revenue" id="vo">
                                 <tr><td>{{$vo.course_name|default='未知'}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
                                 </volist>
-                                <if condition="count($course_revenue) eq 0">
+                                <if condition="count($course_revenue) == 0">
                                 <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>

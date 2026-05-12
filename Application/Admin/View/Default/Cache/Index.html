@@ -5,7 +5,7 @@
 	<div class="content">
 		<!-- cache list start -->
 		<foreach name="cache_type_list" item="v">
-			<if condition="$v['is_enable'] eq 1">
+			<if condition="$v['is_enable'] == 1">
 				<div class="am-panel am-panel-default am-radius">
 					<div class="am-panel-hd">{{$v.name}}</div>
 					<a href="{{$v.url}}">

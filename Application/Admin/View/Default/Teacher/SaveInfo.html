@@ -49,7 +49,7 @@
 				<label>{{:L('teacher_subject_text')}}</label>
 				<div class="view-checkbox-list">
 					<foreach name="subject_list" key="k" item="v">
-						<label class="am-checkbox-inline <if condition="$k neq count($subject_list)-1">m-r-20</if>">
+						<label class="am-checkbox-inline <if condition="$k != count($subject_list)-1">m-r-20</if>">
 							<input type="checkbox" value="{{$v.id}}" name="subject_id" minchecked="1" data-validation-message="{{:L('teacher_subject_format')}}" <if condition="!empty($data['subject_id']) and in_array($v['id'], $data['subject_id'])">checked</if> data-am-ucheck required />{{$v.name}}
 						</label>
 					</foreach>

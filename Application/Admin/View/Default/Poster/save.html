@@ -24,7 +24,7 @@
 				<select name="category_id" class="am-radius c-p" data-validation-message="请选择海报分类" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="category_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['category_id']) and $data['category_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['category_id']) and $data['category_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -62,7 +62,7 @@
 				<div>
 					<foreach name="common_is_enable_list" item="v">
 						<label class="am-radio-inline m-r-10">
-							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] eq $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] eq true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] == $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] == true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
 						</label>
 					</foreach>
 				</div>

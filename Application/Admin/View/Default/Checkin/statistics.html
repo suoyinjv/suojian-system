@@ -50,7 +50,7 @@
                     <select name="task_id" class="am-form-field">
                         <option value="">全部任务</option>
                         <volist name="task_list" id="vo">
-                        <option value="{$vo.id}" <if condition="I('task_id') eq $vo['id']">selected</if>>{$vo.name}</option>
+                        <option value="{$vo.id}" <if condition="I('task_id') == $vo['id']">selected</if>>{$vo.name}</option>
                         </volist>
                     </select>
                 </div>
@@ -95,11 +95,11 @@
                 <volist name="list" id="vo">
                 <tr>
                     <td>
-                        <if condition="$key eq 0">
+                        <if condition="$key == 0">
                             <span class="am-badge am-badge-danger">🥇</span>
-                        <elseif condition="$key eq 1" />
+                        <elseif condition="$key == 1" />
                             <span class="am-badge am-badge-warning">🥈</span>
-                        <elseif condition="$key eq 2" />
+                        <elseif condition="$key == 2" />
                             <span class="am-badge am-badge-secondary">🥉</span>
                         <else />
                             {$key+1}

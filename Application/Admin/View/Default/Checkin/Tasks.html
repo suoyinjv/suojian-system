@@ -69,10 +69,10 @@
 								<td>{{$v.name}}</td>
 								<td class="am-text-truncate" style="max-width: 200px;">{{$v.content}}</td>
 								<td>
-									<if condition="$v['task_type'] eq 1"><span class="am-badge">文字</span>
-									<elseif condition="$v['task_type'] eq 2" /><span class="am-badge am-badge-primary">图片</span>
-									<elseif condition="$v['task_type'] eq 3" /><span class="am-badge am-badge-success">音频</span>
-									<elseif condition="$v['task_type'] eq 4" /><span class="am-badge am-badge-warning">视频</span>
+									<if condition="$v['task_type'] == 1"><span class="am-badge">文字</span>
+									<elseif condition="$v['task_type'] == 2" /><span class="am-badge am-badge-primary">图片</span>
+									<elseif condition="$v['task_type'] == 3" /><span class="am-badge am-badge-success">音频</span>
+									<elseif condition="$v['task_type'] == 4" /><span class="am-badge am-badge-warning">视频</span>
 									<else /><span class="am-badge am-badge-secondary">答题</span>
 									</if>
 								</td>

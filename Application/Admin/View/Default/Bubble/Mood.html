@@ -11,7 +11,7 @@
       <span>{{:L('bubble_visible_text')}}</span>
       <select name="visible" data-am-selected>
         <foreach name="common_user_visible_list" item="v">
-          <if condition="isset($v['is_show']) and $v['is_show'] eq 1">
+          <if condition="isset($v['is_show']) and $v['is_show'] == 1">
             <option value="{{$v.value}}">{{$v.name}}</option>
           </if>
         </foreach>

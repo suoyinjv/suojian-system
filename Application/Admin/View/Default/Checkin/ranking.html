@@ -14,7 +14,7 @@
                     <select name="task_id" class="am-form-field">
                         <option value="">全部任务</option>
                         <volist name="task_list" id="vo">
-                        <option value="{$vo.id}" <if condition="I('task_id') eq $vo['id']">selected</if>>{$vo.name}</option>
+                        <option value="{$vo.id}" <if condition="I('task_id') == $vo['id']">selected</if>>{$vo.name}</option>
                         </volist>
                     </select>
                 </div>
@@ -32,7 +32,7 @@
         </form>
 
         <!-- Top3 展示 -->
-        <if condition="count($list) gt 0">
+        <if condition="count($list) > 0">
         <div class="am-g m-b-10">
             <if condition="isset($list[1])">
             <div class="am-u-sm-4 am-text-center">

@@ -9,15 +9,15 @@
 				<input type="text" class="am-radius form-keyword" placeholder="课程名称" name="name" <present name="param['name']"> value="{{$param.name}}"</present> />
 				<select name="course_type" class="am-radius c-p m-l-5">
 					<option value="">全部类型</option>
-					<option value="1" <if condition="isset($param['course_type']) and $param['course_type'] eq 1">selected</if>>1v1</option>
-					<option value="2" <if condition="isset($param['course_type']) and $param['course_type'] eq 2">selected</if>>小班</option>
-					<option value="3" <if condition="isset($param['course_type']) and $param['course_type'] eq 3">selected</if>>大班</option>
+					<option value="1" <if condition="isset($param['course_type']) and $param['course_type'] == 1">selected</if>>1v1</option>
+					<option value="2" <if condition="isset($param['course_type']) and $param['course_type'] == 2">selected</if>>小班</option>
+					<option value="3" <if condition="isset($param['course_type']) and $param['course_type'] == 3">selected</if>>大班</option>
 				</select>
 				<select name="status" class="am-radius c-p m-l-5">
 					<option value="-1">全部状态</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>未开始</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>直播中</option>
-					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已结束</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>未开始</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>直播中</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已结束</option>
 				</select>
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 			</div>
@@ -54,8 +54,8 @@
 							<td>{{$v.id}}</td>
 							<td>{{$v.name}}</td>
 							<td>
-								<if condition="$v['course_type'] eq 1"><span class="am-badge am-badge-primary">1v1</span>
-								<elseif condition="$v['course_type'] eq 2" /><span class="am-badge am-badge-success">小班</span>
+								<if condition="$v['course_type'] == 1"><span class="am-badge am-badge-primary">1v1</span>
+								<elseif condition="$v['course_type'] == 2" /><span class="am-badge am-badge-success">小班</span>
 								<else /><span class="am-badge am-badge-warning">大班</span>
 								</if>
 							</td>
@@ -63,14 +63,14 @@
 							<td>{{$v.platform}}</td>
 							<td>{{$v.start_time}}</td>
 							<td>
-								<if condition="$v['record_status'] eq 0"><span class="am-badge">未录制</span>
-								<elseif condition="$v['record_status'] eq 1" /><span class="am-badge am-badge-success">已录制</span>
+								<if condition="$v['record_status'] == 0"><span class="am-badge">未录制</span>
+								<elseif condition="$v['record_status'] == 1" /><span class="am-badge am-badge-success">已录制</span>
 								<else /><span class="am-badge am-badge-warning">录制中</span>
 								</if>
 							</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge">未开始</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-primary">直播中</span>
+								<if condition="$v['status'] == 0"><span class="am-badge">未开始</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-primary">直播中</span>
 								<else /><span class="am-badge am-badge-default">已结束</span>
 								</if>
 							</td>

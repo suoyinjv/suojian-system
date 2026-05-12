@@ -15,7 +15,7 @@
                                 <volist name="daily_new" id="vo">
                                 <tr><td>{{$vo.date}}</td><td class="am-text-success">{{$vo.cnt}}</td></tr>
                                 </volist>
-                                <if condition="count($daily_new) eq 0">
+                                <if condition="count($daily_new) == 0">
                                 <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>
@@ -33,7 +33,7 @@
                                 <volist name="source_stats" id="vo">
                                 <tr><td>{{$vo.source|default='未知'}}</td><td>{{$vo.cnt}}</td></tr>
                                 </volist>
-                                <if condition="count($source_stats) eq 0">
+                                <if condition="count($source_stats) == 0">
                                 <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>
@@ -50,14 +50,14 @@
                             <tbody>
                                 <volist name="leads_stats" id="vo">
                                 <tr><td>
-                                    <if condition="$vo['status'] eq 1">待跟进
-                                    <elseif condition="$vo['status'] eq 2"/>有意向
-                                    <elseif condition="$vo['status'] eq 3"/>已报名
+                                    <if condition="$vo['status'] == 1">待跟进
+                                    <elseif condition="$vo['status'] == 2"/>有意向
+                                    <elseif condition="$vo['status'] == 3"/>已报名
                                     <else/>其他
                                     </if>
                                 </td><td>{{$vo.cnt}}</td></tr>
                                 </volist>
-                                <if condition="count($leads_stats) eq 0">
+                                <if condition="count($leads_stats) == 0">
                                 <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
                                 </if>
                             </tbody>

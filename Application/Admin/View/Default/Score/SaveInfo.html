@@ -21,7 +21,7 @@
 				<select name="student_id" class="am-radius" required>
 					<option value="">请选择学员</option>
 					<volist name="student_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['student_id']) and $data['student_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['student_id']) and $data['student_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</volist>
 				</select>
 			</div>
@@ -31,7 +31,7 @@
 				<select name="subject_id" class="am-radius" required>
 					<option value="">请选择科目</option>
 					<volist name="subject_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['subject_id']) and $data['subject_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['subject_id']) and $data['subject_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</volist>
 				</select>
 			</div>
@@ -46,7 +46,7 @@
 				<select name="semester_id" class="am-radius" required>
 					<option value="">请选择学期</option>
 					<volist name="semester_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['semester_id']) and $data['semester_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['semester_id']) and $data['semester_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</volist>
 				</select>
 			</div>

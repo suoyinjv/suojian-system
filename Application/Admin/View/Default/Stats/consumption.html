@@ -1,1 +1,117 @@
-Consumption.html
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">消费统计</span>
+			<a href="{{:U('Admin/Stats/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$today_count}}</p>
+						<p class="am-text-default">今日订单</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$today_amount}}</p>
+						<p class="am-text-default">今日消费</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$month_amount}}</p>
+						<p class="am-text-default">本月消费</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_amount}}</p>
+						<p class="am-text-default">累计消费</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 趋势图 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">消费趋势</div>
+			<div class="am-panel-bd">
+				<div id="consumptionChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 消费排行 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">消费排行 TOP10</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>排名</th>
+							<th>学员姓名</th>
+							<th>手机号</th>
+							<th>消费次数</th>
+							<th>消费金额</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($top_list)">
+							<foreach name="top_list" key="k" item="v">
+								<tr>
+									<td>
+										<if condition="$k == 0"><span class="am-badge am-badge-warning">1</span>
+										<elseif condition="$k == 1" /><span class="am-badge am-badge-secondary">2</span>
+										<elseif condition="$k == 2" /><span class="am-badge am-badge-primary">3</span>
+										<else />{{$k+1}}
+										</if>
+									</td>
+									<td>{{$v.student_name}}</td>
+									<td>{{$v.mobile}}</td>
+									<td>{{$v.order_count}}</td>
+									<td class="am-text-primary">¥{{$v.total_amount}}</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="5" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script src="__PUBLIC__/echarts.min.js"></script>
+<script>
+$(function(){
+	var chart = echarts.init(document.getElementById('consumptionChart'));
+	chart.setOption({
+		tooltip: {trigger: 'axis'},
+		legend: {data: ['消费金额', '订单数']},
+		grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+		xAxis: {type: 'category', data: {{$date_list}}, boundaryGap: false},
+		yAxis: [{type: 'value'}, {type: 'value'}],
+		series: [
+			{name: '消费金额', type: 'line', smooth: true, data: {{$amount_list}}},
+			{name: '订单数', type: 'line', smooth: true, yAxisIndex: 1, data: {{$count_list}}}
+		]
+	});
+});
+</script>

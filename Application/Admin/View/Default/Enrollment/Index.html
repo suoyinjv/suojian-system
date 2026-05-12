@@ -9,9 +9,9 @@
 				<input type="text" class="am-radius form-keyword" placeholder="学员姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
 				<select name="status" class="am-radius c-p m-l-5">
 					<option value="-1">全部状态</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待缴费</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已缴费</option>
-					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已取消</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待缴费</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已缴费</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已取消</option>
 				</select>
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 			</div>
@@ -50,8 +50,8 @@
 							<td>{{$v.course_name}}</td>
 							<td>￥{{$v.amount}}</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge am-badge-warning">待缴费</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已缴费</span>
+								<if condition="$v['status'] == 0"><span class="am-badge am-badge-warning">待缴费</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-success">已缴费</span>
 								<else /><span class="am-badge am-badge-default">已取消</span>
 								</if>
 							</td>

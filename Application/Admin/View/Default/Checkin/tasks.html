@@ -15,7 +15,7 @@
                     <dt>任务名称</dt><dd>{$data.name|default='-'}</dd>
                     <dt>打卡类型</dt>
                     <dd>
-                        <if condition="$data['type'] eq 'daily'">
+                        <if condition="$data['type'] == 'daily'">
                             <span class="am-badge am-badge-primary">日常签到</span>
                         <else />
                             <span class="am-badge am-badge-success">课次打卡</span>

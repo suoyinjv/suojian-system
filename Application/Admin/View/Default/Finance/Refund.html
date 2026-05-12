@@ -9,9 +9,9 @@
 				<input type="text" class="am-radius form-keyword" placeholder="订单号/学员姓名" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
 				<select name="status" class="am-radius c-p m-l-5">
 					<option value="">全部状态</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审核</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已退款</option>
-					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待审核</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已退款</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] == 2">selected</if>>已拒绝</option>
 				</select>
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
 			</div>
@@ -43,13 +43,13 @@
 							<td>{{$v.reason}}</td>
 							<td>{{$v.add_time}}</td>
 							<td>
-								<if condition="$v['status'] eq 0"><span class="am-badge am-badge-warning">待审核</span>
-								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已退款</span>
+								<if condition="$v['status'] == 0"><span class="am-badge am-badge-warning">待审核</span>
+								<elseif condition="$v['status'] == 1" /><span class="am-badge am-badge-success">已退款</span>
 								<else /><span class="am-badge am-badge-danger">已拒绝</span>
 								</if>
 							</td>
 							<td class="view-operation">
-								<if condition="$v['status'] eq 0">
+								<if condition="$v['status'] == 0">
 									<a href="{{:U('Admin/Finance/AuditRefund', array('id'=>$v['id']))}}">
 										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-check" data-am-popover="{content: '审核', trigger: 'hover focus'}"></button>
 									</a>

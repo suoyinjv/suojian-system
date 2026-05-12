@@ -79,7 +79,7 @@
 							<select name="campus_id" class="am-form-field">
 								<option value="">全部校区</option>
 								<volist name="campusList" id="campus">
-								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId eq $campus['id']">selected</if>>{{$campus.name}}</option>
+								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId == $campus['id']">selected</if>>{{$campus.name}}</option>
 								</volist>
 							</select>
 						</div>
@@ -127,7 +127,7 @@
 							<td class="am-text-right">{{$item.revenue}}</td>
 							<td class="am-text-right">{{$item.convert_rate}}%</td>
 							<td>
-								<if condition="$item['status'] eq 1">
+								<if condition="$item['status'] == 1">
 								<span class="am-badge am-badge-success">在售</span>
 								<else />
 								<span class="am-badge am-badge-default">已下架</span>
