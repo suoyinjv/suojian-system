@@ -1,0 +1,59 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/NavFooter/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增底部导航</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>导航名称</th>
+					<th>链接地址</th>
+					<th>排序</th>
+					<th>状态</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.name}}</td>
+							<td>{{$v.url}}</td>
+							<td>{{$v.sort}}</td>
+							<td><include file="Default/Lib/IsShow" /></td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/NavFooter/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/NavFooter/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="6" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

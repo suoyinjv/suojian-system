@@ -1,0 +1,99 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">导出报表</span>
+			<a href="{{:U('Admin/Stats/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Stats/DoExport')}}" method="POST">
+			<div class="am-form-group">
+				<label>报表类型</label>
+				<select name="type" class="am-radius" required>
+					<option value="">请选择</option>
+					<option value="student">学员统计</option>
+					<option value="revenue">营收统计</option>
+					<option value="attendance">考勤统计</option>
+					<option value="score">成绩统计</option>
+					<option value="consumption">消费统计</option>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>时间范围</label>
+				<div class="am-g">
+					<div class="am-u-sm-5">
+						<input type="text" name="start_time" class="am-radius" placeholder="开始时间" data-am-datepicker readonly required />
+					</div>
+					<div class="am-u-sm-1 am-text-center">~</div>
+					<div class="am-u-sm-5">
+						<input type="text" name="end_time" class="am-radius" placeholder="结束时间" data-am-datepicker readonly required />
+					</div>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<label>导出格式</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="format" value="excel" checked data-am-ucheck /> Excel
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="format" value="pdf" data-am-ucheck /> PDF
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="format" value="csv" data-am-ucheck /> CSV
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<button type="submit" class="am-btn am-btn-primary am-radius am-btn-sm w100">
+					<i class="am-icon-download"></i> 导出报表
+				</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- 历史导出 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">最近导出记录</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>报表类型</th>
+							<th>导出时间</th>
+							<th>操作人</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($export_list)">
+							<foreach name="export_list" item="v">
+								<tr>
+									<td>{{$v.type_name}}</td>
+									<td>{{$v.add_time}}</td>
+									<td>{{$v.admin_name}}</td>
+									<td>
+										<a href="{{$v.file_url}}">下载</a>
+									</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="4" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

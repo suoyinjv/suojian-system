@@ -1,0 +1,79 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-bell"></i> 我的消息</h1>
+			<p class="welcome-text">查看学校和老师的通知</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 消息筛选 -->
+		<div class="am-g" style="margin-bottom: 15px;">
+			<div class="am-u-sm-12">
+				<ul class="am-nav am-nav-pills">
+					<li <if condition="I('type') eq ''">class="am-active"</if>><a href="{:U('Message/index')}">全部</a></li>
+					<li <if condition="I('type') eq 'attendance'">class="am-active"</if>><a href="{:U('Message/index', array('type'=>'attendance'))}">考勤通知</a></li>
+					<li <if condition="I('type') eq 'homework'">class="am-active"</if>><a href="{:U('Message/index', array('type'=>'homework'))}">作业通知</a></li>
+					<li <if condition="I('type') eq 'activity'">class="am-active"</if>><a href="{:U('Message/index', array('type'=>'activity'))}">活动通知</a></li>
+					<li <if condition="I('type') eq 'system'">class="am-active"</if>><a href="{:U('Message/index', array('type'=>'system'))}">系统通知</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- 消息列表 -->
+		<present name="list">
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<ul class="am-list news-list">
+					<volist name="list" id="vo">
+					<li class="am-list-item">
+						<div class="am-list-item-hd <if condition='$vo.read_status eq 0'>unread</if>">
+							<a href="{:U('Message/detail', array('id'=>$vo['id']))}">
+								<div class="news-header">
+									<span class="news-title">{$vo.title}</span>
+									<span class="news-badge">
+										<span class="am-badge am-badge-{$vo.type_color|default='primary'}">{$vo.type_name|default='通知'}</span>
+										<if condition="$vo.read_status eq 0"><span class="am-badge am-badge-danger">未读</span></if>
+									</span>
+								</div>
+								<div class="news-content">{$vo.content|subtext=100}</div>
+								<div class="news-meta">
+									<span><i class="am-icon-clock-o"></i> {$vo.create_time|date='Y-m-d H:i',###}</span>
+									<if condition="!empty($vo['sender'])"><span><i class="am-icon-user"></i> {$vo.sender}</span></if>
+								</div>
+							</a>
+						</div>
+					</li>
+					</volist>
+				</ul>
+			</div>
+		</div>
+		<div class="am-g">
+			<div class="am-u-sm-12 am-text-center">
+				{$page}
+			</div>
+		</div>
+		<else />
+		<div class="am-alert am-alert-secondary">
+			<i class="am-icon-info-circle"></i> 暂无消息
+		</div>
+		</present>
+	</div>
+</div>
+
+<style>
+.news-list { background: #fff; border-radius: 8px; }
+.news-list .am-list-item { border-bottom: 1px solid #eee; padding: 15px; }
+.news-list .am-list-item:last-child { border-bottom: none; }
+.news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.news-title { font-size: 16px; font-weight: bold; color: #333; }
+.news-badge { display: flex; gap: 5px; }
+.news-content { color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 8px; }
+.news-meta { color: #999; font-size: 12px; }
+.news-meta span { margin-right: 15px; }
+.unread .news-title { color: #007bff; }
+</style>
+
+<include file="../Public/Footer" />

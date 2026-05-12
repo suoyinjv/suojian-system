@@ -1,0 +1,67 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">缓存管理</span>
+		</legend>
+
+		<!-- 缓存状态 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">缓存概况</div>
+			<div class="am-panel-bd">
+				<table class="am-table">
+					<tr>
+						<td width="50%">系统缓存大小</td>
+						<td>{{$cache_size}}</td>
+					</tr>
+					<tr>
+						<td>模板缓存大小</td>
+						<td>{{$template_size}}</td>
+					</tr>
+					<tr>
+						<td>数据缓存大小</td>
+						<td>{{$data_size}}</td>
+					</tr>
+					<tr>
+						<td>最后清理时间</td>
+						<td>{{$last_clear_time}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<!-- 操作按钮 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6">
+				<a href="{{:U('Admin/Cache/SiteUpdate')}}" class="am-btn am-btn-primary am-radius am-btn-lg am-icon-refresh btn-loading" data-am-loading="{loadingText:'清理中...'}">
+					清理系统缓存
+				</a>
+			</div>
+			<div class="am-u-sm-6">
+				<a href="{{:U('Admin/Cache/TemplateUpdate')}}" class="am-btn am-btn-warning am-radius am-btn-lg am-icon-refresh btn-loading" data-am-loading="{loadingText:'清理中...'}">
+					清理模板缓存
+				</a>
+			</div>
+		</div>
+
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6">
+				<a href="{{:U('Admin/Cache/ModuleUpdate')}}" class="am-btn am-btn-success am-radius am-btn-lg am-icon-refresh btn-loading" data-am-loading="{loadingText:'清理中...'}">
+					清理模块缓存
+				</a>
+			</div>
+			<div class="am-u-sm-6">
+				<a href="{{:U('Admin/Cache/ClearAll')}}" class="am-btn am-btn-danger am-radius am-btn-lg am-icon-trash btn-loading" data-am-loading="{loadingText:'清理中...'}">
+					清理全部缓存
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

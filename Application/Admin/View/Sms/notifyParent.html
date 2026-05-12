@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>通知家长</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title">
+                            <i class="am-icon-bullhorn"></i> 通知单个家长
+                            <a href="{:U('notifyParents')}" class="am-btn am-btn-xs am-btn-default am-fr">
+                                <i class="am-icon-group"></i> 批量通知
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" id="notifyForm">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">选择学生 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="student_id" class="am-form-field" id="studentSelect" required>
+                                        <option value="">请选择学生</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">家长手机号</label>
+                                <div class="am-u-sm-7">
+                                    <input type="text" name="phone" class="am-form-field" id="parentPhone" placeholder="选择学生后自动填充" readonly>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">选择模板</label>
+                                <div class="am-u-sm-7">
+                                    <select name="template_id" class="am-form-field" id="templateSelect">
+                                        <option value="">不使用模板</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">短信内容 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="content" class="am-form-field" rows="5" id="smsContent" placeholder="请输入短信内容" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group" id="variablesArea" style="display:none;">
+                                <label class="am-u-sm-3 am-text-right">替换变量</label>
+                                <div class="am-u-sm-7" id="variables"></div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-send"></i> 发送短信
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    loadStudents();
+    loadTemplates();
+
+    // 加载学生列表
+    function loadStudents() {
+        $.get('__CONTROLLER__/getStudentList?json=1', function(res) {
+            var html = '<option value="">请选择学生</option>';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '" data-phone="' + (v.parent_phone || '') + '">' + v.student_name + '</option>';
+                });
+            }
+            $('#studentSelect').html(html);
+        });
+    }
+
+    // 加载模板列表
+    function loadTemplates() {
+        $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+            var html = '<option value="">不使用模板</option>';
+            if (res.data) {
+                $.each(res.data, function(i, v) {
+                    html += '<option value="' + v.id + '">' + v.name + '</option>';
+                });
+            }
+            $('#templateSelect').html(html);
+        });
+    }
+
+    // 选择学生后填充手机号
+    $('#studentSelect').change(function() {
+        var phone = $('option:selected', this).data('phone') || '';
+        $('#parentPhone').val(phone);
+    });
+
+    // 选择模板后填充内容并显示变量输入
+    $('#templateSelect').change(function() {
+        var id = $(this).val();
+        if (id) {
+            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+                if (res.data) {
+                    $('#smsContent').val(res.data.content);
+                    var vars = res.data.content.match(/\{(\w+)\}/g) || [];
+                    var html = '';
+                    $.each(vars, function(i, v) {
+                        var name = v.replace(/[{}]/g, '');
+                        html += '<div class="am-form-group"><label class="am-u-sm-3">' + name + '</label><div class="am-u-sm-6"><input type="text" name="vars[' + name + ']" class="am-form-field" placeholder="请输入' + name + '"></div></div>';
+                    });
+                    $('#variables').html(html || '<p class="am-text-muted">无需替换变量</p>');
+                    $('#variablesArea').show();
+                }
+            });
+        } else {
+            $('#smsContent').val('');
+            $('#variables').html('');
+            $('#variablesArea').hide();
+        }
+    });
+
+    // 提交表单
+    $('#notifyForm').submit(function() {
+        var formData = $(this).serialize();
+        $.post('__SELF__', formData, function(res) {
+            alert(res.msg);
+            if (res.code) {
+                location.href = '__CONTROLLER__/log';
+            }
+        });
+        return false;
+    });
+});
+</script>
+</body>
+</html>

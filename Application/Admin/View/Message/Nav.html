@@ -1,0 +1,17 @@
+<ul class="am-nav am-nav-pills table-nav m-b-10">
+	<li <if condition="$nav_type eq 'send'">class="am-active"</if> data-type="send">
+		<a href="{{:U('Admin/Message/Send')}}">{{:L('message_send_nav_name')}}</a>
+	</li>
+	<li <if condition="$nav_type eq 'template'">class="am-active"</if> data-type="template">
+		<a href="{{:U('Admin/Message/Template')}}">{{:L('message_template_nav_name')}}</a>
+	</li>
+	<li <if condition="$nav_type eq 'log'">class="am-active"</if> data-type="log">
+		<a href="{{:U('Admin/Message/Log')}}">{{:L('message_log_nav_name')}}</a>
+	</li>
+	<li <if condition="$nav_type eq 'auto'">class="am-active"</if> data-type="auto">
+		<a href="{{:U('Admin/Message/AutoSendAttendance')}}">{{:L('message_auto_nav_name')}}</a>
+	</li>
+	<li <if condition="$nav_type eq 'warning'">class="am-active"</if> data-type="warning">
+		<a href="{{:U('Admin/Message/HourWarning')}}">{{:L('message_warning_nav_name')}}</a>
+	</li>
+</ul>

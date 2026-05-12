@@ -1,0 +1,122 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">学员分析</span>
+			<a href="{{:U('Admin/Stats/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$total_students}}</p>
+						<p class="am-text-default">学员总数</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$active_students}}</p>
+						<p class="am-text-default">活跃学员</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$inactive_students}}</p>
+						<p class="am-text-default">沉默学员</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$avg_consumption}}</p>
+						<p class="am-text-default">人均消费</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 图表 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-6">
+				<div class="am-panel am-panel-default am-radius">
+					<div class="am-panel-hd">学员状态分布</div>
+					<div class="am-panel-bd">
+						<div id="statusChart" style="width: 100%; height: 250px;"></div>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-6">
+				<div class="am-panel am-panel-default am-radius">
+					<div class="am-panel-hd">年龄分布</div>
+					<div class="am-panel-bd">
+						<div id="ageChart" style="width: 100%; height: 250px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 班级分布 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">班级分布</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>班级</th>
+							<th>学员数</th>
+							<th>平均成绩</th>
+							<th>出勤率</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($class_list)">
+							<foreach name="class_list" item="v">
+								<tr>
+									<td>{{$v.class_name}}</td>
+									<td>{{$v.student_count}}</td>
+									<td>{{$v.avg_score}}</td>
+									<td>{{$v.attendance_rate}}%</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="4" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script src="__PUBLIC__/echarts.min.js"></script>
+<script>
+$(function(){
+	var statusChart = echarts.init(document.getElementById('statusChart'));
+	statusChart.setOption({
+		tooltip: {trigger: 'item'},
+		series: [{type: 'pie', radius: '60%', data: {{$status_data}}}]
+	});
+
+	var ageChart = echarts.init(document.getElementById('ageChart'));
+	ageChart.setOption({
+		tooltip: {trigger: 'axis'},
+		xAxis: {type: 'category', data: {{$age_range}}},
+		yAxis: {type: 'value'},
+		series: [{type: 'bar', data: {{$age_data}}}]
+	});
+});
+</script>

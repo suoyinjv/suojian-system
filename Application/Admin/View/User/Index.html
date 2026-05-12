@@ -1,0 +1,84 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/User/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="用户名/姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>启用</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>禁用</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/User/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增用户</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>用户名</th>
+					<th>姓名</th>
+					<th>类型</th>
+					<th>手机号</th>
+					<th>邮箱</th>
+					<th>状态</th>
+					<th>注册时间</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.username}}</td>
+							<td>{{$v.name}}</td>
+							<td>
+								<if condition="$v['user_type'] eq 1"><span class="am-badge am-badge-primary">学员</span>
+								<elseif condition="$v['user_type'] eq 2" /><span class="am-badge am-badge-success">教师</span>
+								<else /><span class="am-badge am-badge-warning">家长</span>
+								</if>
+							</td>
+							<td>{{$v.mobile}}</td>
+							<td>{{$v.email}}</td>
+							<td><include file="Default/Lib/UserState" /></td>
+							<td>{{$v.add_time}}</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/User/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/User/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="9" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

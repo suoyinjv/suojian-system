@@ -1,0 +1,59 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">财务模块</span>
+		</legend>
+
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_income}}</p>
+						<p class="am-text-default">总收入</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-danger am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_expense}}</p>
+						<p class="am-text-default">总支出</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_profit}}</p>
+						<p class="am-text-default">净利润</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$refund_count}}</p>
+						<p class="am-text-default">待退款</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-12">
+				<a href="{{:U('Admin/Finance/Income')}}" class="am-btn am-btn-secondary am-radius am-btn-lg am-icon-line-chart"> 收入报表</a>
+				<a href="{{:U('Admin/Finance/Expense')}}" class="am-btn am-btn-danger am-radius am-btn-lg m-l-10 am-icon-line-chart"> 支出管理</a>
+				<a href="{{:U('Admin/Finance/Refund')}}" class="am-btn am-btn-warning am-radius am-btn-lg m-l-10 am-icon-history"> 退款审核</a>
+				<a href="{{:U('Admin/Finance/Statistics')}}" class="am-btn am-btn-primary am-radius am-btn-lg m-l-10 am-icon-bar-chart"> 统计分析</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

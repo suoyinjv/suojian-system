@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>资源管理 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-12">
+                <div class="am-btn-toolbar am-fr">
+                    <a href="__CONTROLLER__/upload" class="am-btn am-btn-primary am-radius">
+                        <i class="am-icon-upload"></i> 上传资源
+                    </a>
+                </div>
+                <h2 class="am-text-xl"><i class="am-icon-file"></i> 资源列表</h2>
+                <hr>
+            </div>
+            <div class="am-u-sm-12">
+                <form method="get" class="am-form-inline am-margin-bottom">
+                    <div class="am-form-group">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="资源名称" value="{:I('keyword')}">
+                    </div>
+                    <div class="am-form-group">
+                        <select name="type" class="am-form-field">
+                            <option value="">全部类型</option>
+                            <option value="1" <if condition="I('type') eq 1">selected</if>>文档</option>
+                            <option value="2" <if condition="I('type') eq 2">selected</if>>图片</option>
+                            <option value="3" <if condition="I('type') eq 3">selected</if>>视频</option>
+                            <option value="4" <if condition="I('type') eq 4">selected</if>>音频</option>
+                            <option value="5" <if condition="I('type') eq 5">selected</if>>压缩包</option>
+                            <option value="6" <if condition="I('type') eq 6">selected</if>>其他</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="am-btn am-btn-default"><i class="am-icon-search"></i> 搜索</button>
+                </form>
+            </div>
+            <div class="am-u-sm-12">
+                <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                    <thead>
+                        <tr>
+                            <th class="am-text-center">ID</th>
+                            <th>资源名称</th>
+                            <th>类型</th>
+                            <th>大小</th>
+                            <th>分类</th>
+                            <th>上传时间</th>
+                            <th>共享</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td class="am-text-center">{$vo.id}</td>
+                            <td>
+                                <i class="am-icon <if condition='$vo[\"type\"] eq 1'>am-icon-file-word-o<elseif condition='$vo[\"type\"] eq 2'/>am-icon-file-image-o<elseif condition='$vo[\"type\"] eq 3'/>am-icon-file-video-o<elseif condition='$vo[\"type\"] eq 4'/>am-icon-file-audio-o<elseif condition='$vo[\"type\"] eq 5'/>am-icon-file-archive-o<else/>am-icon-file-o</if>"></i>
+                                {$vo.name}
+                            </td>
+                            <td>{$vo.type_text}</td>
+                            <td>{$vo.size_text}</td>
+                            <td>{$vo.category}</td>
+                            <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                            <td>
+                                <if condition="$vo['is_shared'] eq 1">
+                                    <span class="am-badge am-badge-success">已共享</span>
+                                <else/>
+                                    <span class="am-badge am-badge-default">私有</span>
+                                </if>
+                            </td>
+                            <td>
+                                <a href="__CONTROLLER__/save/id/{$vo.id}" class="am-btn am-btn-xs am-btn-primary am-radius"><i class="am-icon-edit"></i> 编辑</a>
+                                <a href="__CONTROLLER__/share/id/{$vo.id}" class="am-btn am-btn-xs am-btn-warning am-radius"><i class="am-icon-share"></i> 分享</a>
+                                <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/{$vo.id}')" class="am-btn am-btn-xs am-btn-danger am-radius"><i class="am-icon-trash"></i> 删除</a>
+                            </td>
+                        </tr>
+                        </volist>
+                        <notpresent name="list">
+                        <tr>
+                            <td colspan="8" class="am-text-center am-text-danger">暂无资源</td>
+                        </tr>
+                        </notpresent>
+                    </tbody>
+                </table>
+                {$page}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function deleteConfirm(url) {
+    if(confirm('确定要删除此资源吗？此操作不可恢复！')) {
+        location.href = url;
+    }
+}
+</script>
+</body>
+</html>

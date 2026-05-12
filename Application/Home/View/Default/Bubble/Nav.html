@@ -1,22 +1,9 @@
-<!-- nav start -->
-<div class="bubble-nav o-h m-b-10">
-	<ul class="am-nav am-nav-pills am-fl">
-		<foreach name="bubble_nav_list" item="v">
-			<if condition="I('type', 'all') eq $v['type']">
-				<li class="am-active" data-type="{{$v.type}}">
-					<a href="javascript:;">{{$v.name}}</a>
-				</li>
-			<else />
-				<li data-type="{{$v.type}}">
-					<a href="{{$v.url}}">{{$v.name}}</a>
-				</li>
-			</if>
-		</foreach>
-	</ul>
-	<div class="am-fr m-r-10">
-		<a href="">
-			<i class="am-icon-repeat c-p submit-repeat" data-am-popover="{content: '{{:L('common_operation_refresh')}}', trigger: 'hover focus'}"></i>
-		</a>
-	</div>
+<div class="am-cf bubble-nav">
+	<if condition="I('type') eq 'own'">
+		<a href="{{:U('Home/Bubble/Index')}}" class="am-btn am-btn-default am-btn-sm am-radius am-fl <if condition="1 neq 1">am-active</if>">{{:L('bubble_nav_list_all_name')}}</a>
+		<a href="{{:U('Home/Bubble/Index', array('type'=>'own'))}}" class="am-btn am-btn-default am-btn-sm am-radius am-fl am-active">{{:L('bubble_nav_list_own_name')}}</a>
+	<else />
+		<a href="{{:U('Home/Bubble/Index')}}" class="am-btn am-btn-default am-btn-sm am-radius am-fl am-active">{{:L('bubble_nav_list_all_name')}}</a>
+		<a href="{{:U('Home/Bubble/Index', array('type'=>'own'))}}" class="am-btn am-btn-default am-btn-sm am-radius am-fl <if condition="1 neq 1">am-active</if>">{{:L('bubble_nav_list_own_name')}}</a>
+	</if>
 </div>
-<!-- nav end -->

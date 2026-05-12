@@ -1,0 +1,114 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-tasks"></i> 我的作业</h1>
+			<p class="welcome-text">查看和提交作业</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 作业筛选 -->
+		<div class="am-g" style="margin-bottom: 15px;">
+			<div class="am-u-sm-12">
+				<ul class="am-nav am-nav-pills">
+					<li <if condition="I('status') eq ''">class="am-active"</if>><a href="{:U('Homework/index')}">全部</a></li>
+					<li <if condition="I('status') eq 'pending'">class="am-active"</if>><a href="{:U('Homework/index', array('status'=>'pending'))}">待提交</a></li>
+					<li <if condition="I('status') eq 'submitted'">class="am-active"</if>><a href="{:U('Homework/index', array('status'=>'submitted'))}">已提交</a></li>
+					<li <if condition="I('status') eq 'reviewed'">class="am-active"</if>><a href="{:U('Homework/index', array('status'=>'reviewed'))}">已批改</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- 作业列表 -->
+		<present name="list">
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<volist name="list" id="vo">
+				<div class="am-panel am-panel-default homework-item">
+					<div class="am-panel-hd">
+						<div class="am-fl">
+							<h3 class="am-panel-title">{$vo.title}</h3>
+							<span class="am-badge am-badge-secondary">{$vo.course_name|default='未知课程'}</span>
+							<span class="am-badge am-badge-warning">{$vo.class_name|default=''}</span>
+						</div>
+						<div class="am-fr">
+							<if condition="$vo['status'] eq 'pending'">
+								<span class="am-badge am-badge-danger">待提交</span>
+							<elseif condition="$vo['status'] eq 'submitted'" />
+								<span class="am-badge am-badge-primary">已提交</span>
+							<else />
+								<span class="am-badge am-badge-success">已批改</span>
+							</if>
+						</div>
+					</div>
+					<div class="am-panel-bd">
+						<div class="am-g">
+							<div class="am-u-sm-8">
+								<p class="homework-content">{$vo.content}</p>
+								<div class="homework-meta">
+									<span><i class="am-icon-calendar"></i> 布置时间：{$vo.create_time|date='Y-m-d H:i',###}</span>
+									<span><i class="am-icon-clock-o"></i> 截止时间：{$vo.deadline|date='Y-m-d H:i',###}</span>
+								</div>
+								<if condition="!empty($vo['attachments'])">
+								<div class="homework-attachments">
+									<i class="am-icon-paperclip"></i> 附件：{$vo.attachments}
+								</div>
+								</if>
+							</div>
+							<div class="am-u-sm-4 am-text-right">
+								<if condition="$vo['status'] eq 'pending'">
+									<a href="{:U('Homework/submit', array('id'=>$vo['id']))}" class="am-btn am-btn-primary am-btn-sm">
+										<i class="am-icon-edit"></i> 提交作业
+									</a>
+								<elseif condition="$vo['status'] eq 'submitted'" />
+									<a href="{:U('Homework/view', array('id'=>$vo['id']))}" class="am-btn am-btn-secondary am-btn-sm">
+										<i class="am-icon-eye"></i> 查看提交
+									</a>
+								<else />
+									<a href="{:U('Homework/view', array('id'=>$vo['id']))}" class="am-btn am-btn-success am-btn-sm">
+										<i class="am-icon-eye"></i> 查看批改
+									</a>
+									<div class="homework-score">
+										<span class="score-label">成绩：</span>
+										<span class="score-value">{$vo.score|default='待评分'}</span>
+									</div>
+									<if condition="!empty($vo['teacher_review'])">
+									<div class="homework-review">
+										<strong>教师点评：</strong>{$vo.teacher_review}
+									</div>
+									</if>
+								</if>
+							</div>
+						</div>
+					</div>
+				</div>
+				</volist>
+			</div>
+		</div>
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				{$page}
+			</div>
+		</div>
+		<else />
+		<div class="am-alert am-alert-secondary" style="margin-top: 20px;">
+			<i class="am-icon-info-circle"></i> 暂无作业记录
+		</div>
+		</present>
+	</div>
+</div>
+
+<style>
+.homework-item { margin-bottom: 15px; }
+.homework-content { color: #555; line-height: 1.8; }
+.homework-meta { margin-top: 8px; color: #999; font-size: 12px; }
+.homework-meta span { margin-right: 15px; }
+.homework-attachments { margin-top: 8px; color: #007bff; }
+.homework-score { margin-top: 8px; font-size: 16px; }
+.score-value { color: #28a745; font-weight: bold; }
+.homework-review { margin-top: 8px; color: #666; font-size: 13px; background: #f8f8f8; padding: 8px; border-radius: 4px; }
+</style>
+
+<include file="../Public/Footer" />

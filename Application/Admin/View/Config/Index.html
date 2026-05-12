@@ -1,0 +1,58 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">系统配置</span>
+		</legend>
+
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Config/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Config/Index')}}">
+			<div class="am-form-group">
+				<label>网站名称</label>
+				<input type="text" name="site_name" placeholder="网站名称" class="am-radius" <present name="config.site_name"> value="{{$config.site_name}}"</present> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>网站标题</label>
+				<input type="text" name="site_title" placeholder="网站标题" class="am-radius" <present name="config.site_title"> value="{{$config.site_title}}"</present> />
+			</div>
+
+			<div class="am-form-group">
+				<label>网站关键词</label>
+				<input type="text" name="site_keywords" placeholder="网站关键词，多个用逗号分隔" class="am-radius" <present name="config.site_keywords"> value="{{$config.site_keywords}}"</present> />
+			</div>
+
+			<div class="am-form-group">
+				<label>网站描述</label>
+				<textarea name="site_description" class="am-radius" rows="3"><present name="config.site_description">{{$config.site_description}}</present></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<label>网站Logo</label>
+				<input type="text" name="site_logo" placeholder="网站Logo URL" class="am-radius" <present name="config.site_logo"> value="{{$config.site_logo}}"</present> />
+			</div>
+
+			<div class="am-form-group">
+				<label>版权信息</label>
+				<input type="text" name="copyright" placeholder="版权信息" class="am-radius" <present name="config.copyright"> value="{{$config.copyright}}"</present> />
+			</div>
+
+			<div class="am-form-group">
+				<label>联系电话</label>
+				<input type="text" name="telephone" placeholder="联系电话" class="am-radius" <present name="config.telephone"> value="{{$config.telephone}}"</present> />
+			</div>
+
+			<div class="am-form-group">
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

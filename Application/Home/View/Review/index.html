@@ -1,0 +1,90 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-comments-o"></i> 我的点评</h1>
+			<p class="welcome-text">查看教师对您的评价</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<!-- 点评筛选 -->
+		<div class="am-g" style="margin-bottom: 15px;">
+			<div class="am-u-sm-12">
+				<ul class="am-nav am-nav-pills">
+					<li <if condition="I('type') eq ''">class="am-active"</if>><a href="{:U('Review/index')}">全部</a></li>
+					<li <if condition="I('type') eq 'homework'">class="am-active"</if>><a href="{:U('Review/index', array('type'=>'homework'))}">作业点评</a></li>
+					<li <if condition="I('type') eq 'growth'">class="am-active"</if>><a href="{:U('Review/index', array('type'=>'growth'))}">成长点评</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- 点评列表 -->
+		<present name="list">
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<volist name="list" id="vo">
+				<div class="am-panel am-panel-default review-item">
+					<div class="am-panel-hd">
+						<div class="am-fl">
+							<h3 class="am-panel-title">{$vo.title}</h3>
+							<span class="am-badge am-badge-primary">{$vo.course_name|default='综合'}</span>
+						</div>
+						<div class="am-fr">
+							<span class="review-date">{$vo.create_time|date='Y-m-d H:i',###}</span>
+						</div>
+					</div>
+					<div class="am-panel-bd">
+						<div class="review-teacher">
+							<span class="teacher-avatar"><i class="am-icon-user"></i></span>
+							<span class="teacher-name">{$vo.teacher_name|default='教师'}</span>
+							<if condition="!empty($vo['score'])">
+							<span class="review-score">
+								<php>for($i=1;$i<=5;$i++):</php>
+								<i class="am-icon-star <if condition='$i <= $vo["score"]'>am-text-warning<else/>am-text-gray</if>"></i>
+								<php>endfor;</php>
+							</span>
+							</if>
+						</div>
+						<div class="review-content">
+							{$vo.content|nl2br}
+						</div>
+						<if condition="!empty($vo['images'])">
+						<div class="review-images">
+							<volist name="vo.images" id="img">
+							<img src="{$img}" class="review-img" />
+							</volist>
+						</div>
+						</if>
+					</div>
+				</div>
+				</volist>
+			</div>
+		</div>
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				{$page}
+			</div>
+		</div>
+		<else />
+		<div class="am-alert am-alert-secondary">
+			<i class="am-icon-info-circle"></i> 暂无点评记录
+		</div>
+		</present>
+	</div>
+</div>
+
+<style>
+.review-item { margin-bottom: 15px; }
+.review-teacher { display: flex; align-items: center; margin-bottom: 10px; }
+.teacher-avatar { width: 30px; height: 30px; background: #007bff; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 8px; }
+.teacher-name { font-weight: bold; margin-right: 10px; }
+.review-score i { margin-right: 2px; }
+.review-content { color: #555; line-height: 1.8; padding: 10px 0; }
+.review-images { margin-top: 10px; }
+.review-img { width: 120px; height: 120px; object-fit: cover; border-radius: 4px; margin-right: 10px; }
+.am-text-gray { color: #ccc; }
+</style>
+
+<include file="../Public/Footer" />

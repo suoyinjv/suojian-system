@@ -1,0 +1,78 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Finance/Refund')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="订单号/学员姓名" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="">全部状态</option>
+					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待审核</option>
+					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已退款</option>
+					<option value="2" <if condition="isset($param['status']) and $param['status'] eq 2">selected</if>>已拒绝</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>订单号</th>
+					<th>学员姓名</th>
+					<th>退款金额</th>
+					<th>退款原因</th>
+					<th>申请时间</th>
+					<th>状态</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.order_no}}</td>
+							<td>{{$v.student_name}}</td>
+							<td class="am-text-danger">-¥{{$v.amount}}</td>
+							<td>{{$v.reason}}</td>
+							<td>{{$v.add_time}}</td>
+							<td>
+								<if condition="$v['status'] eq 0"><span class="am-badge am-badge-warning">待审核</span>
+								<elseif condition="$v['status'] eq 1" /><span class="am-badge am-badge-success">已退款</span>
+								<else /><span class="am-badge am-badge-danger">已拒绝</span>
+								</if>
+							</td>
+							<td class="view-operation">
+								<if condition="$v['status'] eq 0">
+									<a href="{{:U('Admin/Finance/AuditRefund', array('id'=>$v['id']))}}">
+										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-check" data-am-popover="{content: '审核', trigger: 'hover focus'}"></button>
+									</a>
+								</if>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="8" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

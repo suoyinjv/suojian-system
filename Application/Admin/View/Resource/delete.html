@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>删除确认 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-8 am-u-sm-centered">
+                <div class="am-modal am-modal-confirm" tabindex="-1" id="deleteModal">
+                    <div class="am-modal-dialog">
+                        <div class="am-modal-hd am-text-danger">
+                            <i class="am-icon-warning"></i> 删除确认
+                        </div>
+                        <div class="am-modal-bd">
+                            <h4>确定要删除资源 "{$info.name}" 吗？</h4>
+                            <p class="am-text-warning"><i class="am-icon-exclamation-triangle"></i> 此操作不可恢复，请谨慎操作！</p>
+                            <if condition="$info">
+                            <div class="am-alert am-alert-warning am-margin-top">
+                                <p><strong>资源信息：</strong></p>
+                                <p>文件名：{$info.name}</p>
+                                <p>类型：{$info.type_text}</p>
+                                <p>大小：{$info.size_text}</p>
+                                <p>上传时间：{$info.create_time|date='Y-m-d H:i',###}</p>
+                            </div>
+                            </if>
+                        </div>
+                        <div class="am-modal-footer">
+                            <span class="am-modal-btn" data-am-modal-confirm onclick="location.href='__CONTROLLER__/delete/id/{$info.id}'">
+                                <i class="am-icon-check"></i> 确定删除
+                            </span>
+                            <span class="am-modal-btn" data-am-modal-cancel onclick="location.href='__CONTROLLER__/index'">
+                                <i class="am-icon-close"></i> 取消
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="am-text-center am-margin-top-lg">
+                    <if condition="!$info">
+                        <div class="am-alert am-alert-danger">
+                            <i class="am-icon-times-circle"></i> 资源不存在或已被删除
+                        </div>
+                        <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-margin-top">
+                            <i class="am-icon-arrow-left"></i> 返回列表
+                        </a>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script>
+$(function() {
+    <if condition="$info">
+    $('#deleteModal').modal('open');
+    </if>
+});
+</script>
+</body>
+</html>

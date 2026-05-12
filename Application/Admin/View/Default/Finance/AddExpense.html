@@ -1,0 +1,63 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Finance/SaveExpense')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Finance/Expense')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						新增支出
+					<else />
+						编辑支出
+					</if>
+				</span>
+				<a href="{{:U('Admin/Finance/Expense')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>支出项目</label>
+				<input type="text" name="title" placeholder="支出项目" class="am-radius" <notempty name="data"> value="{{$data.title}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>支出金额</label>
+				<input type="number" name="amount" placeholder="支出金额" class="am-radius" step="0.01" <notempty name="data"> value="{{$data.amount}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>支出类型</label>
+				<select name="type" class="am-radius">
+					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>工资</option>
+					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>租金</option>
+					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>采购</option>
+					<option value="4" <if condition="isset($data['type']) and $data['type'] eq 4">selected</if>>水电</option>
+					<option value="5" <if condition="isset($data['type']) and $data['type'] eq 5">selected</if>>营销</option>
+					<option value="6" <if condition="isset($data['type']) and $data['type'] eq 6">selected</if>>其他</option>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>经手人</label>
+				<input type="text" name="handler" placeholder="经手人" class="am-radius" <notempty name="data"> value="{{$data.handler}}"</notempty> />
+			</div>
+
+			<div class="am-form-group">
+				<label>备注</label>
+				<textarea name="remark" class="am-radius" rows="3"><notempty name="data">{{$data.remark}}</notempty></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

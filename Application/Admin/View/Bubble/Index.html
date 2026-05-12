@@ -1,0 +1,70 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{{:U('Admin/Bubble/Index')}}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="内容搜索" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>内容</th>
+					<th>发布者</th>
+					<th>类型</th>
+					<th>点赞数</th>
+					<th>评论数</th>
+					<th>发布时间</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td class="m-w-300">{{$v.content}}</td>
+							<td>{{$v.user_name}}</td>
+							<td>
+								<if condition="$v['type'] eq 1"><span class="am-badge am-badge-primary">动态</span>
+								<else /><span class="am-badge am-badge-success">心情</span>
+								</if>
+							</td>
+							<td>{{$v.praise_count}}</td>
+							<td>{{$v.comment_count}}</td>
+							<td>{{$v.add_time}}</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/Bubble/Detail', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Bubble/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="8" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

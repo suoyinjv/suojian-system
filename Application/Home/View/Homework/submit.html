@@ -1,0 +1,75 @@
+<include file="../Public/Header" />
+
+<div class="student-portal">
+	<div class="portal-header">
+		<div class="am-container">
+			<h1><i class="am-icon-edit"></i> 提交作业</h1>
+			<p class="welcome-text">{$homework.title}</p>
+		</div>
+	</div>
+
+	<div class="am-container" style="margin-top: 20px;">
+		<div class="am-g">
+			<div class="am-u-sm-12 am-u-sm-centered">
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title">{$homework.title}</h3>
+						<span class="am-badge">{$homework.course_name|default=''} | {$homework.class_name|default=''}</span>
+					</div>
+					<div class="am-panel-bd">
+						<div class="am-form">
+							<div class="am-form-group">
+								<label>作业内容</label>
+								<div class="homework-detail">{$homework.content}</div>
+							</div>
+							<div class="am-form-group">
+								<label>截止时间</label>
+								<p>{$homework.deadline|date='Y-m-d H:i',###}</p>
+							</div>
+							<if condition="!empty($homework['attachments'])">
+							<div class="am-form-group">
+								<label>附件下载</label>
+								<p><a href="{$homework.attachments}" target="_blank">点击下载附件</a></p>
+							</div>
+							</if>
+						</div>
+					</div>
+				</div>
+
+				<div class="am-panel am-panel-primary">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title">提交作业</h3>
+					</div>
+					<div class="am-panel-bd">
+						<form action="{:U('Homework/doSubmit')}" method="post" class="am-form" enctype="multipart/form-data">
+							<input type="hidden" name="id" value="{$homework.id}" />
+
+							<div class="am-form-group">
+								<label>提交内容 <span class="am-text-danger">*</span></label>
+								<textarea name="content" rows="6" class="am-form-field" placeholder="请填写作业内容" required></textarea>
+							</div>
+
+							<div class="am-form-group">
+								<label>上传附件</label>
+								<input type="file" name="attachment" accept="image/*,.pdf,.doc,.docx,.zip" />
+								<span class="am-form-help">支持图片、PDF、Word、ZIP格式</span>
+							</div>
+
+							<div class="am-form-group">
+								<button type="submit" class="am-btn am-btn-primary am-btn-block">
+									<i class="am-icon-send"></i> 提交作业
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.homework-detail { padding: 10px; background: #f9f9f9; border-radius: 4px; line-height: 1.8; }
+</style>
+
+<include file="../Public/Footer" />

@@ -1,0 +1,110 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">财务统计</span>
+			<a href="{{:U('Admin/Finance/Income')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_income}}</p>
+						<p class="am-text-default">总收入</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-danger am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_expense}}</p>
+						<p class="am-text-default">总支出</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_profit}}</p>
+						<p class="am-text-default">净利润</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$month_income}}</p>
+						<p class="am-text-default">本月收入</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 图表 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">收支趋势</div>
+			<div class="am-panel-bd">
+				<div id="financeChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 明细表格 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">近期收支明细</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>日期</th>
+							<th>收入</th>
+							<th>支出</th>
+							<th>利润</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($list)">
+							<foreach name="list" item="v">
+								<tr>
+									<td>{{$v.date}}</td>
+									<td class="am-text-success">+¥{{$v.income}}</td>
+									<td class="am-text-danger">-¥{{$v.expense}}</td>
+									<td class="am-text-primary">¥{{$v.profit}}</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="4" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script src="__PUBLIC__/echarts.min.js"></script>
+<script>
+$(function(){
+	var chart = echarts.init(document.getElementById('financeChart'));
+	chart.setOption({
+		tooltip: {trigger: 'axis'},
+		legend: {data: ['收入', '支出', '利润']},
+		grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+		xAxis: {type: 'category', data: {{$date_list}}, boundaryGap: false},
+		yAxis: {type: 'value'},
+		series: [
+			{name: '收入', type: 'line', data: {{$income_list}}},
+			{name: '支出', type: 'line', data: {{$expense_list}}},
+			{name: '利润', type: 'line', data: {{$profit_list}}}
+		]
+	});
+});
+</script>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>转校历史 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-12">
+                <div class="am-btn-toolbar am-fr">
+                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-radius">
+                        <i class="am-icon-arrow-left"></i> 返回申请列表
+                    </a>
+                </div>
+                <h2 class="am-text-xl"><i class="am-icon-history"></i> 转校历史记录</h2>
+                <hr>
+            </div>
+            <div class="am-u-sm-12">
+                <form method="get" class="am-form-inline am-margin-bottom">
+                    <div class="am-form-group">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名" value="{:I('keyword')}">
+                    </div>
+                    <div class="am-form-group">
+                        <select name="year" class="am-form-field">
+                            <option value="">全部年份</option>
+                            <volist name="yearList" id="year">
+                            <option value="{$year}" <if condition="I('year') eq $year">selected</if>>{$year}年</option>
+                            </volist>
+                        </select>
+                    </div>
+                    <button type="submit" class="am-btn am-btn-default"><i class="am-icon-search"></i> 搜索</button>
+                    <a href="{:U('getHistory?export=1')}" class="am-btn am-btn-success"><i class="am-icon-download"></i> 导出</a>
+                </form>
+            </div>
+            <div class="am-u-sm-12">
+                <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                    <thead>
+                        <tr>
+                            <th class="am-text-center">ID</th>
+                            <th>学员姓名</th>
+                            <th>学号</th>
+                            <th>原校区</th>
+                            <th>目标校区</th>
+                            <th>申请时间</th>
+                            <th>完成时间</th>
+                            <th>结果</th>
+                            <th>操作人</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td class="am-text-center">{$vo.id}</td>
+                            <td>{$vo.student_name}</td>
+                            <td>{$vo.student_no}</td>
+                            <td>{$vo.from_campus}</td>
+                            <td>{$vo.to_campus}</td>
+                            <td>{$vo.create_time|date='Y-m-d',###}</td>
+                            <td>{$vo.complete_time|date='Y-m-d',###}</td>
+                            <td>
+                                <if condition="$vo['status'] eq 1">
+                                    <span class="am-badge am-badge-success"><i class="am-icon-check"></i> 已完成</span>
+                                <elseif condition="$vo['status'] eq 2"/>
+                                    <span class="am-badge am-badge-danger"><i class="am-icon-times"></i> 已拒绝</span>
+                                <elseif condition="$vo['status'] eq 3"/>
+                                    <span class="am-badge am-badge-default"><i class="am-icon-ban"></i> 已取消</span>
+                                </if>
+                            </td>
+                            <td>{$vo.operator_name}</td>
+                        </tr>
+                        </volist>
+                        <notpresent name="list">
+                        <tr>
+                            <td colspan="9" class="am-text-center am-text-danger">暂无历史记录</td>
+                        </tr>
+                        </notpresent>
+                    </tbody>
+                </table>
+                {$page}
+            </div>
+
+            <div class="am-u-sm-12 am-margin-top">
+                <div class="am-panel am-panel-primary">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="am-icon-bar-chart"></i> 转校统计</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <div class="am-g">
+                            <div class="am-u-sm-3 am-text-center">
+                                <p class="am-text-xxl am-text-primary">{$totalCount}</p>
+                                <p>总申请数</p>
+                            </div>
+                            <div class="am-u-sm-3 am-text-center">
+                                <p class="am-text-xxl am-text-success">{$successCount}</p>
+                                <p>已完成</p>
+                            </div>
+                            <div class="am-u-sm-3 am-text-center">
+                                <p class="am-text-xxl am-text-danger">{$rejectCount}</p>
+                                <p>已拒绝</p>
+                            </div>
+                            <div class="am-u-sm-3 am-text-center">
+                                <p class="am-text-xxl am-text-warning">{$cancelCount}</p>
+                                <p>已取消</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>发起转校 - SchoolCMS</title>
+    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-10 am-u-sm-centered">
+                <div class="am-panel am-panel-warning">
+                    <div class="am-panel-hd">
+                        <h3 class="am-panel-title"><i class="fa fa-exchange"></i> 发起转校申请</h3>
+                    </div>
+                    <div class="am-panel-bd">
+                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">选择学员 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="student_id" class="am-form-field" required>
+                                        <option value="">请选择学员</option>
+                                        <volist name="studentList" id="student">
+                                        <option value="{$student.id}">{$student.name} ({$student.student_no})</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">原校区 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="from_campus_id" class="am-form-field" required>
+                                        <option value="">请选择原校区</option>
+                                        <volist name="campusList" id="campus">
+                                        <option value="{$campus.id}">{$campus.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">目标校区 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="to_campus_id" class="am-form-field" required>
+                                        <option value="">请选择目标校区</option>
+                                        <volist name="campusList" id="campus">
+                                        <option value="{$campus.id}">{$campus.name}</option>
+                                        </volist>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">转校原因 <span class="am-text-danger">*</span></label>
+                                <div class="am-u-sm-7">
+                                    <select name="reason_type" class="am-form-field" id="reasonType" required>
+                                        <option value="">请选择原因类型</option>
+                                        <option value="搬家">家庭搬迁</option>
+                                        <option value="升学">升学</option>
+                                        <option value="教学质量">教学质量</option>
+                                        <option value="距离问题">距离问题</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">详细说明</label>
+                                <div class="am-u-sm-7">
+                                    <textarea name="reason" class="am-form-field" rows="4" placeholder="请详细说明转校原因及特殊情况"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">期望生效日期</label>
+                                <div class="am-u-sm-7">
+                                    <input type="date" name="expected_date" class="am-form-field" placeholder="选择期望的转校生效日期">
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-text-right">附件上传</label>
+                                <div class="am-u-sm-7">
+                                    <input type="file" name="attachment" class="am-form-field" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                                    <p class="am-text-sm am-text-muted">支持 JPG、PNG、PDF、DOC 格式，可上传转学证明等材料</p>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
+                                        <i class="am-icon-paper-plane"></i> 提交申请
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="am-form-group">
+                                <div class="am-u-sm-7 am-u-sm-offset-3">
+                                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-btn-block">
+                                        <i class="am-icon-arrow-left"></i> 返回列表
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+</body>
+</html>

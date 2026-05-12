@@ -1,0 +1,104 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">招生统计</span>
+			<a href="{{:U('Admin/Stats/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$today_new}}</p>
+						<p class="am-text-default">今日新增</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$week_new}}</p>
+						<p class="am-text-default">本周新增</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$month_new}}</p>
+						<p class="am-text-default">本月新增</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$total}}</p>
+						<p class="am-text-default">总学员</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 趋势图 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">招生趋势</div>
+			<div class="am-panel-bd">
+				<div id="trendChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 来源统计 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">来源渠道分布</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>来源渠道</th>
+							<th>人数</th>
+							<th>占比</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($source_list)">
+							<foreach name="source_list" item="v">
+								<tr>
+									<td>{{$v.source}}</td>
+									<td>{{$v.count}}</td>
+									<td>{{$v.percent}}%</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="3" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script src="__PUBLIC__/echarts.min.js"></script>
+<script>
+$(function(){
+	var chart = echarts.init(document.getElementById('trendChart'));
+	chart.setOption({
+		tooltip: {trigger: 'axis'},
+		legend: {data: ['新增学员']},
+		grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+		xAxis: {type: 'category', data: {{$date_list}}, boundaryGap: false},
+		yAxis: {type: 'value'},
+		series: [{name: '新增学员', type: 'line', smooth: true, data: {{$data_list}}}]
+	});
+});
+</script>

@@ -1,0 +1,106 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">营收统计</span>
+			<a href="{{:U('Admin/Stats/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$today_revenue}}</p>
+						<p class="am-text-default">今日营收</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$week_revenue}}</p>
+						<p class="am-text-default">本周营收</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$month_revenue}}</p>
+						<p class="am-text-default">本月营收</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">¥{{$total_revenue}}</p>
+						<p class="am-text-default">总营收</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 趋势图 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">营收趋势</div>
+			<div class="am-panel-bd">
+				<div id="revenueChart" style="width: 100%; height: 300px;"></div>
+			</div>
+		</div>
+
+		<!-- 产品分布 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">产品分布</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>产品类型</th>
+							<th>订单数</th>
+							<th>金额</th>
+							<th>占比</th>
+						</tr>
+					</thead>
+					<tbody>
+						<if condition="!empty($product_list)">
+							<foreach name="product_list" item="v">
+								<tr>
+									<td>{{$v.name}}</td>
+									<td>{{$v.order_count}}</td>
+									<td>¥{{$v.amount}}</td>
+									<td>{{$v.percent}}%</td>
+								</tr>
+							</foreach>
+						<else />
+							<tr><td colspan="4" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script src="__PUBLIC__/echarts.min.js"></script>
+<script>
+$(function(){
+	var chart = echarts.init(document.getElementById('revenueChart'));
+	chart.setOption({
+		tooltip: {trigger: 'axis'},
+		legend: {data: ['营收']},
+		grid: {left: '3%', right: '4%', bottom: '3%', containLabel: true},
+		xAxis: {type: 'category', data: {{$date_list}}, boundaryGap: false},
+		yAxis: {type: 'value'},
+		series: [{name: '营收', type: 'bar', data: {{$data_list}}}]
+	});
+});
+</script>

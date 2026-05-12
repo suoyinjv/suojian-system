@@ -1,0 +1,76 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Score/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Score/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						录入成绩
+					<else />
+						编辑成绩
+					</if>
+				</span>
+				<a href="{{:U('Admin/Score/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>学员</label>
+				<select name="student_id" class="am-radius" required>
+					<option value="">请选择学员</option>
+					<volist name="student_list" id="v">
+						<option value="{{$v.id}}" <if condition="isset($data['student_id']) and $data['student_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</volist>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>科目</label>
+				<select name="subject_id" class="am-radius" required>
+					<option value="">请选择科目</option>
+					<volist name="subject_list" id="v">
+						<option value="{{$v.id}}" <if condition="isset($data['subject_id']) and $data['subject_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</volist>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>成绩</label>
+				<input type="number" name="score" placeholder="成绩" class="am-radius" step="0.1" min="0" max="100" <notempty name="data"> value="{{$data.score}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>学期</label>
+				<select name="semester_id" class="am-radius" required>
+					<option value="">请选择学期</option>
+					<volist name="semester_list" id="v">
+						<option value="{{$v.id}}" <if condition="isset($data['semester_id']) and $data['semester_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</volist>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>考试时间</label>
+				<input type="text" name="exam_time" class="am-radius" placeholder="考试时间" <notempty name="data"> value="{{$data.exam_time}}"</notempty> data-am-datepicker readonly />
+			</div>
+
+			<div class="am-form-group">
+				<label>备注</label>
+				<textarea name="remark" class="am-radius" rows="3"><notempty name="data">{{$data.remark}}</notempty></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

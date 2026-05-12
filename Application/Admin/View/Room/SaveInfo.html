@@ -1,0 +1,73 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{{:U('Admin/Room/Save')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Room/Index')}}">
+			<legend>
+				<span class="fs-16">
+					<if condition="empty($data['id'])">
+						新增教室
+					<else />
+						编辑教室
+					</if>
+				</span>
+				<a href="{{:U('Admin/Room/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>教室名称</label>
+				<input type="text" name="name" placeholder="教室名称" class="am-radius" <notempty name="data"> value="{{$data.name}}"</notempty> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>所属校区</label>
+				<select name="campus_id" class="am-radius" required>
+					<option value="">请选择校区</option>
+					<volist name="campus_list" id="v">
+						<option value="{{$v.id}}" <if condition="isset($data['campus_id']) and $data['campus_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+					</volist>
+				</select>
+			</div>
+
+			<div class="am-form-group">
+				<label>容量</label>
+				<input type="number" name="capacity" placeholder="容量" class="am-radius" <notempty name="data"> value="{{$data.capacity}}"</notempty> />
+			</div>
+
+			<div class="am-form-group">
+				<label>设备</label>
+				<input type="text" name="equipment" placeholder="设备描述，如：投影仪、白板" class="am-radius" <notempty name="data"> value="{{$data.equipment}}"</notempty> />
+			</div>
+
+			<div class="am-form-group">
+				<label>备注</label>
+				<textarea name="remark" class="am-radius" rows="3"><notempty name="data">{{$data.remark}}</notempty></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<label>状态</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="1" <if condition="!isset($data['status']) or $data['status'] eq 1">checked="checked"</if> data-am-ucheck /> 启用
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="0" <if condition="isset($data['status']) and $data['status'] eq 0">checked="checked"</if> data-am-ucheck /> 禁用
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
