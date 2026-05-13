@@ -2,8 +2,29 @@
 namespace Admin\Controller;
 use Think\Controller;
 
-class LeadsController extends Controller {
+class LeadsController extends CommonController {
     
+    // 租户校区ID
+    protected $tenant_campus_id = 0;
+
+    /**
+     * [_initialize 前置操作-继承公共前置方法]
+     */
+    public function _initialize()
+    {
+        // 调用父类前置方法
+        parent::_initialize();
+
+        // 登录校验
+        $this->Is_Login();
+
+        // 权限校验
+        $this->Is_Power();
+
+        // 获取当前租户校区ID
+        $this->tenant_campus_id = GetTenantCampusId();
+    }
+
     // 线索列表（页面 / JSON API）
     public function index() {
         $is_json = I('json', 0, 'intval');
@@ -13,7 +34,7 @@ class LeadsController extends Controller {
         $status = I('status', 0, 'intval');
         $keyword = I('keyword', '');
         
-        $where = [];
+        $where = ['l.campus_id' => $this->tenant_campus_id];
         if ($status) $where['l.status'] = $status;
         if ($keyword) {
             $where['l.name|l.phone|l.wechat'] = ['like', "%{$keyword}%"];
@@ -50,8 +71,9 @@ class LeadsController extends Controller {
     public function add() {
         $data = I('post.');
         $data['create_time'] = time();
+        $data['campus_id'] = $this->tenant_campus_id;
         
-        $exist = M('leads')->where(['phone'=>$data['phone']])->find();
+        $exist = M('leads')->where(['phone'=>$data['phone'], 'campus_id'=>$this->tenant_campus_id])->find();
         if ($exist) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'该电话已存在']);
         }
@@ -66,12 +88,15 @@ class LeadsController extends Controller {
         $record = I('record', '');
         $next_time = I('next_time', 0, 'intval');
         
-        $leads = M('leads')->find($id);
+        $leads = M('leads')->where(['id'=>$id, 'campus_id'=>$this->tenant_campus_id])->find();
+        if (!$leads) {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'线索不存在']);
+        }
         $old_record = $leads['follow_record'] ?: '';
         
         $new_record = $old_record . "\n" . date('Y-m-d H:i') . '：' . $record;
         
-        $result = M('leads')->save([
+        $result = M('leads')->where(['id'=>$id, 'campus_id'=>$this->tenant_campus_id])->save([
             'id' => $id,
             'follow_record' => $new_record,
             'follow_user_id' => session('admin_id'),
@@ -87,12 +112,12 @@ class LeadsController extends Controller {
     public function convert() {
         $leads_id = I('leads_id', 0, 'intval');
         
-        $leads = M('leads')->find($leads_id);
+        $leads = M('leads')->where(['id'=>$leads_id, 'campus_id'=>$this->tenant_campus_id])->find();
         if (!$leads) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'线索不存在']);
         }
         
-        $exist = M('student')->where(['my_mobile'=>$leads['phone']])->find();
+        $exist = M('student')->where(['my_mobile'=>$leads['phone'], 'campus_id'=>$this->tenant_campus_id])->find();
         if ($exist) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'该学员已存在']);
         }
@@ -104,6 +129,7 @@ class LeadsController extends Controller {
             'semester_id' => 1,
             'class_id' => 0,
             'region_id' => 0,
+            'campus_id' => $this->tenant_campus_id,
             'create_time' => time()
         ]);
         
@@ -126,13 +152,17 @@ class LeadsController extends Controller {
         $start_ts = strtotime($start_date);
         $end_ts = strtotime($end_date) + 86399;
         
+        $campus_filter = ['campus_id' => $this->tenant_campus_id];
+        
         // 线索统计
-        $total = M('leads')->where(['create_time'=>[['egt', $start_ts], ['elt', $end_ts]]])->count();
-        $converted = M('leads')->where(['status'=>3, 'create_time'=>[['egt', $start_ts], ['elt', $end_ts]]])->count();
+        $total_where = array_merge($campus_filter, ['create_time'=>[['egt', $start_ts], ['elt', $end_ts]]]);
+        $total = M('leads')->where($total_where)->count();
+        $converted_where = array_merge($campus_filter, ['status'=>3, 'create_time'=>[['egt', $start_ts], ['elt', $end_ts]]]);
+        $converted = M('leads')->where($converted_where)->count();
         $convert_rate = $total > 0 ? round($converted/$total*100, 1) : 0;
         
         // 状态分布
-        $status_stats = M('leads')->field('status, COUNT(*) as cnt')->group('status')->select();
+        $status_stats = M('leads')->field('status, COUNT(*) as cnt')->where($campus_filter)->group('status')->select();
         $status_arr = [1=>'新线索',2=>'已跟进',3=>'已转化',4=>'已流失'];
         
         if ($is_json) {

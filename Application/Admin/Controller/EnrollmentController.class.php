@@ -10,6 +10,9 @@ namespace Admin\Controller;
  */
 class EnrollmentController extends CommonController
 {
+    // 租户校区ID
+    protected $tenant_campus_id = 0;
+
     /**
      * [_initialize 前置操作-继承公共前置方法]
      */
@@ -23,6 +26,9 @@ class EnrollmentController extends CommonController
 
         // 权限校验
         $this->Is_Power();
+
+        // 租户校区过滤
+        $this->tenant_campus_id = GetTenantCampusId();
     }
 
     /**
@@ -40,7 +46,9 @@ class EnrollmentController extends CommonController
         $keyword = I('keyword', '', 'trim');
         $activity_id = I('activity_id', 0, 'intval');
 
-        $where = array();
+        $where = array(
+            'e.campus_id' => $this->tenant_campus_id,
+        );
         if ($status >= 0) {
             $where['e.status'] = $status;
         }
@@ -124,7 +132,7 @@ class EnrollmentController extends CommonController
             $data['refund_remark'] = $remark;
         }
 
-        $result = M('enrollment')->where(array('id' => $id))->save($data);
+        $result = M('enrollment')->where(array('id' => $id, 'campus_id' => $this->tenant_campus_id))->save($data);
 
         if ($result !== false) {
             // 如果转化为正式学员
@@ -162,7 +170,7 @@ class EnrollmentController extends CommonController
         foreach ($id_arr as $id) {
             $id = intval($id);
             if ($id > 0) {
-                M('enrollment')->where(array('id' => $id))->save(array(
+                M('enrollment')->where(array('id' => $id, 'campus_id' => $this->tenant_campus_id))->save(array(
                     'status' => $status,
                     'update_time' => time()
                 ));
@@ -184,7 +192,7 @@ class EnrollmentController extends CommonController
     {
         $id = I('id', 0, 'intval');
 
-        $info = M('enrollment')->find($id);
+        $info = M('enrollment')->where(array('id' => $id, 'campus_id' => $this->tenant_campus_id))->find();
         if (empty($info)) {
             $this->error('报名记录不存在');
         }
@@ -214,7 +222,7 @@ class EnrollmentController extends CommonController
         }
 
         $id = I('id', 0, 'intval');
-        $result = M('enrollment')->where(array('id' => $id))->delete();
+        $result = M('enrollment')->where(array('id' => $id, 'campus_id' => $this->tenant_campus_id))->delete();
 
         if ($result) {
             $this->ajaxReturn(array('code' => 1, 'msg' => '删除成功'));
@@ -233,7 +241,7 @@ class EnrollmentController extends CommonController
      */
     private function convertToStudent($enrollment_id)
     {
-        $enrollment = M('enrollment')->find($enrollment_id);
+        $enrollment = M('enrollment')->where(array('id' => $enrollment_id, 'campus_id' => $this->tenant_campus_id))->find();
         if (empty($enrollment) || empty($enrollment['leads_id'])) {
             return false;
         }

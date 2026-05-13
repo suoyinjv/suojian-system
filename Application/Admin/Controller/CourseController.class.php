@@ -11,6 +11,8 @@ namespace Admin\Controller;
  */
 class CourseController extends CommonController
 {
+	// 租户校区ID
+	protected $tenant_campus_id = 0;
 	/**
 	 * [_initialize 前置操作-继承公共前置方法]
 	 * @author   Devil
@@ -28,6 +30,9 @@ class CourseController extends CommonController
 
 		// 权限校验
 		$this->Is_Power();
+
+		// 租户校区过滤
+		$this->tenant_campus_id = GetTenantCampusId();
 	}
 
 	/**
@@ -175,6 +180,12 @@ class CourseController extends CommonController
 		// 学期id
 		$where['c.semester_id'] = MyC('admin_semester_id');
 
+		// 租户校区过滤
+		if($this->tenant_campus_id > 0)
+		{
+			$where['c.campus_id'] = $this->tenant_campus_id;
+		}
+
 		// 模糊
 		if(!empty($_REQUEST['keyword']))
 		{
@@ -224,7 +235,12 @@ class CourseController extends CommonController
 			$data = array('teacher_id'=>I('teacher_id'));
 			$request_url = U('Admin/Teacher/Index');
 		} else {
-			$data = M('Course')->find(I('id'));
+			$where = array('id'=>I('id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+			$data = M('Course')->where($where)->find();
 			$request_url = U('Admin/Course/Index');
 		}
 		$this->assign('request_url', $request_url);
@@ -302,6 +318,7 @@ class CourseController extends CommonController
 			// 额外数据处理
 			$m->add_time	=	time();
 			$m->semester_id	=	MyC('admin_semester_id');
+			$m->campus_id	=	$this->tenant_campus_id;
 			
 			// 写入数据库
 			if($m->add())
@@ -337,7 +354,12 @@ class CourseController extends CommonController
 			unset($m->id, $m->teacher_id);
 
 			// 更新数据库
-			if($m->where(array('id'=>I('id'), 'teacher_id'=>I('teacher_id')))->save())
+			$where = array('id'=>I('id'), 'teacher_id'=>I('teacher_id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+			if($m->where($where)->save())
 			{
 				$this->ajaxReturn(L('common_operation_edit_success'));
 			} else {
@@ -368,6 +390,10 @@ class CourseController extends CommonController
 				'room_id'		=>	I('room_id'),
 				'semester_id'	=>	MyC('admin_semester_id'),
 			);
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
 		$temp = $m->where($where)->getField('id');
 		if(!empty($temp))
 		{
@@ -381,6 +407,10 @@ class CourseController extends CommonController
 				'room_id'		=>	I('room_id'),
 				'semester_id'	=>	MyC('admin_semester_id'),
 			);
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
 		$temp = $m->where($where)->getField('id');
 		if(!empty($temp))
 		{
@@ -414,7 +444,12 @@ class CourseController extends CommonController
 		}
 
 		// 删除数据
-		if(M('Course')->delete(I('id')))
+		$where = array('id'=>I('id'));
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
+		if(M('Course')->where($where)->delete())
 		{
 			$this->ajaxReturn(L('common_operation_delete_success'));
 		} else {
@@ -438,7 +473,12 @@ class CourseController extends CommonController
 		}
 
 		// 数据更新
-		if(M('Course')->where(array('id'=>I('id')))->save(array('state'=>I('state'))))
+		$where = array('id'=>I('id'));
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
+		if(M('Course')->where($where)->save(array('state'=>I('state'))))
 		{
 			$this->ajaxReturn(L('common_operation_edit_success'));
 		} else {

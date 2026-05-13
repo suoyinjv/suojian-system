@@ -1,0 +1,31 @@
+<?php if (!defined('THINK_PATH')) exit();?>
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- table nav start -->
+		
+		<!-- table nav end -->
+		
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="<?php echo U('Admin/Sms/Save'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Sms/Index', ['type'=>'sms']); ?>">
+			<div class="am-form-group">
+				<label><?php echo ($data["common_sms_apikey"]["name"]); ?><span class="fs-12 fw-100 cr-999">（<?php echo ($data["common_sms_apikey"]["describe"]); ?>）</span></label>
+				<input type="text" name="<?php echo ($data["common_sms_apikey"]["only_tag"]); ?>" placeholder="<?php echo ($data["common_sms_apikey"]["name"]); ?>" data-validation-message="<?php echo ($data["common_sms_apikey"]["error_tips"]); ?>" class="am-radius" <?php if(isset($$data)): ?> value="<?php echo ($data["common_sms_apikey"]["value"]); ?>"<?php endif; ?> required />
+			</div>
+			<div class="am-form-group">
+				<label><?php echo ($data["common_sms_sign"]["name"]); ?><span class="fs-12 fw-100 cr-999">（<?php echo ($data["common_sms_sign"]["describe"]); ?>）</span></label>
+				<input type="text" name="<?php echo ($data["common_sms_sign"]["only_tag"]); ?>" placeholder="<?php echo ($data["common_sms_sign"]["name"]); ?>" data-validation-message="<?php echo ($data["common_sms_sign"]["error_tips"]); ?>" class="am-radius" minlength="3" maxlength="8" <?php if(isset($$data)): ?> value="<?php echo ($data["common_sms_sign"]["value"]); ?>"<?php endif; ?> required />
+			</div>
+			<div class="am-form-group">
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}"><?php echo L('common_operation_save'); ?></button>
+			</div>
+		</form>
+        <!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+		
+<!-- footer start -->
+
+<!-- footer end -->

@@ -7,6 +7,18 @@ namespace Admin\Controller;
  */
 class StatsController extends CommonController {
     
+    // 租户校区ID
+    protected $tenant_campus_id = 0;
+    
+    /**
+     * [__construct 构造方法]
+     */
+    public function __construct() {
+        parent::__construct();
+        // 租户校区过滤
+        $this->tenant_campus_id = GetTenantCampusId();
+    }
+    
     /**
      * 数据统计首页
      */
@@ -23,47 +35,51 @@ class StatsController extends CommonController {
         $today = strtotime(date('Y-m-d'));
         
         // 今日新增学员
-        $today_new_students = M('student')->where(['add_time'=>['egt', $today]])->count();
+        $today_new_students = M('student')->where(['campus_id'=>$this->tenant_campus_id, 'add_time'=>['egt', $today]])->count();
         
         // 今日营收
         $today_income = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $today],
             'status'=>['in', '1,2']
         ])->sum('money');
         
         // 今日上课消耗
         $today_consumption = M('hour_consumption')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $today],
             'type'=>1
         ])->sum('hours');
         
         // 今日考勤
-        $today_attendance = M('attendance')->where(['add_time'=>['egt', $today]])->count();
+        $today_attendance = M('attendance')->where(['campus_id'=>$this->tenant_campus_id, 'add_time'=>['egt', $today]])->count();
         
         // 本月数据
         $month_start = strtotime(date('Y-m-01'));
         
-        $month_new_students = M('student')->where(['add_time'=>['egt', $month_start]])->count();
+        $month_new_students = M('student')->where(['campus_id'=>$this->tenant_campus_id, 'add_time'=>['egt', $month_start]])->count();
         $month_income = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $month_start],
             'status'=>['in', '1,2']
         ])->sum('money');
         $month_consumption = M('hour_consumption')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $month_start],
             'type'=>1
         ])->sum('hours');
         
         // 学员总数
-        $total_students = M('student')->count();
+        $total_students = M('student')->where(['campus_id'=>$this->tenant_campus_id])->count();
         
         // 在读学员
-        $active_students = M('student_package')->where(['status'=>1])->count();
+        $active_students = M('student_package')->where(['campus_id'=>$this->tenant_campus_id, 'status'=>1])->count();
         
         // 老师总数
-        $total_teachers = M('teacher')->count();
+        $total_teachers = M('teacher')->where(['campus_id'=>$this->tenant_campus_id])->count();
         
         // 班级总数
-        $total_classes = M('class')->count();
+        $total_classes = M('class')->where(['campus_id'=>$this->tenant_campus_id])->count();
         
         // 课时消耗趋势（最近7天）
         for ($i = 6; $i >= 0; $i--) {
@@ -72,6 +88,7 @@ class StatsController extends CommonController {
             $date = date('m-d', $day);
             
             $day_consumption = M('hour_consumption')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$day, $day_end]],
                 'type'=>1
             ])->sum('hours');
@@ -86,6 +103,7 @@ class StatsController extends CommonController {
             $date = date('m-d', $day);
             
             $day_income = M('order')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$day, $day_end]],
                 'status'=>['in', '1,2']
             ])->sum('money');
@@ -93,16 +111,20 @@ class StatsController extends CommonController {
             $income_trend[] = ['date'=>$date, 'money'=>$day_income ?: 0];
         }
         
-        // 各校区数据对比
-        $campuses = M('campus')->where(['status'=>1])->select();
-        foreach ($campuses as &$campus) {
-            $campus['student_count'] = M('student')->where(['campus_id'=>$campus['id']])->count();
-            $campus['class_count'] = M('class')->where(['campus_id'=>$campus['id']])->count();
-            $campus['income'] = M('order')->where([
-                'campus_id'=>$campus['id'],
-                'add_time'=>['egt', $month_start],
-                'status'=>['in', '1,2']
-            ])->sum('money');
+        // 当前校区数据（租户过滤）
+        $campus_data = [];
+        if ($this->tenant_campus_id > 0) {
+            $campus = M('campus')->where(['id'=>$this->tenant_campus_id, 'status'=>1])->find();
+            if ($campus) {
+                $campus['student_count'] = M('student')->where(['campus_id'=>$this->tenant_campus_id])->count();
+                $campus['class_count'] = M('class')->where(['campus_id'=>$this->tenant_campus_id])->count();
+                $campus['income'] = M('order')->where([
+                    'campus_id'=>$this->tenant_campus_id,
+                    'add_time'=>['egt', $month_start],
+                    'status'=>['in', '1,2']
+                ])->sum('money');
+                $campus_data[] = $campus;
+            }
         }
         
         $this->assign('today_new_students', $today_new_students);
@@ -121,7 +143,7 @@ class StatsController extends CommonController {
         
         $this->assign('consumption_trend', json_encode($consumption_trend));
         $this->assign('income_trend', json_encode($income_trend));
-        $this->assign('campuses', $campuses);
+        $this->assign('campuses', $campus_data);
         
         $this->display();
     }
@@ -134,22 +156,23 @@ class StatsController extends CommonController {
         $year_start = strtotime(date('Y-01-01'));
         
         // 线索统计
-        $total_leads = M('lead')->count();
-        $month_leads = M('lead')->where(['add_time'=>['egt', $month_start]])->count();
+        $total_leads = M('lead')->where(['campus_id'=>$this->tenant_campus_id])->count();
+        $month_leads = M('lead')->where(['campus_id'=>$this->tenant_campus_id, 'add_time'=>['egt', $month_start]])->count();
         
         // 线索转化率
-        $converted = M('lead')->where(['status'=>4])->count();
+        $converted = M('lead')->where(['campus_id'=>$this->tenant_campus_id, 'status'=>4])->count();
         $conversion_rate = $total_leads > 0 ? round($converted / $total_leads * 100, 2) : 0;
         
         // 来源分布
-        $sources = M('lead')->group('source')->getField('source, count(*) as count', true);
+        $sources = M('lead')->where(['campus_id'=>$this->tenant_campus_id])->group('source')->getField('source, count(*) as count', true);
         $source_map = [1=>'线上推广', 2=>'电话咨询', 3=>'地推', 4=>'转介绍', 5=>'其他'];
+        $source_data = [];
         foreach ($sources as $k => $v) {
             $source_data[] = ['name'=>$source_map[$k]?:'未知', 'value'=>$v['count']];
         }
         
         // 线索状态分布
-        $status_data = M('lead')->group('status')->getField('status, count(*) as count', true);
+        $status_data = M('lead')->where(['campus_id'=>$this->tenant_campus_id])->group('status')->getField('status, count(*) as count', true);
         $status_map = [1=>'新线索', 2=>'已联系', 3=>'有意向', 4=>'已成交', 5=>'无效'];
         $status_distribution = [];
         foreach ($status_data as $k => $v) {
@@ -163,6 +186,7 @@ class StatsController extends CommonController {
             $month_name = date('Y-m', $month);
             
             $count = M('lead')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$month, $month_end]]
             ])->count();
             
@@ -188,6 +212,7 @@ class StatsController extends CommonController {
         
         // 年度营收
         $year_income = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->sum('money');
@@ -199,6 +224,7 @@ class StatsController extends CommonController {
             $month_name = date('Y-m', $month);
             
             $income = M('order')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$month, $month_end]],
                 'status'=>['in', '1,2']
             ])->sum('money');
@@ -208,6 +234,7 @@ class StatsController extends CommonController {
         
         // 课程营收占比
         $course_income = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->group('course_id')->getField('course_id, sum(money) as total', true);
@@ -222,6 +249,7 @@ class StatsController extends CommonController {
         
         // 支付方式分布
         $pay_types = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->group('pay_type')->getField('pay_type, sum(money) as total', true);
@@ -247,10 +275,10 @@ class StatsController extends CommonController {
         $year_start = strtotime(date('Y-01-01'));
         
         // 学员总数
-        $total_students = M('student')->count();
+        $total_students = M('student')->where(['campus_id'=>$this->tenant_campus_id])->count();
         
         // 新增学员
-        $year_new_students = M('student')->where(['add_time'=>['egt', $year_start]])->count();
+        $year_new_students = M('student')->where(['campus_id'=>$this->tenant_campus_id, 'add_time'=>['egt', $year_start]])->count();
         
         // 学员增长趋势
         for ($i = 11; $i >= 0; $i--) {
@@ -259,6 +287,7 @@ class StatsController extends CommonController {
             $month_name = date('Y-m', $month);
             
             $count = M('student')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$month, $month_end]]
             ])->count();
             
@@ -266,7 +295,7 @@ class StatsController extends CommonController {
         }
         
         // 学员来源
-        $sources = M('student')->group('source')->getField('source, count(*) as count', true);
+        $sources = M('student')->where(['campus_id'=>$this->tenant_campus_id])->group('source')->getField('source, count(*) as count', true);
         $source_data = [];
         foreach ($sources as $k => $v) {
             $source_data[] = ['name'=>$k?:'未知', 'value'=>$v['count']];
@@ -274,6 +303,7 @@ class StatsController extends CommonController {
         
         // 课时消耗排名
         $top_consumption = M('hour_consumption')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'type'=>1
         ])->group('student_id')->getField('student_id, sum(hours) as total', true);
@@ -282,7 +312,7 @@ class StatsController extends CommonController {
         $top_students = array_slice($top_consumption, 0, 10, true);
         
         $student_ids = array_keys($top_students);
-        $students = !empty($student_ids) ? M('student')->where(['id'=>['in', $student_ids]])->getField('id,student_name', true) : [];
+        $students = !empty($student_ids) ? M('student')->where(['id'=>['in', $student_ids], 'campus_id'=>$this->tenant_campus_id])->getField('id,student_name', true) : [];
         
         $consumption_rank = [];
         foreach ($top_students as $k => $v) {
@@ -306,6 +336,7 @@ class StatsController extends CommonController {
         
         // 年度总课消
         $year_consumption = M('hour_consumption')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'type'=>1
         ])->sum('hours');
@@ -317,6 +348,7 @@ class StatsController extends CommonController {
             $month_name = date('Y-m', $month);
             
             $hours = M('hour_consumption')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'add_time'=>['between', [$month, $month_end]],
                 'type'=>1
             ])->sum('hours');
@@ -326,6 +358,7 @@ class StatsController extends CommonController {
         
         // 课程课消占比
         $course_consumption = M('hour_consumption')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'add_time'=>['egt', $year_start],
             'type'=>1
         ])->group('course_id')->getField('course_id, sum(hours) as total', true);
@@ -349,7 +382,7 @@ class StatsController extends CommonController {
      * 班级数据报表
      */
     public function class() {
-        $list = M('class')->select();
+        $list = M('class')->where(['campus_id'=>$this->tenant_campus_id])->select();
         
         foreach ($list as &$item) {
             // 学员数
@@ -362,6 +395,7 @@ class StatsController extends CommonController {
             if ($student_ids) {
                 $today = strtotime(date('Y-m-d'));
                 $present = M('attendance')->where([
+                    'campus_id'=>$this->tenant_campus_id,
                     'class_id'=>$item['id'],
                     'add_time'=>['egt', $today],
                     'status'=>['in', [1,2]]
@@ -376,6 +410,7 @@ class StatsController extends CommonController {
             // 课消
             $month_start = strtotime(date('Y-m-01'));
             $item['month_consumption'] = M('hour_consumption')->where([
+                'campus_id'=>$this->tenant_campus_id,
                 'class_id'=>$item['id'],
                 'add_time'=>['egt', $month_start],
                 'type'=>1
@@ -411,13 +446,14 @@ class StatsController extends CommonController {
         $year_start = strtotime(date('Y-01-01'));
         
         $orders = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'create_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->select();
         
         $data = [];
         foreach ($orders as $order) {
-            $student_name = M('student')->where(['id'=>$order['student_id']])->getField('username');
+            $student_name = M('student')->where(['id'=>$order['student_id'], 'campus_id'=>$this->tenant_campus_id])->getField('username');
             $data[] = [
                 'order_no' => $order['order_no'],
                 'student_name' => $student_name ?: '',
@@ -432,7 +468,7 @@ class StatsController extends CommonController {
     }
     
     private function exportStudent() {
-        $students = M('student')->select();
+        $students = M('student')->where(['campus_id'=>$this->tenant_campus_id])->select();
         
         $data = [];
         foreach ($students as $stu) {
@@ -453,11 +489,12 @@ class StatsController extends CommonController {
         
         // hour_consumption表可能不存在，使用订单数据
         $consumptions = M('order')->where([
+            'campus_id'=>$this->tenant_campus_id,
             'pay_time'=>['egt', $year_start],
             'status'=>['in', '1,2']
         ])->field('student_id,course_name,total_hours,pay_amount,pay_time')->select();
         
-        $students = M('student')->getField('id,username', true);
+        $students = M('student')->where(['campus_id'=>$this->tenant_campus_id])->getField('id,username', true);
         $type_map = [0=>'购买', 1=>'上课消费', 2=>'冻结', 3=>'解冻', 4=>'退费'];
         
         $data = [];

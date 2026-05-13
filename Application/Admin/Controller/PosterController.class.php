@@ -47,6 +47,12 @@ class PosterController extends CommonController
             $where['title'] = array('like', '%' . $keyword . '%');
         }
 
+        // 多租户过滤 - 校区管理员只能看到本校区创建的海报模板
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
+
         $count = M('poster_template')->where($where)->count();
         $list = M('poster_template')->where($where)
             ->order('id DESC')

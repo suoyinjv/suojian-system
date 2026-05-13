@@ -21,6 +21,12 @@ class LiveController extends CommonController {
             $where['status'] = $status;
         }
         
+        // 多租户 - 校区过滤
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
+        
         $count = M('live_course')->where($where)->count();
         $list = M('live_course')->where($where)
             ->order('id DESC')
@@ -62,6 +68,7 @@ class LiveController extends CommonController {
                 'max_students' => I('post.max_students', 0, 'intval'),
                 'status' => 0,
                 'add_time' => time(),
+                'campus_id' => $this->tenant_campus_id,
             ];
             
             $data['duration'] = round(($data['end_time'] - $data['start_time']) / 60);
@@ -106,11 +113,13 @@ class LiveController extends CommonController {
             $this->success('更新成功', U('index'));
         }
         
-        $info = M('live_course')->find($id);
+        $info = M('live_course')->where(['campus_id'=>$this->tenant_campus_id])->find($id);
         $this->assign('info', $info);
         
-        $courses = M('course')->getField('id,course_name', true);
-        $teachers = M('teacher')->getField('id,teacher_name', true);
+        // 多租户 - 校区过滤
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $courses = M('course')->where($campus_filter)->getField('id,course_name', true);
+        $teachers = M('teacher')->where($campus_filter)->getField('id,teacher_name', true);
         
         $this->assign('courses', $courses);
         $this->assign('teachers', $teachers);
@@ -164,6 +173,11 @@ class LiveController extends CommonController {
             $where['id'] = ['not in', $booked];
         }
         
+        // 多租户 - 校区过滤
+        if ($this->tenant_campus_id > 0) {
+            $where['campus_id'] = $this->tenant_campus_id;
+        }
+        
         $students = M('student')->where($where)->getField('id,student_name', true);
         $this->assign('students', $students);
         
@@ -181,6 +195,7 @@ class LiveController extends CommonController {
             ->join($prefix.'student s ON lb.student_id=s.id')
             ->field('lb.*, s.student_name')
             ->where(['lb.live_id'=>$live_id])
+            ->where('s.campus_id='.$this->tenant_campus_id)
             ->select();
         
         $status_map = [1=>'已预约', 2=>'已签到', 3=>'已取消'];
@@ -230,8 +245,12 @@ class LiveController extends CommonController {
         // 获取关联课程/教师信息
         $course_ids = array_unique(array_column($list, 'course_id'));
         $teacher_ids = array_unique(array_column($list, 'teacher_id'));
-        $courses = $course_ids ? M('live_course')->where(['id'=>['in', $course_ids]])->getField('id,title', true) : [];
-        $teachers = $teacher_ids ? M('teacher')->where(['id'=>['in', $teacher_ids]])->getField('id,teacher_name', true) : [];
+        // 多租户 - 校区过滤
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $course_filter = array_merge(['id'=>['in', $course_ids]], $campus_filter);
+        $teacher_filter = array_merge(['id'=>['in', $teacher_ids]], $campus_filter);
+        $courses = $course_ids ? M('live_course')->where($course_filter)->getField('id,title', true) : [];
+        $teachers = $teacher_ids ? M('teacher')->where($teacher_filter)->getField('id,teacher_name', true) : [];
 
         foreach ($list as &$item) {
             $item['type_text'] = $type_map[$item['type']] ?: $item['type'];
@@ -241,8 +260,9 @@ class LiveController extends CommonController {
             $item['file_size_text'] = $item['file_size'] > 0 ? round($item['file_size']/1024, 1) . 'KB' : '-';
         }
 
-        // 获取直播课程列表供筛选
-        $live_list = M('live_course')->field('id,title')->select();
+        // 获取直播课程列表供筛选（多租户过滤）
+        $live_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $live_list = M('live_course')->where($live_filter)->field('id,title')->select();
 
         $this->assign('list', $list);
         $this->assign('page', getPage($count, $rows));
@@ -308,6 +328,7 @@ class LiveController extends CommonController {
             'type'        => $file_type,
             'file_url'    => $file_url,
             'file_size'   => $info['size'] ?: 0,
+            'campus_id'   => $this->tenant_campus_id,
         ];
 
         D('LiveResource')->saveData($data);
@@ -351,9 +372,11 @@ class LiveController extends CommonController {
             ->page($page, $rows)
             ->select();
 
-        // 获取关联课程信息
+        // 获取关联课程信息（多租户过滤）
         $course_ids = array_unique(array_column($list, 'course_id'));
-        $courses = $course_ids ? M('live_course')->where(['id'=>['in', $course_ids]])->getField('id,title', true) : [];
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $course_filter = array_merge(['id'=>['in', $course_ids]], $campus_filter);
+        $courses = $course_ids ? M('live_course')->where($course_filter)->getField('id,title', true) : [];
 
         foreach ($list as &$item) {
             $item['course_title'] = $courses[$item['course_id']] ?: '-';
@@ -361,8 +384,8 @@ class LiveController extends CommonController {
             $item['create_time'] = $item['create_time'] ? date('Y-m-d H:i', $item['create_time']) : '-';
         }
 
-        // 获取课程列表供筛选
-        $course_list = M('live_course')->field('id,title')->select();
+        // 获取课程列表供筛选（多租户过滤）
+        $course_list = M('live_course')->where($campus_filter)->field('id,title')->select();
 
         $this->assign('list', $list);
         $this->assign('page', getPage($count, $rows));
@@ -382,6 +405,7 @@ class LiveController extends CommonController {
                 'session_id' => I('session_id', '', 'trim'),
                 'duration'   => I('duration', 0, 'intval'),
                 'url'        => I('url', '', 'trim'),
+                'campus_id'  => $this->tenant_campus_id,
             ];
 
             if (empty($data['title'])) {
@@ -396,7 +420,9 @@ class LiveController extends CommonController {
             }
         }
 
-        $courses = M('live_course')->field('id,title')->select();
+        // 多租户 - 校区过滤
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $courses = M('live_course')->where($campus_filter)->field('id,title')->select();
         $this->assign('courses', $courses);
         $this->display();
     }

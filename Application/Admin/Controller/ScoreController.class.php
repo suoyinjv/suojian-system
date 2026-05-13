@@ -61,7 +61,15 @@ class ScoreController extends CommonController
 
 		// 获取数据
 		$field = array('id', 'name', 'sort', 'is_enable');
-		$data = M('Score')->field($field)->where(array('pid'=>intval(I('id', 0))))->select();
+		
+		// 多租户 - 校区过滤
+		$where = array('pid'=>intval(I('id', 0)));
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
+		
+		$data = M('Score')->field($field)->where($where)->select();
 		if(!empty($data))
 		{
 			foreach($data as $k=>$v)
@@ -105,6 +113,7 @@ class ScoreController extends CommonController
 				// 额外数据处理
 				$m->add_time	=	time();
 				$m->name 		=	I('name');
+				$m->campus_id 	=	$this->tenant_campus_id;
 				
 				// 写入数据库
 				if($m->add())
@@ -124,8 +133,15 @@ class ScoreController extends CommonController
 				// 移除 id
 				unset($m->id);
 
+				// 多租户 - 校区过滤
+				$where = array('id'=>I('id'));
+				if($this->tenant_campus_id > 0)
+				{
+					$where['campus_id'] = $this->tenant_campus_id;
+				}
+
 				// 更新数据库
-				if($m->where(array('id'=>I('id')))->save())
+				if($m->where($where)->save())
 				{
 					$this->ajaxReturn(L('common_operation_edit_success'));
 				} else {
@@ -153,7 +169,14 @@ class ScoreController extends CommonController
 		$m = D('Score');
 		if($m->create($_POST, 5))
 		{
-			if($m->delete(I('id')))
+			// 多租户 - 校区过滤
+			$where = array('id'=>I('id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+			
+			if($m->where($where)->delete())
 			{
 				$this->ajaxReturn(L('common_operation_delete_success'));
 			} else {

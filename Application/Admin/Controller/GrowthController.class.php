@@ -50,6 +50,12 @@ class GrowthController extends CommonController
         if ($keyword) {
             $where['g.title'] = array('like', '%' . $keyword . '%');
         }
+        
+        // 多租户过滤 - 通过学生或教师关联校区
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['_string'] = "EXISTS (SELECT 1 FROM " . C('DB_PREFIX') . "student s WHERE s.id = g.student_id AND s.campus_id = {$campus_id})";
+        }
 
         $prefix = C('DB_PREFIX');
         $count = M('growth_record')->alias('g')->where($where)->count();

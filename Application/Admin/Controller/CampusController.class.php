@@ -18,6 +18,8 @@ class CampusController extends CommonController {
         foreach ($list as &$item) {
             $item['status_text'] = $status_map[$item['status']];
             $item['add_time'] = $item['add_time'] ? date('Y-m-d', $item['add_time']) : '-';
+            // 扩展字段格式化
+            $item['expire_date'] = $item['expire_date'] ? date('Y-m-d', $item['expire_date']) : '-';
         }
         
         // 统计各校区数据
@@ -44,7 +46,26 @@ class CampusController extends CommonController {
                 'principal' => I('post.principal', '', 'trim'),
                 'status' => I('post.status', 1, 'intval'),
                 'add_time' => time(),
+                'domain' => I('post.domain', '', 'trim'),
+                'site_name' => I('post.site_name', '', 'trim'),
+                'theme_color' => I('post.theme_color', '', 'trim'),
+                'icp' => I('post.icp', '', 'trim'),
+                'expire_date' => I('post.expire_date', 0, 'strtotime'),
             ];
+            
+            // LOGO 上传处理
+            if (!empty($_FILES['logo']['name'])) {
+                $upload = new \Think\Upload();
+                $upload->maxSize = 3145728; // 3MB
+                $upload->exts = array('jpg', 'png', 'gif', 'jpeg');
+                $upload->savePath = 'Campus/';
+                $info = $upload->upload();
+                if ($info) {
+                    $data['logo'] = '/Uploads/' . $info['logo']['savepath'] . $info['logo']['savename'];
+                } else {
+                    $this->error($upload->getError());
+                }
+            }
             
             if (empty($data['name'])) {
                 $this->error('校区名称不能为空');
@@ -76,13 +97,33 @@ class CampusController extends CommonController {
                 'principal' => I('post.principal', '', 'trim'),
                 'status' => I('post.status', 1, 'intval'),
                 'upd_time' => time(),
+                'domain' => I('post.domain', '', 'trim'),
+                'site_name' => I('post.site_name', '', 'trim'),
+                'theme_color' => I('post.theme_color', '', 'trim'),
+                'icp' => I('post.icp', '', 'trim'),
+                'expire_date' => I('post.expire_date', 0, 'strtotime'),
             ];
+            
+            // LOGO 上传处理
+            if (!empty($_FILES['logo']['name'])) {
+                $upload = new \Think\Upload();
+                $upload->maxSize = 3145728; // 3MB
+                $upload->exts = array('jpg', 'png', 'gif', 'jpeg');
+                $upload->savePath = 'Campus/';
+                $info = $upload->upload();
+                if ($info) {
+                    $data['logo'] = '/Uploads/' . $info['logo']['savepath'] . $info['logo']['savename'];
+                } else {
+                    $this->error($upload->getError());
+                }
+            }
             
             M('campus')->where(['id'=>$id])->save($data);
             $this->success('更新成功', U('index'));
         }
         
         $info = M('campus')->find($id);
+        $info['expire_date'] = $info['expire_date'] ? date('Y-m-d', $info['expire_date']) : '';
         $this->assign('info', $info);
         $this->display();
     }

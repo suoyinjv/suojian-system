@@ -8,6 +8,16 @@ use Think\Controller;
  */
 class OrderController extends Controller {
     
+    // 多租户 — 当前校区ID
+    protected $tenant_campus_id = 0;
+    
+    /**
+     * 初始化
+     */
+    protected function _initialize() {
+        $this->tenant_campus_id = GetTenantCampusId();
+    }
+    
     /**
      * 订单列表（页面 / JSON API）
      */
@@ -22,7 +32,7 @@ class OrderController extends Controller {
             $start_date = I('start_date', '');
             $end_date = I('end_date', '');
             
-            $where = [];
+            $where = ['o.campus_id' => $this->tenant_campus_id];
             if ($status >= 0) $where['o.status'] = $status;
             if ($keyword) {
                 $where['o.order_no|s.username'] = ['like', "%{$keyword}%"];
@@ -68,6 +78,7 @@ class OrderController extends Controller {
         $data = I('post.');
         $data['order_no'] = 'ORD' . date('YmdHis') . rand(100,999);
         $data['create_time'] = time();
+        $data['campus_id'] = $this->tenant_campus_id;
         $data['pay_amount'] = I('post.total_amount', 0, 'floatval');
         
         $result = M('order')->add($data);
@@ -90,7 +101,7 @@ class OrderController extends Controller {
         $id = I('id', 0, 'intval');
         $pay_type = I('pay_type', '1');
         
-        $order = M('order')->find($id);
+        $order = M('order')->where(['id' => $id, 'campus_id' => $this->tenant_campus_id])->find();
         if (!$order) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'订单不存在']);
         }
@@ -116,7 +127,7 @@ class OrderController extends Controller {
         $id = I('id', 0, 'intval');
         $remark = I('remark', '');
         
-        $order = M('order')->find($id);
+        $order = M('order')->where(['id' => $id, 'campus_id' => $this->tenant_campus_id])->find();
         if ($order['status'] != 1) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'只有已支付订单可退款']);
         }
@@ -133,7 +144,8 @@ class OrderController extends Controller {
             'amount' => $order['pay_amount'],
             'reason' => $remark,
             'status' => 0,
-            'add_time' => time()
+            'add_time' => time(),
+            'campus_id' => $this->tenant_campus_id
         ]);
         
         $this->ajaxReturn(['code'=>1, 'msg'=>'退款成功']);
@@ -149,7 +161,7 @@ class OrderController extends Controller {
             $start_date = I('start_date', date('Y-m-01'));
             $end_date = I('end_date', date('Y-m-d'));
             
-            $where = "create_time >= UNIX_TIMESTAMP('{$start_date}') AND create_time <= UNIX_TIMESTAMP('{$end_date} 23:59:59')";
+            $where = "campus_id = {$this->tenant_campus_id} AND create_time >= UNIX_TIMESTAMP('{$start_date}') AND create_time <= UNIX_TIMESTAMP('{$end_date} 23:59:59')";
             
             $total_orders = M('order')->where($where)->count();
             $paid_orders = M('order')->where($where . " AND status=1")->count();
@@ -157,7 +169,8 @@ class OrderController extends Controller {
             $pay_amount = M('order')->where($where . " AND status=1")->sum('pay_amount') ?: 0;
             
             // 退款总额
-            $refund_amount = M('refund')->where("add_time >= UNIX_TIMESTAMP('{$start_date}') AND add_time <= UNIX_TIMESTAMP('{$end_date} 23:59:59') AND status=1")->sum('amount') ?: 0;
+            $refund_where = "campus_id = {$this->tenant_campus_id} AND add_time >= UNIX_TIMESTAMP('{$start_date}') AND add_time <= UNIX_TIMESTAMP('{$end_date} 23:59:59') AND status=1";
+            $refund_amount = M('refund')->where($refund_where)->sum('amount') ?: 0;
             
             // 净收入
             $net_amount = $pay_amount - $refund_amount;

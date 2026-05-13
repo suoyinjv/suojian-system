@@ -3,11 +3,24 @@ namespace Admin\Controller;
 
 class ReviewController extends AdminController {
     
+    /**
+     * 获取租户过滤条件
+     */
+    private function getCampusWhere() {
+        $where = [];
+        $is_super = !empty($this->admin['is_super']);
+        $campus_id = intval($this->admin['campus_id']);
+        if (!$is_super && $campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
+        return $where;
+    }
+    
     public function index() {
         $page = I('page', 1, 'intval');
         $rows = I('rows', 20, 'intval');
         
-        $where = array();
+        $where = $this->getCampusWhere();
         $keyword = I('keyword');
         if ($keyword) {
             $where['content'] = array('like', '%' . $keyword . '%');
@@ -44,8 +57,9 @@ class ReviewController extends AdminController {
             $this->ajaxReturn(['total' => $count, 'rows' => $list]);
         }
         
-        // 获取教师列表（用于筛选下拉）
-        $teachers = M('teacher')->field('id, username as name')->select();
+        // 获取教师列表（用于筛选下拉）- 按租户过滤
+        $teacherWhere = $this->getCampusWhere();
+        $teachers = M('teacher')->field('id, username as name')->where($teacherWhere)->select();
         
         $this->assign('list', $list);
         $this->assign('teachers', $teachers);
@@ -69,22 +83,31 @@ class ReviewController extends AdminController {
                 $this->ajaxReturn(['code' => 1, 'msg' => '学生和老师不能为空']);
             }
             
+            // 租户过滤
+            $campusWhere = $this->getCampusWhere();
+            
             if ($id) {
-                M('review')->where(['id' => $id])->save($data);
+                $data['campus_id'] = $campusWhere['campus_id'];
+                M('review')->where(array_merge(['id' => $id], $campusWhere))->save($data);
                 $this->ajaxReturn(['code' => 0, 'msg' => '修改成功']);
             } else {
                 $data['create_time'] = time();
+                $data['campus_id'] = $campusWhere['campus_id'];
                 M('review')->add($data);
                 $this->ajaxReturn(['code' => 0, 'msg' => '添加成功']);
             }
         }
         
         $id = I('id', 0, 'intval');
-        $info = M('review')->find($id);
+        $campusWhere = $this->getCampusWhere();
+        $info = M('review')->where(array_merge(['id' => $id], $campusWhere))->find();
         $this->assign('info', $info);
         
-        $students = M('student')->field('id, username')->select();
-        $teachers = M('teacher')->field('id, username')->select();
+        // 学生和教师列表按租户过滤
+        $studentWhere = $this->getCampusWhere();
+        $teacherWhere = $this->getCampusWhere();
+        $students = M('student')->field('id, username')->where($studentWhere)->select();
+        $teachers = M('teacher')->field('id, username')->where($teacherWhere)->select();
         $this->assign('students', $students);
         $this->assign('teachers', $teachers);
         $this->display();
@@ -92,7 +115,8 @@ class ReviewController extends AdminController {
     
     public function delete() {
         $id = I('id', 0, 'intval');
-        if (M('review')->delete($id)) {
+        $campusWhere = $this->getCampusWhere();
+        if (M('review')->where(array_merge(['id' => $id], $campusWhere))->delete()) {
             $this->ajaxReturn(['code' => 0, 'msg' => '删除成功']);
         } else {
             $this->ajaxReturn(['code' => 1, 'msg' => '删除失败']);
@@ -100,7 +124,8 @@ class ReviewController extends AdminController {
     }
     
     public function statistics() {
-        $where = array('status' => 1);
+        $where = $this->getCampusWhere();
+        $where['status'] = 1;
         
         $avgScore = M('review')->where($where)->avg('score');
         $scoreDist = array();

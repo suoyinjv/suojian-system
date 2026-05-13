@@ -48,6 +48,14 @@ class AdminController extends CommonController
 		// 条件
 		$where = $this->GetIndexWhere();
 
+		// 权限过滤：机构管理员只能看自己校区的管理员
+		$is_super = !empty($this->admin['is_super']);
+		$campus_id = intval($this->admin['campus_id']);
+		if(!$is_super && $campus_id > 0)
+		{
+			$where['campus_id'] = $campus_id;
+		}
+
 		// 分页
 		$number = MyC('admin_page_number');
 		$page_param = array(
@@ -58,15 +66,115 @@ class AdminController extends CommonController
 			);
 		$page = new \My\Page($page_param);
 
-		// 获取管理员列表
-		$list = $m->field(array('id', 'username', 'mobile', 'gender', 'login_total', 'login_time', 'add_time'))->where($where)->limit($page->GetPageStarNumber(), $number)->select();
-		
+		// 获取管理员列表（增加campus_id和is_super字段）
+		$list = $m->field(array('id', 'username', 'mobile', 'gender', 'role_id', 'campus_id', 'is_super', 'login_total', 'login_time', 'add_time'))->where($where)->limit($page->GetPageStarNumber(), $number)->order('id DESC')->select();
+
+		// 读取角色名称
 		$role = M('Role')->field(array('id', 'name'))->where(array('is_enable'=>1))->select();
+		$role_map = array();
+		foreach($role as $r)
+		{
+			$role_map[$r['id']] = $r['name'];
+		}
+
+		// 读取校区名称（超管可读所有）
+		$campus_list = M('Campus')->field(array('id', 'name'))->select();
+		$campus_map = array();
+		foreach($campus_list as $c)
+		{
+			$campus_map[$c['id']] = $c['name'];
+		}
+
+		// 处理列表数据
+		if(!empty($list))
+		{
+			foreach($list as &$v)
+			{
+				$v['role_name'] = isset($role_map[$v['role_id']]) ? $role_map[$v['role_id']] : '-';
+				$v['campus_name'] = ($v['campus_id'] > 0 && isset($campus_map[$v['campus_id']])) ? $campus_map[$v['campus_id']] : '总后台';
+				$v['is_super_text'] = ($v['is_super'] == 1) ? '是' : '否';
+			}
+		}
+
 		$this->assign('role', $role);
+		$this->assign('campus_list', $campus_list);
+		$this->assign('is_super_current', $is_super);
 		$this->assign('param', $param);
 		$this->assign('page_html', $page->GetPageHtml());
 		$this->assign('list', $list);
 		$this->display('Index');
+	}
+
+	/**
+     * [List JSON API 管理员列表]
+     * @author   Devil
+     * @blog     http://gong.gg/
+     * @version  0.0.1
+     * @datetime 2016-12-06T21:31:53+0800
+     */
+	public function list_api()
+	{
+		// 登录校验
+		$this->Is_Login();
+
+		// 权限校验
+		$this->Is_Power();
+
+		// 模型对象
+		$m = M('Admin');
+
+		// 条件
+		$where = array();
+		$username = I('username', '', 'trim');
+		if(!empty($username))
+		{
+			$where['username'] = array('like', '%'.$username.'%');
+		}
+		$role_id = I('role_id', 0, 'intval');
+		if($role_id > 0)
+		{
+			$where['role_id'] = $role_id;
+		}
+
+		// 权限过滤：机构管理员只能看自己校区的管理员
+		$is_super = !empty($this->admin['is_super']);
+		$campus_id = intval($this->admin['campus_id']);
+		if(!$is_super && $campus_id > 0)
+		{
+			$where['campus_id'] = $campus_id;
+		}
+
+		// 读取角色名称
+		$role = M('Role')->field(array('id', 'name'))->where(array('is_enable'=>1))->select();
+		$role_map = array();
+		foreach($role as $r)
+		{
+			$role_map[$r['id']] = $r['name'];
+		}
+
+		// 读取校区名称
+		$campus_list = M('Campus')->field(array('id', 'name'))->select();
+		$campus_map = array();
+		foreach($campus_list as $c)
+		{
+			$campus_map[$c['id']] = $c['name'];
+		}
+
+		// 获取管理员列表
+		$list = $m->field(array('id', 'username', 'mobile', 'gender', 'role_id', 'campus_id', 'is_super', 'login_total', 'login_time', 'add_time'))->where($where)->order('id DESC')->select();
+
+		// 处理列表数据
+		if(!empty($list))
+		{
+			foreach($list as &$v)
+			{
+				$v['role_name'] = isset($role_map[$v['role_id']]) ? $role_map[$v['role_id']] : '-';
+				$v['campus_name'] = ($v['campus_id'] > 0 && isset($campus_map[$v['campus_id']])) ? $campus_map[$v['campus_id']] : '总后台';
+				$v['is_super_text'] = ($v['is_super'] == 1) ? '是' : '否';
+			}
+		}
+
+		$this->ajaxReturn(array('msg'=>'success', 'code'=>0, 'data'=>array('list'=>$list, 'total'=>count($list))));
 	}
 
 	/**
@@ -112,9 +220,12 @@ class AdminController extends CommonController
 
 		// 用户编辑
 		$id = I('id');
+		$is_super_current = !empty($this->admin['is_super']);
+		$campus_id_current = intval($this->admin['campus_id']);
+
 		if($id > 0)
 		{
-			$user =  M('Admin')->where(array('id'=>$id))->field(array('id', 'username', 'mobile', 'gender', 'role_id'))->find();
+			$user =  M('Admin')->where(array('id'=>$id))->field(array('id', 'username', 'mobile', 'gender', 'role_id', 'campus_id', 'is_super'))->find();
 			if(empty($user))
 			{
 				$this->error(L('login_username_no_exist'), U('Admin/Index/Index'));
@@ -123,7 +234,20 @@ class AdminController extends CommonController
 		}
 
 		$role = M('Role')->field(array('id', 'name'))->where(array('is_enable'=>1, 'id'=>array('gt', 1)))->select();
+
+		// 读取校区列表（超管可选择所有校区，机构管理员只能选自己校区）
+		if($is_super_current)
+		{
+			$campus_list = M('Campus')->field(array('id', 'name'))->select();
+		} else {
+			// 机构管理员新增管理员时，只能选自己校区
+			$campus_list = M('Campus')->field(array('id', 'name'))->where(array('id'=>$campus_id_current))->select();
+		}
+
 		$this->assign('role', $role);
+		$this->assign('campus_list', $campus_list);
+		$this->assign('is_super_current', $is_super_current);
+		$this->assign('campus_id_current', $campus_id_current);
 		$this->assign('id', $id);
 		$this->assign('common_gender_list', L('common_gender_list'));
 		$this->display('SaveInfo');
@@ -178,7 +302,20 @@ class AdminController extends CommonController
 			$m->login_salt	=	GetNumberCode(6);
 			$m->login_pwd 	=	LoginPwdEncryption($m->login_pwd, $m->login_salt);
 			$m->add_time	=	time();
-			
+
+			// 保存校区ID（超管可指定，机构管理员只能是自己校区）
+			$is_super_current = !empty($this->admin['is_super']);
+			$campus_id_post = I('campus_id', 0, 'intval');
+			if($is_super_current)
+			{
+				$m->campus_id = $campus_id_post;
+			} else {
+				$m->campus_id = intval($this->admin['campus_id']);
+			}
+
+			// 保存是否超管（只有超管才能设置超管权限）
+			$m->is_super = ($is_super_current && I('is_super', 0, 'intval') == 1) ? 1 : 0;
+
 			// 写入数据库
 			if($m->add())
 			{
@@ -220,6 +357,29 @@ class AdminController extends CommonController
 
 			// 移除username，不允许更新用户名
 			unset($m->username);
+
+			// 更新校区ID（超管可指定，机构管理员只能是自己校区）
+			$is_super_current = !empty($this->admin['is_super']);
+			$campus_id_post = I('campus_id', 0, 'intval');
+			if($is_super_current)
+			{
+				$m->campus_id = $campus_id_post;
+			} else {
+				$m->campus_id = intval($this->admin['campus_id']);
+			}
+
+			// 更新是否超管（只有超管才能设置超管权限，不能取消自己的超管权限）
+			if($is_super_current)
+			{
+				// 超管可以设置或取消超管权限，但不能取消自己的超管权限
+				if(I('id') == $this->admin['id'])
+				{
+					// 自身不做修改
+					unset($m->is_super);
+				} else {
+					$m->is_super = (I('is_super', 0, 'intval') == 1) ? 1 : 0;
+				}
+			}
 
 			// 更新数据库
 			if($m->where(array('id'=>I('id')))->save())

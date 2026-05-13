@@ -9,7 +9,7 @@
 				<h3 class="am-panel-title"><i class="fa fa-edit"></i> 添加校区</h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form am-form-horizontal form-validation" action="<?php echo U('Admin/Campus/add'); ?>" method="POST">
+				<form class="am-form am-form-horizontal form-validation" action="<?php echo U('Admin/Campus/add'); ?>" method="POST" enctype="multipart/form-data">
 					<div class="am-form-group">
 						<label class="am-u-sm-3 am-text-right">校区名称 <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-7">
@@ -38,30 +38,78 @@
 						</div>
 					</div>
 
-					<div class="am-form-group">
-						<label class="am-u-sm-3 am-text-right">负责人</label>
-						<div class="am-u-sm-7">
-							<input type="text" name="principal" class="am-form-field" placeholder="校区负责人姓名">
-						</div>
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">负责人</label>
+					<div class="am-u-sm-7">
+						<input type="text" name="principal" class="am-form-field" placeholder="校区负责人姓名">
 					</div>
+				</div>
 
-					<div class="am-form-group">
-						<label class="am-u-sm-3 am-text-right">状态</label>
-						<div class="am-u-sm-7">
-							<select name="status" class="am-form-field">
-								<option value="1">启用</option>
-								<option value="0">禁用</option>
-							</select>
-						</div>
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">站点名称</label>
+					<div class="am-u-sm-7">
+						<input type="text" name="site_name" class="am-form-field" placeholder="显示在页面标题等处的站点名称">
 					</div>
+				</div>
 
-					<div class="am-form-group">
-						<div class="am-u-sm-7 am-u-sm-offset-3">
-							<button type="submit" class="am-btn am-btn-primary am-radius">提交</button>
-							<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">校区 LOGO</label>
+					<div class="am-u-sm-7">
+						<input type="file" name="logo" class="am-form-field" accept="image/*">
+						<span class="am-text-sm am-text-secondary">支持 JPG、PNG、GIF 格式，最大 3MB</span>
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">子域名</label>
+					<div class="am-u-sm-7">
+						<input type="text" name="domain" class="am-form-field" placeholder="如: shanghai（完整为 shanghai.example.com）">
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">主题色</label>
+					<div class="am-u-sm-7">
+						<div class="am-input-group">
+							<input type="text" name="theme_color" id="theme_color" class="am-form-field" placeholder="#10b981" value="">
+							<span class="am-input-group-btn">
+								<input type="color" id="theme_color_picker" value="#10b981" style="width:38px;height:36px;padding:2px;border:1px solid #e4e4e4;cursor:pointer;" title="选择颜色">
+							</span>
 						</div>
 					</div>
-				</form>
+				</div>
+
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">备案号</label>
+					<div class="am-u-sm-7">
+						<input type="text" name="icp" class="am-form-field" placeholder="如: 京ICP备12345678号">
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">到期时间</label>
+					<div class="am-u-sm-7">
+						<input type="date" name="expire_date" class="am-form-field" placeholder="选择到期时间">
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<label class="am-u-sm-3 am-text-right">状态</label>
+					<div class="am-u-sm-7">
+						<select name="status" class="am-form-field">
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<div class="am-u-sm-7 am-u-sm-offset-3">
+						<button type="submit" class="am-btn am-btn-primary am-radius">提交</button>
+						<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+					</div>
+				</div>
+			</form>
 			</div>
 		</div>
 	</div>

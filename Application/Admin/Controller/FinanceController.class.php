@@ -10,14 +10,15 @@ class FinanceController extends CommonController {
      * 财务首页 — 数据概览
      */
     public function index() {
+        $campus_id = $this->tenant_campus_id;
         // 总收入
-        $total_income = M('order')->where(['status'=>['in', '1,2']])->sum('pay_amount');
+        $total_income = M('order')->where(['status'=>['in', '1,2'], 'campus_id'=>$campus_id])->sum('pay_amount');
         // 总支出
-        $total_expense = M('expense')->sum('amount');
+        $total_expense = M('expense')->where(['campus_id'=>$campus_id])->sum('amount');
         // 净利润
         $total_profit = ($total_income ?: 0) - ($total_expense ?: 0);
         // 待退款数
-        $refund_count = M('refund')->where(['status'=>0])->count();
+        $refund_count = M('refund')->where(['status'=>0, 'campus_id'=>$campus_id])->count();
         
         $this->assign('total_income', $total_income ?: 0);
         $this->assign('total_expense', $total_expense ?: 0);
@@ -33,8 +34,9 @@ class FinanceController extends CommonController {
         $page = I('page', 1, 'intval');
         $limit = 30;
         $offset = ($page - 1) * $limit;
+        $campus_id = $this->tenant_campus_id;
         
-        $where = ['status'=>['in', '1,2']];
+        $where = ['status'=>['in', '1,2'], 'campus_id'=>$campus_id];
         
         $keyword = I('keyword', '', 'trim');
         if ($keyword) {
@@ -101,9 +103,11 @@ class FinanceController extends CommonController {
         $page = I('page', 1, 'intval');
         $limit = 30;
         $offset = ($page - 1) * $limit;
+        $campus_id = $this->tenant_campus_id;
         
-        $count = M('expense')->count();
-        $list = M('expense')->order('add_time DESC')
+        $where = ['campus_id'=>$campus_id];
+        $count = M('expense')->where($where)->count();
+        $list = M('expense')->where($where)->order('add_time DESC')
             ->limit($offset, $limit)
             ->select();
         
@@ -131,7 +135,7 @@ class FinanceController extends CommonController {
             $pageHtml .= '</ul></div>';
         }
         $this->assign('page_html', $pageHtml);
-        $this->assign('total_expense', M('expense')->sum('amount') ?: 0);
+        $this->assign('total_expense', M('expense')->where(['campus_id'=>$campus_id])->sum('amount') ?: 0);
         
         $this->display();
     }
@@ -141,12 +145,13 @@ class FinanceController extends CommonController {
      */
     public function addExpense() {
         if (IS_POST) {
+            $campus_id = $this->tenant_campus_id;
             $data = [
                 'title' => I('post.title', '', 'trim'),
                 'type' => I('post.type', 1, 'intval'),
                 'amount' => I('post.amount', 0, 'floatval'),
                 'pay_type' => I('post.pay_type', 1, 'intval'),
-                'campus_id' => I('post.campus_id', 0, 'intval'),
+                'campus_id' => $campus_id,
                 'handler' => I('post.handler', '', 'trim'),
                 'remark' => I('post.remark', '', 'trim'),
                 'add_time' => time(),
@@ -168,9 +173,11 @@ class FinanceController extends CommonController {
         $page = I('page', 1, 'intval');
         $limit = 30;
         $offset = ($page - 1) * $limit;
+        $campus_id = $this->tenant_campus_id;
         
-        $count = M('refund')->count();
-        $list = M('refund')->order('add_time DESC')
+        $where = ['campus_id'=>$campus_id];
+        $count = M('refund')->where($where)->count();
+        $list = M('refund')->where($where)->order('add_time DESC')
             ->limit($offset, $limit)
             ->select();
         
@@ -209,6 +216,12 @@ class FinanceController extends CommonController {
         $id = I('id', 0, 'intval');
         $status = I('status', 1, 'intval');
         
+        $campus_id = $this->tenant_campus_id;
+        $refund = M('refund')->where(['id'=>$id, 'campus_id'=>$campus_id])->find();
+        if (!$refund) {
+            $this->error('记录不存在或无权操作');
+        }
+        
         M('refund')->where(['id'=>$id])->save([
             'status' => $status,
             'audit_time' => time()
@@ -216,7 +229,6 @@ class FinanceController extends CommonController {
         
         // 如果退款成功，更新原订单状态
         if ($status == 1) {
-            $refund = M('refund')->find($id);
             M('order')->where(['id'=>$refund['order_id']])->save(['status'=>3]);
         }
         
@@ -229,27 +241,31 @@ class FinanceController extends CommonController {
     public function statistics() {
         $month_start = strtotime(date('Y-m-01'));
         $year_start = strtotime(date('Y-01-01'));
+        $campus_id = $this->tenant_campus_id;
         
         // 总统计
-        $total_income = M('order')->where(['status'=>['in', '1,2']])->sum('pay_amount');
-        $total_expense = M('expense')->sum('amount');
+        $total_income = M('order')->where(['status'=>['in', '1,2'], 'campus_id'=>$campus_id])->sum('pay_amount');
+        $total_expense = M('expense')->where(['campus_id'=>$campus_id])->sum('amount');
         $total_profit = ($total_income ?: 0) - ($total_expense ?: 0);
         
         // 本月收入
         $month_income = M('order')->where([
             'create_time'=>['egt', $month_start],
-            'status'=>['in', '1,2']
+            'status'=>['in', '1,2'],
+            'campus_id'=>$campus_id
         ])->sum('pay_amount');
         
         // 本月支出
         $month_expense = M('expense')->where([
-            'add_time'=>['egt', $month_start]
+            'add_time'=>['egt', $month_start],
+            'campus_id'=>$campus_id
         ])->sum('amount');
         
         // 本月退款
         $month_refund = M('refund')->where([
             'add_time'=>['egt', $month_start],
-            'status'=>1
+            'status'=>1,
+            'campus_id'=>$campus_id
         ])->sum('amount');
         
         // 本月利润
@@ -270,12 +286,14 @@ class FinanceController extends CommonController {
             // 当日收入
             $day_income = M('order')->where([
                 'create_time'=>[['egt', $day_start], ['lt', $day_end]],
-                'status'=>['in', '1,2']
+                'status'=>['in', '1,2'],
+                'campus_id'=>$campus_id
             ])->sum('pay_amount');
             
             // 当日支出
             $day_expense = M('expense')->where([
-                'add_time'=>[['egt', $day_start], ['lt', $day_end]]
+                'add_time'=>[['egt', $day_start], ['lt', $day_end]],
+                'campus_id'=>$campus_id
             ])->sum('amount');
             
             $day_income = $day_income ?: 0;

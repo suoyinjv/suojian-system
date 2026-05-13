@@ -42,6 +42,13 @@ class ResourceController extends CommonController
         $keyword = I('keyword', '', 'trim');
 
         $where = array();
+        
+        // 多租户 - 校区过滤
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['r.campus_id'] = $campus_id;
+        }
+        
         if ($type) {
             $where['r.type'] = $type;
         }
@@ -80,10 +87,12 @@ class ResourceController extends CommonController
             $item['create_time'] = $item['create_time'] ? date('Y-m-d H:i', $item['create_time']) : '-';
         }
 
+        // 多租户 - 校区过滤
+        $campus_filter = $campus_id > 0 ? ['campus_id'=>$campus_id] : [];
         // 获取课程列表
-        $courses = M('course')->field('id, course_name')->select();
+        $courses = M('course')->where($campus_filter)->field('id, course_name')->select();
         // 获取教师列表
-        $teachers = M('teacher')->field('id, teacher_name')->select();
+        $teachers = M('teacher')->where($campus_filter)->field('id, teacher_name')->select();
 
         $this->assign('type_map', $type_map);
         $this->assign('courses', $courses);
@@ -134,7 +143,8 @@ class ResourceController extends CommonController
             'type' => $this->getFileType($file['ext']),
             'file_url' => '/Uploads/Resource/' . $file['savepath'] . $file['savename'],
             'file_size' => $file['size'],
-            'create_time' => time()
+            'create_time' => time(),
+            'campus_id' => $this->tenant_campus_id
         );
 
         $id = M('live_resource')->add($data);
@@ -182,12 +192,19 @@ class ResourceController extends CommonController
 
         $id = I('id', 0, 'intval');
         if ($id > 0) {
-            $info = M('live_resource')->find($id);
+            // 多租户 - 校区过滤
+            $where = array('id' => $id);
+            if ($this->tenant_campus_id > 0) {
+                $where['campus_id'] = $this->tenant_campus_id;
+            }
+            $info = M('live_resource')->where($where)->find();
             $this->assign('info', $info);
         }
 
+        // 多租户 - 校区过滤
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
         // 获取课程列表
-        $courses = M('course')->field('id, course_name')->select();
+        $courses = M('course')->where($campus_filter)->field('id, course_name')->select();
         $this->assign('courses', $courses);
         $this->display();
     }
@@ -210,6 +227,11 @@ class ResourceController extends CommonController
 
         if (empty($info)) {
             $this->ajaxReturn(array('code' => 0, 'msg' => '资源不存在'));
+        }
+        
+        // 多租户 - 校区校验
+        if ($this->tenant_campus_id > 0 && $info['campus_id'] != $this->tenant_campus_id) {
+            $this->ajaxReturn(array('code' => 0, 'msg' => '无权限删除该资源'));
         }
 
         // 删除物理文件
@@ -269,12 +291,13 @@ class ResourceController extends CommonController
             }
         }
 
-        // 获取可分享的课程
-        $courses = M('course')->field('id, course_name')->select();
+        // 获取可分享的课程（多租户过滤）
+        $campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+        $courses = M('course')->where($campus_filter)->field('id, course_name')->select();
         $this->assign('courses', $courses);
         $this->display();
     }
-
+    
     /**
      * [getFileType 获取文件类型]
      * @author   Devil

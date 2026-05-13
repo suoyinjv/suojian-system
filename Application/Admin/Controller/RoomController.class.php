@@ -30,16 +30,16 @@ class RoomController extends CommonController
 		$this->Is_Power();
 	}
 
-	/**
-     * [Index 教室列表]
-     * @author   Devil
-     * @blog     http://gong.gg/
-     * @version  0.0.1
-     * @datetime 2016-12-06T21:31:53+0800
-     */
+/**
+	 * [Index 教室列表]
+	 * @author   Devil
+	 * @blog     http://gong.gg/
+	 * @version  0.0.1
+	 * @datetime 2016-12-06T21:31:53+0800
+	 */
 	public function Index()
 	{
-		$this->assign('list', M('Room')->field(array('id', 'name'))->where(array('pid'=>0))->select());
+		$this->assign('list', M('Room')->field(array('id', 'name'))->where(array('pid'=>0, 'campus_id'=>$this->tenant_campus_id))->select());
 		$this->assign('common_is_enable_list', L('common_is_enable_list'));
 		$this->display('Index');
 	}
@@ -59,9 +59,10 @@ class RoomController extends CommonController
 			$this->error(L('common_unauthorized_access'));
 		}
 
-		// 获取数据
+// 获取数据
 		$field = array('id', 'pid', 'name', 'sort', 'is_enable');
-		$data = M('Room')->field($field)->where(array('pid'=>intval(I('id', 0))))->select();
+		$where = array('pid'=>intval(I('id', 0)), 'campus_id'=>$this->tenant_campus_id);
+		$data = M('Room')->field($field)->where($where)->select();
 		if(!empty($data))
 		{
 			foreach($data as $k=>$v)
@@ -85,11 +86,11 @@ class RoomController extends CommonController
 	 * @param    [int]    $id [节点id]
 	 * @return   [string]     [有数据ok, 则no]
 	 */
-	private function IsExistSon($id)
+private function IsExistSon($id)
 	{
 		if(!empty($id))
 		{
-			return (M('Room')->where(array('pid'=>$id))->count() > 0) ? 'ok' : 'no';
+			return (M('Room')->where(array('pid'=>$id, 'campus_id'=>$this->tenant_campus_id))->count() > 0) ? 'ok' : 'no';
 		}
 		return 'no';
 	}
@@ -115,14 +116,15 @@ class RoomController extends CommonController
 		// 公共额外数据处理
 		$m->sort 	=	intval(I('sort'));
 
-		// 添加
-		if(empty($_POST['id']))
-		{
-			if($m->create($_POST, 1))
+// 添加
+			if(empty($_POST['id']))
 			{
-				// 额外数据处理
-				$m->add_time	=	time();
-				$m->name 		=	I('name');
+				if($m->create($_POST, 1))
+				{
+					// 额外数据处理
+					$m->add_time	=	time();
+					$m->name 		=	I('name');
+					$m->campus_id 	=	$this->tenant_campus_id;
 				
 				// 写入数据库
 				if($m->add())
@@ -142,8 +144,8 @@ class RoomController extends CommonController
 				// 移除 id
 				unset($m->id);
 
-				// 更新数据库
-				if($m->where(array('id'=>I('id')))->save())
+// 更新数据库
+				if($m->where(array('id'=>I('id'), 'campus_id'=>$this->tenant_campus_id))->save())
 				{
 					$this->ajaxReturn(L('common_operation_edit_success'));
 				} else {
@@ -168,10 +170,10 @@ class RoomController extends CommonController
 			$this->error(L('common_unauthorized_access'));
 		}
 
-		$m = D('Room');
+$m = D('Room');
 		if($m->create($_POST, 5))
 		{
-			if($m->delete(I('id')))
+			if($m->where(array('id'=>I('id'), 'campus_id'=>$this->tenant_campus_id))->delete())
 			{
 				$this->ajaxReturn(L('common_operation_delete_success'));
 			} else {

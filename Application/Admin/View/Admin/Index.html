@@ -28,8 +28,14 @@
 		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
 			<thead>
 				<tr>
+					<th>ID</th>
 					<th>{{:L('common_admin_name')}}</th>
 					<th>{{:L('common_view_gender_name')}}</th>
+					<th>角色</th>
+					<if condition="$is_super_current">
+					<th>校区</th>
+					<th>超管</th>
+					</if>
 					<th>{{:L('login_total_name')}}</th>
 					<th class="am-hide-sm-only">{{:L('login_last_time_name')}}</th>
 					<th class="am-hide-sm-only">{{:L('common_create_time_name')}}</th>
@@ -40,8 +46,14 @@
 				<if condition="!empty($list)">
 					<foreach name="list" item="v">
 						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
 							<td>{{$v.username}}</td>
 							<td>{{:L('common_gender_list')[$v['gender']]['name']}}</td>
+							<td>{{$v.role_name}}</td>
+							<if condition="$is_super_current">
+							<td>{{$v.campus_name}}</td>
+							<td><span class="am-badge {{$v['is_super'] == 1 ? 'am-badge-danger' : 'am-badge-secondary'}}">{{$v.is_super_text}}</span></td>
+							</if>
 							<td>{{$v.login_total}}</td>
 							<td class="am-hide-sm-only">
 								<if condition="$v['login_total'] == 0">
@@ -66,7 +78,7 @@
 						</tr>
 					</foreach>
 				<else />
-					<tr><td colspan="5" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+					<tr><td colspan="9" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
 				</if>
 			</tbody>
 		</table>

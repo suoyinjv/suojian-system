@@ -16,6 +16,9 @@ class PackageController extends CommonController {
         $offset = ($page - 1) * $limit;
         
         $where = [];
+        if ($this->tenant_campus_id > 0) {
+            $where['campus_id'] = $this->tenant_campus_id;
+        }
         $type = I('type', 0, 'intval');
         if ($type) {
             $where['type'] = $type;
@@ -54,6 +57,7 @@ class PackageController extends CommonController {
                 'gift_hours' => I('post.gift_hours', 0, 'floatval'),
                 'valid_days' => I('post.valid_days', 0, 'intval'),
                 'status' => I('post.status', 1, 'intval'),
+                'campus_id' => $this->tenant_campus_id,
                 'add_time' => time(),
             ];
             
@@ -90,11 +94,11 @@ class PackageController extends CommonController {
                 'upd_time' => time(),
             ];
             
-            M('package')->where(['id'=>$id])->save($data);
+            M('package')->where(['id'=>$id, 'campus_id'=>$this->tenant_campus_id])->save($data);
             $this->success('更新成功', U('index'));
         }
         
-        $info = M('package')->find($id);
+        $info = M('package')->where(['id'=>$id, 'campus_id'=>$this->tenant_campus_id])->find();
         $this->assign('info', $info);
         $this->display();
     }
@@ -104,7 +108,7 @@ class PackageController extends CommonController {
      */
     public function delete() {
         $id = I('id', 0, 'intval');
-        M('package')->where(['id'=>$id])->delete();
+        M('package')->where(['id'=>$id, 'campus_id'=>$this->tenant_campus_id])->delete();
         $this->success('删除成功');
     }
     
@@ -123,10 +127,15 @@ class PackageController extends CommonController {
         }
         
         $where_str = $where ? implode(' AND ', $where) : 1;
+        if ($this->tenant_campus_id > 0) {
+            $where_str .= " AND p.campus_id = {$this->tenant_campus_id}";
+        }
         
         $prefix = C('DB_PREFIX');
+        
         $count = M('student_package')->table($prefix.'student_package sp')
             ->join($prefix.'student s ON sp.student_id=s.id')
+            ->join($prefix.'package p ON sp.package_id=p.id')
             ->where($where_str)->count();
         
         $list = M('student_package')->table($prefix.'student_package sp')
@@ -153,7 +162,7 @@ class PackageController extends CommonController {
             $student_id = I('post.student_id', 0, 'intval');
             $package_id = I('post.package_id', 0, 'intval');
             
-            $package = M('package')->find($package_id);
+            $package = M('package')->where(['id'=>$package_id, 'campus_id'=>$this->tenant_campus_id])->find();
             if (!$package) {
                 $this->error('套餐不存在');
             }
@@ -200,7 +209,11 @@ class PackageController extends CommonController {
         }
         
         // 获取套餐列表
-        $packages = M('package')->where(['status'=>1])->select();
+        $packageWhere = ['status'=>1];
+        if ($this->tenant_campus_id > 0) {
+            $packageWhere['campus_id'] = $this->tenant_campus_id;
+        }
+        $packages = M('package')->where($packageWhere)->select();
         $this->assign('packages', $packages);
         $this->display();
     }

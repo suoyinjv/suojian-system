@@ -3,8 +3,21 @@ namespace Admin\Controller;
 
 class CouponController extends AdminController {
     
+    /**
+     * 获取租户过滤条件
+     */
+    private function getCampusWhere() {
+        $where = [];
+        $is_super = !empty($this->admin['is_super']);
+        $campus_id = intval($this->admin['campus_id']);
+        if (!$is_super && $campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
+        return $where;
+    }
+    
     public function index() {
-        $map = [];
+        $map = $this->getCampusWhere();
         
         $keyword = I('keyword');
         if ($keyword) {
@@ -58,6 +71,10 @@ class CouponController extends AdminController {
                 $this->error('优惠券名称不能为空');
             }
             
+            // 租户过滤
+            $campusWhere = $this->getCampusWhere();
+            $data['campus_id'] = $campusWhere['campus_id'];
+            
             if (M('coupon')->add($data)) {
                 $this->success('添加成功');
             } else {
@@ -70,6 +87,7 @@ class CouponController extends AdminController {
     
     public function edit() {
         $id = I('id', 0, 'intval');
+        $campusWhere = $this->getCampusWhere();
         
         if (IS_POST) {
             $data = [
@@ -83,13 +101,13 @@ class CouponController extends AdminController {
                 'status' => I('status', 1, 'intval'),
             ];
             
-            if (M('coupon')->where(['id' => $id])->save($data) !== false) {
+            if (M('coupon')->where(array_merge(['id' => $id], $campusWhere))->save($data) !== false) {
                 $this->success('修改成功');
             } else {
                 $this->error('修改失败');
             }
         } else {
-            $info = M('coupon')->find($id);
+            $info = M('coupon')->where(array_merge(['id' => $id], $campusWhere))->find();
             $this->assign('info', $info);
             $this->display();
         }
@@ -97,7 +115,8 @@ class CouponController extends AdminController {
     
     public function delete() {
         $id = I('id', 0, 'intval');
-        if (M('coupon')->delete($id)) {
+        $campusWhere = $this->getCampusWhere();
+        if (M('coupon')->where(array_merge(['id' => $id], $campusWhere))->delete()) {
             $this->success('删除成功');
         } else {
             $this->error('删除失败');
@@ -113,7 +132,8 @@ class CouponController extends AdminController {
                 $this->error('参数不完整');
             }
             
-            $coupon = M('coupon')->find($couponId);
+            $campusWhere = $this->getCampusWhere();
+            $coupon = M('coupon')->where(array_merge(['id' => $couponId], $campusWhere))->find();
             if (!$coupon) {
                 $this->error('优惠券不存在');
             }
@@ -123,6 +143,8 @@ class CouponController extends AdminController {
                 $this->error('优惠券已发完');
             }
             
+            // 学生也需按租户过滤
+            $studentWhere = $this->getCampusWhere();
             $studentIdArr = explode(',', $studentIds);
             $success = 0;
             
@@ -152,7 +174,7 @@ class CouponController extends AdminController {
     }
     
     public function sendLog() {
-        $map = [];
+        $map = $this->getCampusWhere();
         
         $couponId = I('coupon_id', 0, 'intval');
         if ($couponId) {
@@ -164,8 +186,13 @@ class CouponController extends AdminController {
             $map['status'] = $status;
         }
         
-        $count = M('student_coupon')->where($map)->count();
+        $count = M('student_coupon')->alias('sc')
+            ->join('LEFT JOIN sc_coupon c ON sc.coupon_id=c.id')
+            ->where(array_merge($map, ['c.campus_id' => $map['campus_id']]))
+            ->count();
         $page = $this->showPage($count, 20);
+        
+        // 构建带租户过滤的关联查询
         $list = M('student_coupon')->alias('sc')
             ->field('sc.*,c.name as coupon_name,s.username as student_name')
             ->join('LEFT JOIN sc_coupon c ON sc.coupon_id=c.id')
@@ -182,6 +209,22 @@ class CouponController extends AdminController {
     
     public function useCoupon() {
         $id = I('id', 0, 'intval');
+        
+        // 使用优惠券需要验证归属的优惠券是否属于当前租户
+        $scoupon = M('student_coupon')->alias('sc')
+            ->join('LEFT JOIN sc_coupon c ON sc.coupon_id=c.id')
+            ->where(['sc.id' => $id])
+            ->field('sc.*, c.campus_id')
+            ->find();
+        
+        if (!$scoupon) {
+            $this->error('记录不存在');
+        }
+        
+        $campusWhere = $this->getCampusWhere();
+        if (!$campusWhere && !empty($campusWhere['campus_id']) && $scoupon['campus_id'] != $campusWhere['campus_id']) {
+            $this->error('无权操作此记录');
+        }
         
         if (M('student_coupon')->where(['id' => $id])->save([
             'status' => 1,

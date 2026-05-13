@@ -1,6 +1,24 @@
 <!-- commom html start -->
 <include file="Public/Common" />
 <!-- commom html end -->
+
+<script>
+// 主题色选择器：color input 与 text input 双向同步
+$(function(){
+    var $picker = $('#theme_color_picker');
+    var $input = $('#theme_color');
+    if($picker.length && $input.length) {
+        $picker.on('input', function(){
+            $input.val(this.value);
+        });
+        $input.on('input', function(){
+            if(/^#[0-9a-fA-F]{6}$/.test(this.value)) {
+                $picker.val(this.value);
+            }
+        });
+    }
+});
+</script>
 </body>
 </html>
 

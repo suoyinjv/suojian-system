@@ -11,6 +11,9 @@ namespace Admin\Controller;
  */
 class TeacherController extends CommonController
 {
+	// 租户校区ID
+	protected $tenant_campus_id = 0;
+
 	/**
 	 * [_initialize 前置操作-继承公共前置方法]
 	 * @author   Devil
@@ -28,6 +31,9 @@ class TeacherController extends CommonController
 
 		// 权限校验
 		$this->Is_Power();
+
+		// 租户校区过滤
+		$this->tenant_campus_id = GetTenantCampusId();
 	}
 
 	/**
@@ -150,7 +156,9 @@ class TeacherController extends CommonController
 	 */
 	private function GetIndexWhere()
 	{
-		$where = array();
+		$where = array(
+			'campus_id' => $this->tenant_campus_id,
+		);
 
 		// 模糊
 		if(!empty($_REQUEST['keyword']))
@@ -203,7 +211,7 @@ class TeacherController extends CommonController
 	public function SaveInfo()
 	{
 		// 教师信息
-		$data = empty($_REQUEST['id']) ? array() : M('Teacher')->find(I('id'));
+		$data = empty($_REQUEST['id']) ? array() : M('Teacher')->where(array('id'=>I('id'), 'campus_id'=>$this->tenant_campus_id))->find();
 		if(!empty($data['birthday']))
 		{
 			$data['birthday'] = date('Y-m-d', $data['birthday']);
@@ -274,12 +282,13 @@ class TeacherController extends CommonController
 		// 数据自动校验
 		if($m->create($_POST, 1))
 		{
-			// 额外数据处理
+		// 额外数据处理
 			$m->add_time	=	time();
 			$m->upd_time	=	time();
 			$m->birthday	=	strtotime($m->birthday);
 			$m->username 	=	I('username');
 			$m->address 	=	I('address');
+			$m->campus_id 	=	$this->tenant_campus_id;
 
 			// 开启事务
 			$m->startTrans();
@@ -357,7 +366,7 @@ class TeacherController extends CommonController
 			$teacher_id = I('id');
 
 			// 更新教师
-			$t_state = $m->where(array('id'=>$teacher_id, 'id_card'=>I('id_card')))->save();
+			$t_state = $m->where(array('id'=>$teacher_id, 'id_card'=>I('id_card'), 'campus_id'=>$this->tenant_campus_id))->save();
 
 			// 删除教师科目关联数据
 			$ts = M('TeacherSubject');
@@ -423,7 +432,7 @@ class TeacherController extends CommonController
 			$s = M('Teacher');
 
 			// 教师是否存在
-			$teacher = $s->where(array('id'=>$id, 'id_card'=>$id_card))->getField('id');
+			$teacher = $s->where(array('id'=>$id, 'id_card'=>$id_card, 'campus_id'=>$this->tenant_campus_id))->getField('id');
 			if(empty($teacher))
 			{
 				$this->ajaxReturn(L('teacher_no_exist_error'), -2);
@@ -433,7 +442,7 @@ class TeacherController extends CommonController
 			$s->startTrans();
 
 			// 删除教师
-			$t_state = $s->where(array('id'=>$id, 'id_card'=>$id_card))->delete();
+			$t_state = $s->where(array('id'=>$id, 'id_card'=>$id_card, 'campus_id'=>$this->tenant_campus_id))->delete();
 
 			// 删除课程
 			$c_state = M('Course')->where(array('teacher_id'=>$id))->delete();

@@ -11,6 +11,8 @@ namespace Admin\Controller;
  */
 class StudentController extends CommonController
 {
+	// 租户校区ID
+	protected $tenant_campus_id = 0;
 	/**
 	 * [_initialize 前置操作-继承公共前置方法]
 	 * @author   Devil
@@ -28,6 +30,9 @@ class StudentController extends CommonController
 
 		// 权限校验
 		$this->Is_Power();
+
+		// 租户校区过滤
+		$this->tenant_campus_id = GetTenantCampusId();
 	}
 
 	/**
@@ -141,9 +146,10 @@ class StudentController extends CommonController
 			// 数据自动校验
 			if($m->create($v, 1) !== false)
 			{
-				// 额外数据处理
-				$m->birthday	=	strtotime($v['birthday']);
-				$m->semester_id	=	MyC('admin_semester_id');
+			// 额外数据处理
+			$m->birthday	=	strtotime($v['birthday']);
+			$m->semester_id	=	MyC('admin_semester_id');
+			$m->campus_id	=	$this->tenant_campus_id;
 				
 				// 开启事务
 				$m->startTrans();
@@ -354,7 +360,9 @@ class StudentController extends CommonController
 	 */
 	private function GetIndexWhere()
 	{
-		$where = array();
+		$where = array(
+			'campus_id' => $this->tenant_campus_id,
+		);
 
 		// 学期id
 		$where['semester_id'] = MyC('admin_semester_id');
@@ -423,7 +431,7 @@ class StudentController extends CommonController
 	public function SaveInfo()
 	{
 		// 学生信息
-		$data = empty($_REQUEST['id']) ? array() : M('Student')->find(I('id'));
+		$data = empty($_REQUEST['id']) ? array() : M('Student')->where(array('campus_id'=>$this->tenant_campus_id))->find(I('id'));
 		if(!empty($data['birthday']))
 		{
 			$data['birthday'] = date('Y-m-d', $data['birthday']);
@@ -494,6 +502,7 @@ class StudentController extends CommonController
 			$m->add_time	=	time();
 			$m->birthday	=	strtotime($m->birthday);
 			$m->semester_id	=	MyC('admin_semester_id');
+			$m->campus_id	=	$this->tenant_campus_id;
 			$m->username 	=	I('username');
 			$m->address 	=	I('address');
 			
@@ -556,7 +565,7 @@ class StudentController extends CommonController
 			unset($m->id_card, $m->number);
 
 			// 更新数据库
-			if($m->where(array('id'=>I('id'), 'id_card'=>I('id_card'), 'number'=>I('number')))->save())
+			if($m->where(array('id'=>I('id'), 'id_card'=>I('id_card'), 'number'=>I('number'), 'campus_id'=>$this->tenant_campus_id))->save())
 			{
 				$this->ajaxReturn(L('common_operation_edit_success'));
 			} else {
@@ -592,7 +601,7 @@ class StudentController extends CommonController
 			$s = M('Student');
 
 			// 学生是否存在
-			$student = $s->where(array('id'=>$id, 'id_card'=>$id_card))->getField('id');
+			$student = $s->where(array('id'=>$id, 'id_card'=>$id_card, 'campus_id'=>$this->tenant_campus_id))->getField('id');
 			if(empty($student))
 			{
 				$this->ajaxReturn(L('student_no_exist_error'), -2);
@@ -602,7 +611,7 @@ class StudentController extends CommonController
 			$s->startTrans();
 
 			// 删除学生
-			$s_state = $s->where(array('id'=>$id, 'id_card'=>$id_card))->delete();
+			$s_state = $s->where(array('id'=>$id, 'id_card'=>$id_card, 'campus_id'=>$this->tenant_campus_id))->delete();
 
 			// 删除成绩
 			$f_state = M('Fraction')->where(array('student_id'=>$id))->delete();

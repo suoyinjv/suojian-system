@@ -1,4 +1,5 @@
 <include file="Public/Header" />
+<include file="Public/Nav" />
 
 <!-- right content start  -->
 <div class="content-right">
@@ -37,10 +38,32 @@
 						</foreach>
 					</select>
 				</div>
+				<!-- 校区选择（超管可见） -->
+				<if condition="$is_super_current">
+				<div class="am-form-group">
+					<label>所属校区</label>
+					<select class="am-radius c-p" name="campus_id">
+						<option value="0">总后台</option>
+						<foreach name="campus_list" item="c">
+							<option value="{{$c.id}}" <if condition="isset($data['campus_id']) and $data['campus_id'] == $c['id']">selected</if>>{{$c.name}}</option>
+						</foreach>
+					</select>
+				</div>
+				<div class="am-form-group">
+					<label>超级管理员</label>
+					<div class="am-u-sm-9 am-u-sm-offset-3" style="padding-top:5px;">
+						<input type="checkbox" name="is_super" value="1" <if condition="isset($data['is_super']) and $data['is_super'] == 1">checked</if> data-am-switch data-off-text="否" data-on-text="是" />
+						<span class="am-text-sm am-text-warning">勾选后该用户拥有超管权限</span>
+					</div>
+				</div>
+				<else />
+				<!-- 机构管理员新增时，隐藏campus_id字段，使用当前登录用户的校区 -->
+				<input type="hidden" name="campus_id" value="{{$campus_id_current}}" />
+				</if>
 			</if>
 			<include file="Lib/Gender" />
 			<div class="am-form-group">
-				<input type="hidden" name="id" <present name="id"> value="{{$id}}"</present>" />
+				<input type="hidden" name="id" <present name="id"> value="{{$id}}"</present> />
 				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
 			</div>
 		</form>

@@ -11,6 +11,9 @@ namespace Admin\Controller;
  */
 class ClassController extends CommonController
 {
+	// 租户校区ID
+	protected $tenant_campus_id = 0;
+
 	/**
 	 * [_initialize 前置操作-继承公共前置方法]
 	 * @author   Devil
@@ -28,6 +31,9 @@ class ClassController extends CommonController
 
 		// 权限校验
 		$this->Is_Power();
+
+		// 租户校区过滤
+		$this->tenant_campus_id = GetTenantCampusId();
 	}
 
 	/**
@@ -39,7 +45,7 @@ class ClassController extends CommonController
      */
 	public function Index()
 	{
-		$this->assign('list', M('Class')->field(array('id', 'name'))->where(array('pid'=>0))->select());
+		$this->assign('list', M('Class')->field(array('id', 'name'))->where(array('pid'=>0, 'campus_id'=>$this->tenant_campus_id))->select());
 		$this->assign('common_is_enable_list', L('common_is_enable_list'));
 		$this->display('Index');
 	}
@@ -61,7 +67,7 @@ class ClassController extends CommonController
 
 		// 获取数据
 		$field = array('id', 'pid', 'name', 'sort', 'is_enable');
-		$data = M('Class')->field($field)->where(array('pid'=>intval(I('id', 0))))->select();
+		$data = M('Class')->field($field)->where(array('pid'=>intval(I('id', 0)), 'campus_id'=>$this->tenant_campus_id))->select();
 		if(!empty($data))
 		{
 			foreach($data as $k=>$v)
@@ -89,7 +95,7 @@ class ClassController extends CommonController
 	{
 		if(!empty($id))
 		{
-			return (M('Class')->where(array('pid'=>$id))->count() > 0) ? 'ok' : 'no';
+			return (M('Class')->where(array('pid'=>$id, 'campus_id'=>$this->tenant_campus_id))->count() > 0) ? 'ok' : 'no';
 		}
 		return 'no';
 	}
@@ -123,6 +129,7 @@ class ClassController extends CommonController
 				// 额外数据处理
 				$m->add_time	=	time();
 				$m->name 		=	I('name');
+				$m->campus_id	=	$this->tenant_campus_id;
 				
 				// 写入数据库
 				if($m->add())
@@ -142,8 +149,8 @@ class ClassController extends CommonController
 				// 移除 id
 				unset($m->id);
 
-				// 更新数据库
-				if($m->where(array('id'=>I('id')))->save())
+				// 更新数据库 - 必须属于当前租户
+				if($m->where(array('id'=>I('id'), 'campus_id'=>$this->tenant_campus_id))->save())
 				{
 					$this->ajaxReturn(L('common_operation_edit_success'));
 				} else {
@@ -171,7 +178,8 @@ class ClassController extends CommonController
 		$m = D('Class');
 		if($m->create($_POST, 5))
 		{
-			if($m->delete(I('id')))
+			// 删除时必须属于当前租户
+			if($m->where(array('id'=>I('id'), 'campus_id'=>$this->tenant_campus_id))->delete())
 			{
 				$this->ajaxReturn(L('common_operation_delete_success'));
 			} else {

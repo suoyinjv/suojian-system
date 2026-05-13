@@ -1,0 +1,41 @@
+<?php if (!defined('THINK_PATH')) exit(); include dirname(__FILE__) . '/../Public/Header.html'; ?>
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<p class="fw-700 list-title"><?php echo L('os_view_title'); ?></p>
+		<dl class="dl-content">
+			<dt><?php echo L('ver_name'); ?></dt>
+			<dd><?php echo $data['ver']; ?><a href="#" class="m-l-10"><?php echo L('ver_to_view_name'); ?></a></dd>
+
+			<dt>产品完成日期</dt>
+			<dd><?php echo $data['finish_date']; ?></dd>
+
+			<dt><?php echo L('os_ver_name'); ?></dt>
+			<dd><?php echo $data['os_ver']; ?></dd>
+
+			<dt><?php echo L('php_ver_name'); ?></dt>
+			<dd><?php echo $data['php_ver']; ?></dd>
+
+			<dt><?php echo L('mysql_ver_name'); ?></dt>
+			<dd><?php echo $data['mysql_ver']; ?></dd>
+
+			<dt><?php echo L('server_ver_name'); ?></dt>
+			<dd><?php echo $data['server_ver']; ?></dd>
+
+			<dt><?php echo L('host_name'); ?></dt>
+			<dd><?php echo $data['host']; ?></dd>
+		</dl>
+
+		<p class="fw-700 list-title"><?php echo L('team_view_title'); ?></p>
+		<dl class="dl-content">
+			<dt><?php echo L('copyright_name'); ?></dt>
+			<dd>SUOJIAN</dd>
+		</dl>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<?php include dirname(__FILE__) . '/../Public/Footer.html'; ?>
+<!-- footer end -->

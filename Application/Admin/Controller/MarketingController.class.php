@@ -50,6 +50,12 @@ class MarketingController extends CommonController
         if ($keyword) {
             $where['title'] = array('like', '%' . $keyword . '%');
         }
+        
+        // 多租户过滤
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
 
         // 计算活动状态（自动更新）
         $this->autoUpdateActivityStatus();

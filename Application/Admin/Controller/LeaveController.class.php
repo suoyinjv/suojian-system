@@ -40,6 +40,10 @@ class LeaveController extends CommonController
         $keyword = I('keyword', '', 'trim');
 
         $where = array();
+        // campus_id 过滤
+        if ($this->tenant_campus_id > 0) {
+            $where['s.campus_id'] = $this->tenant_campus_id;
+        }
         if ($status >= 0) {
             $where['l.status'] = $status;
         }
@@ -54,10 +58,11 @@ class LeaveController extends CommonController
         $prefix = C('DB_PREFIX');
         $count = M('leave')->alias('l')
             ->join('LEFT JOIN ' . $prefix . 'student s ON l.student_id=s.id')
+            ->join('LEFT JOIN ' . $prefix . 'class c ON l.class_id=c.id')
             ->where($where)->count();
 
         $list = M('leave')->alias('l')
-            ->field('l.*, s.username as student_name, s.my_mobile as student_phone, c.class_name, u.nickname as approver_name')
+            ->field('l.*, s.username as student_name, s.my_mobile as student_phone, c.class_name, u.nickname as approver_name, s.campus_id')
             ->join('LEFT JOIN ' . $prefix . 'student s ON l.student_id=s.id')
             ->join('LEFT JOIN ' . $prefix . 'class c ON l.class_id=c.id')
             ->join('LEFT JOIN ' . $prefix . 'admin u ON l.approver_id=u.id')
@@ -142,6 +147,11 @@ class LeaveController extends CommonController
                 // 新增申请
                 $data['status'] = 0;
                 $data['create_time'] = time();
+                // 添加时自动设置校区
+                $student = M('student')->find($data['student_id']);
+                if ($student && $this->tenant_campus_id > 0) {
+                    $data['campus_id'] = $this->tenant_campus_id;
+                }
                 $id = M('leave')->add($data);
                 if ($id > 0) {
                     $this->ajaxReturn(array('code' => 1, 'msg' => '请假申请已提交'));
@@ -156,10 +166,18 @@ class LeaveController extends CommonController
                 $this->assign('info', $info);
             }
 
-            // 获取学生列表
-            $students = M('student')->field('id, name, phone')->select();
-            // 获取班级列表
-            $classes = M('class')->field('id, class_name')->select();
+            // 获取学生列表（按校区过滤）
+            $student_where = array();
+            if ($this->tenant_campus_id > 0) {
+                $student_where['campus_id'] = $this->tenant_campus_id;
+            }
+            $students = M('student')->field('id, name, phone')->where($student_where)->select();
+            // 获取班级列表（按校区过滤）
+            $class_where = array();
+            if ($this->tenant_campus_id > 0) {
+                $class_where['campus_id'] = $this->tenant_campus_id;
+            }
+            $classes = M('class')->field('id, class_name')->where($class_where)->select();
             $this->assign('students', $students);
             $this->assign('classes', $classes);
             $this->display();
@@ -228,7 +246,14 @@ class LeaveController extends CommonController
         $id = I('id', 0, 'intval');
         $remark = I('remark', '', 'trim');
 
+        // 验证校区权限
         $leave = M('leave')->find($id);
+        if ($this->tenant_campus_id > 0) {
+            $student = M('student')->find($leave['student_id']);
+            if ($student && $student['campus_id'] != $this->tenant_campus_id) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '无权审批此请假'));
+            }
+        }
         if (empty($leave)) {
             $this->ajaxReturn(array('code' => 0, 'msg' => '请假记录不存在'));
         }
@@ -280,10 +305,23 @@ class LeaveController extends CommonController
         $id_arr = explode(',', $ids);
         $success = 0;
 
+        // 按校区过滤学员
+        $campus_where = array();
+        if ($this->tenant_campus_id > 0) {
+            $campus_where['campus_id'] = $this->tenant_campus_id;
+        }
+
         foreach ($id_arr as $id) {
             $id = intval($id);
             if ($id > 0) {
                 $leave = M('leave')->find($id);
+                // 验证校区权限
+                if ($leave) {
+                    $student = M('student')->find($leave['student_id']);
+                    if ($this->tenant_campus_id > 0 && $student && $student['campus_id'] != $this->tenant_campus_id) {
+                        continue;
+                    }
+                }
                 if ($leave && $leave['status'] == 0) {
                     M('leave')->where(array('id' => $id))->save(array(
                         'status' => $status,
@@ -316,6 +354,15 @@ class LeaveController extends CommonController
     {
         $student_id = I('student_id', 0, 'intval');
 
+        // 按校区过滤
+        $student_where = array('student_id' => $student_id);
+        if ($this->tenant_campus_id > 0) {
+            // 通过学员的校区验证权限
+            $student = M('student')->find($student_id);
+            if ($student && $student['campus_id'] != $this->tenant_campus_id) {
+                $this->ajaxReturn(array('code' => 1, 'data' => array()));
+            }
+        }
         $where = array('student_id' => $student_id);
         $list = M('leave')->where($where)
             ->order('id DESC')
@@ -353,6 +400,13 @@ class LeaveController extends CommonController
         $id = I('id', 0, 'intval');
 
         $leave = M('leave')->find($id);
+        // 验证校区权限
+        if ($this->tenant_campus_id > 0 && $leave) {
+            $student = M('student')->find($leave['student_id']);
+            if ($student && $student['campus_id'] != $this->tenant_campus_id) {
+                $this->ajaxReturn(array('code' => 0, 'msg' => '无权取消此请假'));
+            }
+        }
         if (empty($leave)) {
             $this->ajaxReturn(array('code' => 0, 'msg' => '请假记录不存在'));
         }
@@ -389,6 +443,14 @@ class LeaveController extends CommonController
             $this->error('请假记录不存在');
         }
 
+        // 验证校区权限
+        if ($this->tenant_campus_id > 0) {
+            $student = M('student')->find($info['student_id']);
+            if ($student && $student['campus_id'] != $this->tenant_campus_id) {
+                $this->error('无权查看此请假记录');
+            }
+        }
+
         // 获取学生信息
         $student = M('student')->find($info['student_id']);
         // 获取班级信息
@@ -414,10 +476,15 @@ class LeaveController extends CommonController
     private function updateAttendance($leave)
     {
         // 更新请假期间的考勤记录为请假状态
-        M('attendance')->where(array(
+        $where = array(
             'student_id' => $leave['student_id'],
             'attend_date' => array('between', $leave['start_date'] . ',' . $leave['end_date'])
-        ))->save(array(
+        );
+        // 按校区过滤
+        if ($this->tenant_campus_id > 0) {
+            $where['campus_id'] = $this->tenant_campus_id;
+        }
+        M('attendance')->where($where)->save(array(
             'status' => 2,
             'leave_id' => $leave['id']
         ));

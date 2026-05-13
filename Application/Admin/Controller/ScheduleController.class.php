@@ -8,6 +8,14 @@ use Think\Controller;
 class ScheduleController extends Controller {
     
     /**
+     * 初始化 - 租户校区过滤
+     */
+    public function _initialize() {
+        parent::_initialize();
+        GetTenantCampusId();
+    }
+    
+    /**
      * 排课列表（页面 / JSON API）
      */
     public function index() {
@@ -17,17 +25,20 @@ class ScheduleController extends Controller {
             $page = I('page', 1, 'intval');
             $rows = I('rows', 20, 'intval');
             
+            $campus_id = $_SESSION['campus_id'];
+            
             $list = M('schedule')
                 ->alias('s')
                 ->field('s.*,c.name as class_name,co.course_name as course_name,t.username as teacher_name')
                 ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
                 ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
                 ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
+                ->where(['s.campus_id'=>$campus_id])
                 ->order('s.week_day,s.start_time')
                 ->page($page, $rows)
                 ->select();
                 
-            $total = M('schedule')->count();
+            $total = M('schedule')->where(['campus_id'=>$campus_id])->count();
             
             $week_arr = [1=>'周一',2=>'周二',3=>'周三',4=>'周四',5=>'周五',6=>'周六',7=>'周日'];
             foreach ($list as &$v) {
@@ -47,9 +58,11 @@ class ScheduleController extends Controller {
      */
     public function add() {
         $data = I('post.');
+        $data['campus_id'] = $_SESSION['campus_id'];
         $data['create_time'] = time();
         
         $conflict = M('schedule')->where([
+            'campus_id'=>$data['campus_id'],
             'teacher_id'=>$data['teacher_id'],
             'week_day'=>$data['week_day'],
             'start_time'=>$data['start_time'],
@@ -69,9 +82,15 @@ class ScheduleController extends Controller {
      */
     public function edit() {
         $data = I('post.');
-        $data['id'] = I('id', 0, 'intval');
+        $id = I('id', 0, 'intval');
         
-        $result = M('schedule')->save($data);
+        // 验证记录属于当前校区
+        $record = M('schedule')->where(['id'=>$id, 'campus_id'=>$_SESSION['campus_id']])->find();
+        if (!$record) {
+            $this->ajaxReturn(['code'=>0, 'msg'=>'记录不存在或无权修改']);
+        }
+        
+        $result = M('schedule')->where(['id'=>$id])->save($data);
         $this->ajaxReturn(['code'=>$result!==false?1:0, 'msg'=>$result!==false?'更新成功':'更新失败']);
     }
     
@@ -80,7 +99,7 @@ class ScheduleController extends Controller {
      */
     public function del() {
         $id = I('id', 0, 'intval');
-        $result = M('schedule')->delete($id);
+        $result = M('schedule')->where(['id'=>$id, 'campus_id'=>$_SESSION['campus_id']])->delete();
         $this->ajaxReturn(['code'=>$result?1:0, 'msg'=>$result?'删除成功':'删除失败']);
     }
     
@@ -89,6 +108,7 @@ class ScheduleController extends Controller {
      */
     public function scheduleView() {
         $is_json = I('json', 0, 'intval');
+        $campus_id = $_SESSION['campus_id'];
         
         if ($is_json) {
             $week_day = I('week_day', date('N'), 'intval');
@@ -99,15 +119,15 @@ class ScheduleController extends Controller {
                 ->join('LEFT JOIN sc_class c ON s.class_id=c.id')
                 ->join('LEFT JOIN sc_course co ON s.course_id=co.id')
                 ->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')
-                ->where(['s.week_day'=>$week_day, 's.status'=>1])
+                ->where(['s.campus_id'=>$campus_id, 's.week_day'=>$week_day, 's.status'=>1])
                 ->select();
                 
             $this->ajaxReturn(['list'=>$list]);
         }
         
         // 页面模式：传递筛选数据
-        $teachers = M('teacher')->field('id,username as name')->where(['status'=>1])->select();
-        $classes = M('class')->field('id,name')->where(['status'=>1])->select();
+        $teachers = M('teacher')->field('id,username as name')->where(['campus_id'=>$campus_id, 'status'=>1])->select();
+        $classes = M('class')->field('id,name')->where(['campus_id'=>$campus_id, 'status'=>1])->select();
         $this->assign('teachers', $teachers ?: []);
         $this->assign('classes', $classes ?: []);
         
@@ -120,12 +140,14 @@ class ScheduleController extends Controller {
     public function teacherFreeTime() {
         $teacher_id = I('teacher_id', 0, 'intval');
         $week_day = I('week_day', 0, 'intval');
+        $campus_id = $_SESSION['campus_id'];
         
         if (!$teacher_id || !$week_day) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'参数错误']);
         }
         
         $busy = M('schedule')->where([
+            'campus_id'=>$campus_id,
             'teacher_id'=>$teacher_id,
             'week_day'=>$week_day,
             'status'=>1

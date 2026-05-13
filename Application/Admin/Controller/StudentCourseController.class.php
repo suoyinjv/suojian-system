@@ -6,7 +6,18 @@ use Think\Controller;
  * 学员课时管理 - HTML页面 + JSON API
  */
 class StudentCourseController extends Controller {
-    
+
+    // 租户校区ID
+    protected $tenant_campus_id = 0;
+
+    /**
+     * 初始化 - 租户校区过滤
+     */
+    public function _initialize() {
+        parent::_initialize();
+        $this->tenant_campus_id = GetTenantCampusId();
+    }
+
     /**
      * 学员课时列表（页面 / JSON API）
      */
@@ -19,6 +30,7 @@ class StudentCourseController extends Controller {
             $keyword = I('keyword', '');
             
             $where = [];
+            $where['stc.campus_id'] = $this->tenant_campus_id;
             if ($keyword) {
                 $where['s.username|stc.course_name'] = ['like', "%{$keyword}%"];
             }
@@ -56,11 +68,11 @@ class StudentCourseController extends Controller {
         $student_id = I('student_id', 0, 'intval');
         
         $courses = M('student_course')
-            ->where(['student_id'=>$student_id, 'status'=>1])
+            ->where(['student_id'=>$student_id, 'status'=>1, 'campus_id'=>$this->tenant_campus_id])
             ->select();
             
         $consumptions = M('consumption')
-            ->where(['student_id'=>$student_id])
+            ->where(['student_id'=>$student_id, 'campus_id'=>$this->tenant_campus_id])
             ->order('create_time desc')
             ->limit(20)
             ->select();
@@ -73,6 +85,7 @@ class StudentCourseController extends Controller {
      */
     public function add() {
         $data = I('post.');
+        $data['campus_id'] = $this->tenant_campus_id;
         $data['create_time'] = time();
         $data['remaining_hours'] = $data['total_hours'];
         $data['used_hours'] = 0;
@@ -95,6 +108,7 @@ class StudentCourseController extends Controller {
         
         // 构建查询条件
         $where = [];
+        $where['c.campus_id'] = $this->tenant_campus_id;
         if ($keyword) {
             $where['s.username|s.my_mobile'] = ['like', "%{$keyword}%"];
         }
@@ -215,14 +229,15 @@ class StudentCourseController extends Controller {
     public function gift() {
         $data = I('post.');
         $data['type'] = 'gift';
+        $data['campus_id'] = $this->tenant_campus_id;
         $data['before_hours'] = 0;
         $data['after_hours'] = $data['hours'];
         $data['create_time'] = time();
         
         M('consumption')->add($data);
         
-        M('student_course')->where(['id'=>$data['student_course_id']])->setInc('total_hours', $data['hours']);
-        M('student_course')->where(['id'=>$data['student_course_id']])->setInc('remaining_hours', $data['hours']);
+        M('student_course')->where(['id'=>$data['student_course_id'], 'campus_id'=>$this->tenant_campus_id])->setInc('total_hours', $data['hours']);
+        M('student_course')->where(['id'=>$data['student_course_id'], 'campus_id'=>$this->tenant_campus_id])->setInc('remaining_hours', $data['hours']);
         
         $this->ajaxReturn(['code'=>1, 'msg'=>'赠送成功']);
     }

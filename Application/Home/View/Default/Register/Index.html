@@ -1,0 +1,124 @@
+<include file="Public/Header" />
+
+<!-- header nav start -->
+<include file="Public/HeaderNav" />
+<!-- header nav end -->
+
+<!-- conntent start  -->
+<div class="am-g my-content" <if condition="!empty($max_width_style)">style="{{$max_width_style}}"</if>>
+	<div class="am-u-md-6 am-u-sm-centered">
+		<!-- form start -->
+		<form class="am-form form-validation view-form" method="post" action="{{:U('Home/Register/Register')}}" request-type="ajax-url" request-value="{{:U('Admin/Index/Index')}}">
+			<fieldset>
+				<legend class="am-text-center am-text-lg">
+					<i class="am-icon-university am-icon-sm"></i> 机构自助注册
+				</legend>
+				<hr />
+
+				<div class="am-form-group">
+					<label><i class="am-icon-building-o"></i> 机构名称</label>
+					<input type="text" name="name" class="am-radius" placeholder="请输入机构名称" minlength="2" maxlength="50" data-validation-message="机构名称格式不正确" required />
+				</div>
+
+				<div class="am-form-group">
+					<label><i class="am-icon-globe"></i> 域名/标识符</label>
+					<div class="am-input-group">
+						<input type="text" name="domain" class="am-radius" placeholder="输入英文标识，如 myschool" pattern="^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]$" minlength="2" maxlength="50" data-validation-message="只允许字母、数字和连字符" required />
+						<span class="am-input-group-label">.schoolcms.com</span>
+					</div>
+					<div class="am-text-xs am-text-warning domain-tips" style="display:none;">
+						<i class="am-icon-check-circle"></i> <span class="domain-status"></span>
+					</div>
+				</div>
+
+				<div class="am-form-group">
+					<label><i class="am-icon-user"></i> 联系人</label>
+					<input type="text" name="username" class="am-radius" placeholder="请输入联系人姓名" minlength="2" maxlength="20" data-validation-message="联系人格式不正确" required />
+				</div>
+
+				<div class="am-form-group">
+					<label><i class="am-icon-mobile"></i> 手机号码</label>
+					<input type="text" name="mobile" class="am-radius" placeholder="{{:L('common_mobile_name')}}" pattern="{{:L('common_regex_mobile')}}" data-validation-message="{{:L('common_mobile_format_error')}}" required />
+				</div>
+
+				<div class="am-form-group">
+					<label><i class="am-icon-lock"></i> 登录密码</label>
+					<div class="am-input-group">
+						<input type="password" name="pwd" class="am-radius" placeholder="{{:L('user_reg_pwd_text')}}" pattern="{{:L('common_regex_pwd')}}" data-validation-message="{{:L('user_reg_pwd_format')}}" required />
+						<span class="am-input-group-btn">
+							<button class="am-btn am-btn-default am-radius am-icon-eye eye-submit" type="button"></button>
+						</span>
+					</div>
+					<div class="am-text-xs am-text-muted">6-18位，包含字母和数字</div>
+				</div>
+
+				<div class="am-form-group am-margin-top-lg">
+					<button type="submit" class="am-btn am-btn-primary am-radius am-btn-block btn-loading-example" data-am-loading="{loadingText: '{{:L('common_form_loading_tips')}}'}">
+						<i class="am-icon-check"></i> 立即注册
+					</button>
+				</div>
+
+				<div class="am-text-center am-margin-top-sm">
+					<a href="{{:U('Home/User/LoginInfo')}}" class="fs-12">
+						已有账号？立即登录
+					</a>
+				</div>
+			</fieldset>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- conntent end  -->
+
+<script type="text/javascript">
+// 域名/标识符实时校验
+$(function(){
+	var domain_input = $('input[name="domain"]');
+	var domain_tips = $('.domain-tips');
+	var domain_status = $('.domain-status');
+	var check_timer = null;
+
+	domain_input.on('input', function(){
+		var domain = $(this).val();
+		if(domain.length < 2)
+		{
+			domain_tips.hide();
+			return;
+		}
+
+		clearTimeout(check_timer);
+		check_timer = setTimeout(function(){
+			$.ajax({
+				url : "{{:U('Home/Register/CheckDomain')}}",
+				type : 'POST',
+				dataType : 'json',
+				data : {domain : domain},
+				success : function(result)
+				{
+					domain_tips.show();
+					if(result.code == 0)
+					{
+						domain_status.text(result.msg);
+						domain_tips.removeClass('am-text-warning').addClass('am-text-success');
+					} else {
+						domain_status.text(result.msg);
+						domain_tips.removeClass('am-text-success').addClass('am-text-warning');
+					}
+				},
+				error : function()
+				{
+					domain_tips.hide();
+				}
+			});
+		}, 500);
+	});
+});
+</script>
+
+<!-- layuot common module start -->
+<include file="Public/CommonModule" />
+<!-- layuot common module end -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

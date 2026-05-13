@@ -1,0 +1,133 @@
+<?php if (!defined('THINK_PATH')) exit(); include dirname(__FILE__) . '/../Public/Header.html'; ?>
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="<?php echo U('Admin/Article/Index'); ?>" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="<?php echo L('article_so_keyword_tips'); ?>" name="keyword" <?php if(isset($param['keyword'])): ?> value="<?php echo $param['keyword']; ?>"<?php endif; ?> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit"><?php echo L('common_operation_query'); ?></button>
+				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
+					<?php echo L('common_more_screening'); ?>
+					<input type="checkbox" name="is_more" value="1" id="is_more" <?php if(isset($param['is_more']) && $param['is_more'] == 1): ?>checked<?php endif; ?> />
+					<i class="am-icon-angle-down"></i>
+				</label>
+
+				<div class="more-where <?php if(!isset($param['is_more']) || $param['is_more'] != 1): ?>none<?php endif; ?>">
+					<select class="am-radius c-p m-t-10 param-where" name="article_class_id">
+						<option value="-1"><?php echo L('article_class_text'); ?></option>
+						<?php foreach($article_class_list as $v): ?>
+							<option value="<?php echo $v['id']; ?>" <?php if(isset($param['article_class_id']) && $param['article_class_id'] == $v['id']): ?>selected<?php endif; ?>><?php echo $v['name']; ?></option>
+						<?php endforeach; ?>
+					</select>
+					<select name="is_enable" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1"><?php echo L('common_view_enable_title'); ?></option>
+						<?php foreach($common_is_enable_list as $v): ?>
+							<option value="<?php echo $v['id']; ?>" <?php if(isset($param['is_enable']) && $param['is_enable'] == $v['id']): ?>selected<?php endif; ?>><?php echo $v['name']; ?></option>
+						<?php endforeach; ?>
+					</select>
+					<div class="param-date param-where m-l-5">
+						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="<?php echo L('common_time_start_name'); ?>" id="time_start" <?php if(isset($param['time_start'])): ?>value="<?php echo $param['time_start']; ?>"<?php endif; ?>/>
+						<span>~</span>
+						<input type="text" readonly="readonly" class="am-radius m-t-10" placeholder="<?php echo L('common_time_end_name'); ?>" name="time_end" id="time_end" <?php if(isset($param['time_end'])): ?>value="<?php echo $param['time_end']; ?>"<?php endif; ?>/>
+					</div>
+				</div>
+			</div>
+        </form>
+        <!-- form end -->
+
+        <!-- operation start -->
+        <div class="am-g m-t-15">
+            <a href="<?php echo U('Admin/Article/SaveInfo'); ?>" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> <?php echo L('common_operation_add'); ?></a>
+            <?php if(!IsMobile()): ?>
+            	<a href="<?php echo $excel_url; ?>" class="am-btn am-btn-success am-btn-xs m-l-10 am-icon-file-excel-o am-radius"> <?php echo L('common_operation_excel_export_name'); ?></a>
+            <?php endif; ?>
+        </div>
+        <!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th><?php echo L('article_title_text'); ?></th>
+					<th class="am-hide-sm-only"><?php echo L('article_class_text'); ?></th>
+					<th class="am-hide-sm-only"><?php echo L('common_view_access_count_text'); ?></th>
+					<th><?php echo L('common_view_state_title'); ?></th>
+					<th class="am-hide-sm-only"><?php echo L('common_create_time_name'); ?></th>
+					<th><?php echo L('common_more_name'); ?></th>
+					<th><?php echo L('common_operation_name'); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if(!empty($list)): ?>
+					<?php foreach($list as $v): ?>
+						<tr id="data-list-<?php echo $v['id']; ?>" <?php if($v['is_enable'] == 0): ?>class="am-active"<?php endif; ?>>
+							<td class="td-title">
+								<a href="<?php echo !empty($v['jump_url']) ? $v['jump_url'] : U('Admin/Article/SaveInfo', array('id'=>$v['id'])); ?>" target="_blank" title="<?php echo $v['title']; ?>" <?php if(!empty($v['title_color'])): ?> style="color:<?php echo $v['title_color']; ?>;" <?php endif; ?>><?php echo $v['title']; ?></a>
+							</td>
+							<td class="am-hide-sm-only"><?php echo $v['article_class_name']; ?></td>
+							<td class="am-hide-sm-only"><?php echo $v['access_count']; ?></td>
+							<td>
+								<a href="javascript:;" class="am-icon-btn am-icon-check submit-state <?php if($v['is_enable'] == 1): ?>am-success<?php else: ?>am-default<?php endif; ?>" data-url="<?php echo U('Admin/Article/StateUpdate'); ?>" data-id="<?php echo $v['id']; ?>" data-state="<?php echo $v['is_enable']; ?>"></a>
+							</td>
+							<td class="am-hide-sm-only"><?php echo $v['add_time']; ?></td>
+							<td>
+								<span class="am-icon-caret-down c-p" data-am-modal="{target: '#my-popup<?php echo $v['id']; ?>'}"> <?php echo L('common_see_more_name'); ?></span>
+								<div class="am-popup am-radius" id="my-popup<?php echo $v['id']; ?>">
+									<div class="am-popup-inner">
+										<div class="am-popup-hd">
+											<h4 class="am-popup-title"><?php echo L('common_detail_content'); ?></h4>
+											<span data-am-modal-close class="am-close">&times;</span>
+										</div>
+										<div class="am-popup-bd">
+											<dl class="dl-content">
+												<dt><?php echo L('article_title_text'); ?></dt>
+												<dd><?php echo $v['title']; ?></dd>
+
+												<dt><?php echo L('article_class_text'); ?></dt>
+												<dd><?php echo $v['article_class_name']; ?></dd>
+
+												<dt><?php echo L('common_view_access_count_text'); ?></dt>
+												<dd><?php echo $v['access_count']; ?></dd>
+
+												<dt><?php echo L('common_view_enable_title'); ?></dt>
+												<dd><?php echo $v['is_enable_text']; ?></dd>
+
+												<dt><?php echo L('common_create_time_name'); ?></dt>
+												<dd><?php echo $v['add_time']; ?></dd>
+
+												<dt><?php echo L('common_upd_time_name'); ?></dt>
+												<dd><?php echo $v['upd_time']; ?></dd>
+											</dl>
+										</div>
+									</div>
+								</div>
+							</td>
+							<td class="view-operation">
+								<a href="<?php echo U('Admin/Article/SaveInfo', array('id'=>$v['id'])); ?>">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '<?php echo L('common_operation_edit'); ?>', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="<?php echo U('Admin/Article/Delete'); ?>" data-am-popover="{content: '<?php echo L('common_operation_delete'); ?>', trigger: 'hover focus'}" data-id="<?php echo $v['id']; ?>"></button>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				<?php else: ?>
+					<tr><td colspan="10" class="table-no"><?php echo L('common_not_data_tips'); ?></td></tr>
+				<?php endif; ?>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<?php if(!empty($list)): ?>
+			<?php echo $page_html; ?>
+		<?php endif; ?>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end -->
+
+<!-- footer start -->
+<?php include dirname(__FILE__) . '/../Public/Footer.html'; ?>
+<!-- footer end -->

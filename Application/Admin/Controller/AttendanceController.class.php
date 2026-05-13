@@ -8,6 +8,14 @@ use Think\Controller;
 class AttendanceController extends Controller {
     
     /**
+     * 初始化 - 租户校区过滤
+     */
+    public function _initialize() {
+        parent::_initialize();
+        GetTenantCampusId();
+    }
+    
+    /**
      * 考勤记录列表（页面 / JSON API）
      */
     public function index() {
@@ -21,6 +29,7 @@ class AttendanceController extends Controller {
             $end_date = I('end_date', '');
             
             $where = [];
+            $where['a.campus_id'] = $_SESSION['campus_id'];
             if ($student_id) $where['a.student_id'] = $student_id;
             if ($start_date) $where['a.attend_date'] = ['>=', $start_date];
             if ($end_date) $where['a.attend_date'] = ['<=', $end_date];
@@ -70,6 +79,7 @@ class AttendanceController extends Controller {
             'student_id' => $student_id,
             'schedule_id' => $schedule_id,
             'course_id' => $course_id,
+            'campus_id' => $_SESSION['campus_id'],
             'attend_date' => date('Y-m-d'),
             'status' => $status,
             'hours' => $status == 1 ? $hours : 0,
@@ -78,6 +88,7 @@ class AttendanceController extends Controller {
         ];
         
         $exist = M('attendance')->where([
+            'campus_id'=>$_SESSION['campus_id'],
             'student_id'=>$student_id, 
             'attend_date'=>date('Y-m-d'),
             'schedule_id'=>$schedule_id
@@ -103,7 +114,7 @@ class AttendanceController extends Controller {
         $phone = I('phone', '');
         $schedule_id = I('schedule_id', 0, 'intval');
         
-        $student = M('student')->where(['my_mobile'=>$phone])->find();
+        $student = M('student')->where(['campus_id'=>$_SESSION['campus_id'], 'my_mobile'=>$phone])->find();
         if (!$student) {
             $this->ajaxReturn(['code'=>0, 'msg'=>'学员不存在']);
         }
@@ -159,13 +170,15 @@ class AttendanceController extends Controller {
         
         $sql = "SELECT status, COUNT(*) as cnt, SUM(hours) as hours 
                 FROM sc_attendance 
-                WHERE attend_date BETWEEN '{$start_date}' AND '{$end_date}' 
+                WHERE campus_id = {$_SESSION['campus_id']}
+                AND attend_date BETWEEN '{$start_date}' AND '{$end_date}' 
                 GROUP BY status";
         $status_stats = M()->query($sql);
         
         $sql = "SELECT attend_date, COUNT(*) as cnt, SUM(hours) as hours 
                 FROM sc_attendance 
-                WHERE attend_date BETWEEN '{$start_date}' AND '{$end_date}' 
+                WHERE campus_id = {$_SESSION['campus_id']}
+                AND attend_date BETWEEN '{$start_date}' AND '{$end_date}' 
                 GROUP BY attend_date 
                 ORDER BY attend_date";
         $daily_stats = M()->query($sql);

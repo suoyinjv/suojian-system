@@ -146,6 +146,13 @@ class ArticleController extends CommonController
 	{
 		$where = array();
 
+		// 多租户 - 校区过滤
+		$campus_id = $this->tenant_campus_id;
+		if($campus_id > 0)
+		{
+			$where['campus_id'] = $campus_id;
+		}
+
 		// 模糊
 		if(!empty($_REQUEST['keyword']))
 		{
@@ -194,7 +201,13 @@ class ArticleController extends CommonController
 		{
 			$data = array();
 		} else {
-			$data = M('Article')->find(I('id'));
+			// 多租户 - 校区过滤
+			$where = array('id'=>I('id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+			$data = M('Article')->where($where)->find();
 			if(!empty($data['content']))
 			{
 				// 静态资源地址处理
@@ -206,8 +219,9 @@ class ArticleController extends CommonController
 		// 是否启用
 		$this->assign('common_is_enable_list', L('common_is_enable_list'));
 
-		// 文章分类
-		$this->assign('article_class_list', M('ArticleClass')->field(array('id', 'name'))->where(array('is_enable'=>1))->select());
+		// 文章分类（多租户过滤）
+		$campus_filter = $this->tenant_campus_id > 0 ? ['campus_id'=>$this->tenant_campus_id] : [];
+		$this->assign('article_class_list', M('ArticleClass')->where(array_merge(['is_enable'=>1], $campus_filter))->field(array('id', 'name'))->select());
 
 		$this->display('SaveInfo');
 	}
@@ -257,6 +271,7 @@ class ArticleController extends CommonController
 			$m->add_time	=	time();
 			$m->upd_time	=	time();
 			$m->title 		=	I('title');
+			$m->campus_id	=	$this->tenant_campus_id;
 			
 			// 静态资源地址处理
 			$m->content 	=	ContentStaticReplace($m->content, 'add');
@@ -305,8 +320,15 @@ class ArticleController extends CommonController
 			$m->image 		=	serialize($temp_image);
 			$m->image_count	=	count($temp_image);
 
+			// 多租户 - 校区过滤
+			$where = array('id'=>I('id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+
 			// 数据更新
-			if($m->where(array('id'=>I('id')))->save())
+			if($m->where($where)->save())
 			{
 				$this->ajaxReturn(L('common_operation_edit_success'));
 			} else {
@@ -355,8 +377,15 @@ class ArticleController extends CommonController
 		// 删除数据
 		if(!empty($_POST['id']))
 		{
+			// 多租户 - 校区过滤
+			$where = array('id'=>I('id'));
+			if($this->tenant_campus_id > 0)
+			{
+				$where['campus_id'] = $this->tenant_campus_id;
+			}
+
 			// 更新
-			if(M('Article')->delete(I('id')))
+			if(M('Article')->where($where)->delete())
 			{
 				$this->ajaxReturn(L('common_operation_delete_success'));
 			} else {
@@ -382,8 +411,15 @@ class ArticleController extends CommonController
 			$this->ajaxReturn(L('common_param_error'), -1);
 		}
 
+		// 多租户 - 校区过滤
+		$where = array('id'=>I('id'));
+		if($this->tenant_campus_id > 0)
+		{
+			$where['campus_id'] = $this->tenant_campus_id;
+		}
+
 		// 数据更新
-		if(M('Article')->where(array('id'=>I('id')))->save(array('is_enable'=>I('state'))))
+		if(M('Article')->where($where)->save(array('is_enable'=>I('state'))))
 		{
 			$this->ajaxReturn(L('common_operation_edit_success'));
 		} else {

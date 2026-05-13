@@ -23,6 +23,11 @@
 						<tr>
 							<th>ID</th>
 							<th>校区名称</th>
+							<th>站点名称</th>
+							<th>子域名</th>
+							<th>主题色</th>
+							<th>备案号</th>
+							<th>到期时间</th>
 							<th>编码</th>
 							<th>地址</th>
 							<th>电话</th>
@@ -39,6 +44,11 @@
 						<tr>
 							<td><?php echo $vo['id']; ?></td>
 							<td><?php echo $vo['name']; ?></td>
+							<td><?php echo $vo['site_name'] ?: '-'; ?></td>
+							<td><?php echo $vo['domain'] ?: '-'; ?></td>
+							<td><?php if($vo['theme_color']): ?><span style="display:inline-block;width:20px;height:20px;background:<?php echo $vo['theme_color']; ?>;border:1px solid #ccc;border-radius:3px;vertical-align:middle;"></span> <?php echo $vo['theme_color']; ?><?php else: ?>-<?php endif; ?></td>
+							<td><?php echo $vo['icp'] ?: '-'; ?></td>
+							<td><?php echo $vo['expire_date']; ?></td>
 							<td><?php echo $vo['code']; ?></td>
 							<td><?php echo $vo['address']; ?></td>
 							<td><?php echo $vo['phone']; ?></td>
@@ -54,7 +64,7 @@
 							</td>
 						</tr>
 						<?php endforeach; else: ?>
-						<tr><td colspan="11" class="am-text-center">暂无校区数据</td></tr>
+						<tr><td colspan="16" class="am-text-center">暂无校区数据</td></tr>
 						<?php endif; ?>
 					</tbody>
 				</table>

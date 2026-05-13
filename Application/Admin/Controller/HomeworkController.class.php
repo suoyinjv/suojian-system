@@ -14,6 +14,12 @@ class HomeworkController extends CommonController {
             $where['course_id'] = $course_id;
         }
         
+        // 多租户过滤 - 通过课程关联校区
+        $campus_id = $this->tenant_campus_id;
+        if ($campus_id > 0) {
+            $where['campus_id'] = $campus_id;
+        }
+        
         $count = M('homework')->where($where)->count();
         $list = M('homework')->where($where)
             ->order('id DESC')

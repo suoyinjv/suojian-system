@@ -40,6 +40,10 @@ class TransferController extends CommonController
         $keyword = I('keyword', '', 'trim');
 
         $where = array();
+        // campus_id 过滤
+        if ($this->tenant_campus_id > 0) {
+            $where['t.from_campus_id'] = $this->tenant_campus_id;
+        }
         if ($status >= 0) {
             $where['t.status'] = $status;
         }
@@ -166,6 +170,11 @@ class TransferController extends CommonController
 
         $id = I('id', 0, 'intval');
         $transfer = M('transfer')->find($id);
+        
+        // 验证校区权限
+        if ($this->tenant_campus_id > 0 && $transfer && $transfer['from_campus_id'] != $this->tenant_campus_id) {
+            $this->error('无权操作此转校记录');
+        }
 
         // 获取学员信息
         $student = M('student')->find($transfer['student_id']);
@@ -196,7 +205,12 @@ class TransferController extends CommonController
     {
         $student_id = I('student_id', 0, 'intval');
 
-        $list = M('transfer')->where(array('student_id' => $student_id))
+        // 按校区过滤学员
+        $student_where = array('student_id' => $student_id);
+        if ($this->tenant_campus_id > 0) {
+            $student_where['from_campus_id'] = $this->tenant_campus_id;
+        }
+        $list = M('transfer')->where($student_where)
             ->order('id DESC')
             ->select();
 
@@ -226,9 +240,10 @@ class TransferController extends CommonController
     public function add()
     {
         if (IS_POST) {
+            // 添加转校记录时自动设置源校区
             $data = array(
                 'student_id' => I('post.student_id', 0, 'intval'),
-                'from_campus_id' => I('post.from_campus_id', 0, 'intval'),
+                'from_campus_id' => $this->tenant_campus_id > 0 ? $this->tenant_campus_id : I('post.from_campus_id', 0, 'intval'),
                 'to_campus_id' => I('post.to_campus_id', 0, 'intval'),
                 'from_class_id' => I('post.from_class_id', 0, 'intval'),
                 'to_class_id' => I('post.to_class_id', 0, 'intval'),
@@ -253,8 +268,12 @@ class TransferController extends CommonController
             }
         }
 
-        // 获取学员列表
-        $studentList = M('student')->field('id, username, number, my_mobile, campus_id')->select();
+        // 获取学员列表（按校区过滤）
+        $student_where = array();
+        if ($this->tenant_campus_id > 0) {
+            $student_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $studentList = M('student')->field('id, username, number, my_mobile, campus_id')->where($student_where)->select();
         // 获取校区列表
         $campuses = M('campus')->field('id, name')->select();
 
@@ -297,6 +316,11 @@ class TransferController extends CommonController
         $id = I('id', 0, 'intval');
 
         $transfer = M('transfer')->find($id);
+        // 验证校区权限
+        if ($this->tenant_campus_id > 0 && $transfer && $transfer['from_campus_id'] != $this->tenant_campus_id) {
+            $this->ajaxReturn(array('code' => 0, 'msg' => '无权操作此转校记录'));
+        }
+        
         if (empty($transfer)) {
             $this->ajaxReturn(array('code' => 0, 'msg' => '转校记录不存在'));
         }

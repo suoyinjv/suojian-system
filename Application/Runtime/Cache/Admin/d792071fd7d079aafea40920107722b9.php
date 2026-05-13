@@ -1,0 +1,60 @@
+<?php if (!defined('THINK_PATH')) exit(); include dirname(__FILE__) . '/../Public/Header.html'; ?>
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="<?php echo U('Admin/Article/Save'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Article/Index'); ?>">
+			<legend>
+				<span class="fs-16">
+					<?php if(empty($data['id'])): ?>
+						<?php echo L('article_add_name'); ?>
+					<?php else: ?>
+						<?php echo L('article_edit_name'); ?>
+					<?php endif; ?>
+				</span>
+				<a href="<?php echo U('Admin/Article/Index'); ?>" class="fr fs-14 m-t-5 am-icon-mail-reply"> <?php echo L('common_operation_back'); ?></a>
+			</legend>
+			<div class="am-form-group">
+				<label><?php echo L('article_title_text'); ?></label>
+				<div class="am-input-group am-input-group-sm">
+					<input type="hidden" name="title_color" value="<?php if(!empty($data['title_color'])): echo $data['title_color']; endif; ?>" />
+					<input type="text" name="title" placeholder="<?php echo L('article_title_text'); ?>" minlength="3" maxlength="60" data-validation-message="<?php echo L('article_title_format'); ?>" class="am-form-field am-radius" <?php if(!empty($data)): ?> value="<?php echo $data['title']; ?>" <?php endif; ?> <?php if(!empty($data['title_color'])): ?> style="color:<?php echo $data['title_color']; ?>;" <?php endif; ?> required />
+					<span class="am-input-group-btn">
+						<button class="am-btn am-btn-default colorpicker-submit" type="button">
+							<img src="/Public/Common/Images/colorpicker.png" />
+						</button>
+					</span>
+				</div>
+			</div>
+			<div class="am-form-group">
+				<label><?php echo L('article_class_text'); ?></label>
+				<select name="article_class_id" class="am-radius c-p" data-validation-message="<?php echo L('article_class_format'); ?>" required>
+					<option value=""><?php echo L('common_select_can_choose'); ?></option>
+					<?php foreach($article_class_list as $v): ?>
+						<option value="<?php echo $v['id']; ?>" <?php if(isset($data['article_class_id']) && $data['article_class_id'] == $v['id']): ?>selected<?php endif; ?>><?php echo $v['name']; ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+			<div class="am-form-group">
+				<label><?php echo L('article_jump_url_text'); ?></label>
+				<input type="url" name="jump_url" placeholder="<?php echo L('article_jump_url_text'); ?>" data-validation-message="<?php echo L('article_jump_url_format'); ?>" class="am-radius" <?php if(!empty($data)): ?> value="<?php echo $data['jump_url']; ?>"<?php endif; ?> />
+			</div>
+			<?php include dirname(__FILE__) . '/../Lib/Enable.html'; ?>
+			<div class="am-form-group">
+				<label><?php echo L('article_content_text'); ?><span class="fs-12 fw-100 cr-999"><?php if(IsMobile()): ?>（<?php echo L('article_content_format_mobile'); ?>）<?php else: if(L('article_images_upload_format') != ''): ?>（<?php echo L('article_images_upload_format'); ?>）<?php endif; endif; ?></span></label>
+				<textarea class="am-radius am-validate" name="content" rows="5" minlength="50" maxlength="105000" <?php if(!IsMobile()): ?>id="editor-tag" data-url="<?php echo U('Admin/Ueditor/Index', array('path_type'=>'Article')); ?>" placeholder="<?php echo L('article_content_format'); ?>"<?php else: ?> placeholder="<?php echo L('article_content_format'); echo L('article_content_format_mobile'); ?>"<?php endif; ?> data-validation-message="<?php echo L('article_content_format'); ?>" required><?php if(!empty($data)): echo $data['content']; endif; ?></textarea>
+			</div>
+			<div class="am-form-group">
+				<input type="hidden" name="id" <?php if(!empty($data)): ?> value="<?php echo $data['id']; ?>"<?php endif; ?> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}"><?php echo L('common_operation_save'); ?></button>
+			</div>
+		</form>
+        <!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<?php include dirname(__FILE__) . '/../Public/Footer.html'; ?>
+<!-- footer end -->

@@ -41,6 +41,10 @@ class CheckinController extends CommonController
         $keyword = I('keyword', '', 'trim');
 
         $where = array();
+        // campus_id 过滤
+        if ($this->tenant_campus_id > 0) {
+            $where['campus_id'] = $this->tenant_campus_id;
+        }
         if ($type > 0) {
             $where['type'] = $type;
         }
@@ -126,6 +130,7 @@ class CheckinController extends CommonController
             }
 
             if ($id > 0) {
+                $data['campus_id'] = $this->tenant_campus_id > 0 ? $this->tenant_campus_id : $data['campus_id'];
                 $result = M('checkin_activity')->where(array('id' => $id))->save($data);
                 if ($result !== false) {
                     $this->ajaxReturn(array('code' => 1, 'msg' => '更新成功'));
@@ -133,6 +138,7 @@ class CheckinController extends CommonController
                     $this->ajaxReturn(array('code' => 0, 'msg' => '更新失败'));
                 }
             } else {
+                $data['campus_id'] = $this->tenant_campus_id;
                 $data['create_time'] = time();
                 $id = M('checkin_activity')->add($data);
                 if ($id > 0) {
@@ -148,9 +154,18 @@ class CheckinController extends CommonController
                 $this->assign('info', $info);
             }
 
-            // 获取课程和班级列表
-            $courses = M('course')->field('id, course_name')->select();
-            $classes = M('class')->field('id, class_name')->select();
+            // 获取课程列表（按校区过滤）
+        $course_where = array();
+        if ($this->tenant_campus_id > 0) {
+            $course_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $courses = M('course')->field('id, course_name')->where($course_where)->select();
+        // 获取班级列表（按校区过滤）
+        $class_where = array();
+        if ($this->tenant_campus_id > 0) {
+            $class_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $classes = M('class')->field('id, class_name')->where($class_where)->select();
             $this->assign('courses', $courses);
             $this->assign('classes', $classes);
             $this->display();
@@ -343,6 +358,9 @@ class CheckinController extends CommonController
         $status = I('status', -1, 'intval');
 
         $where = array();
+        if ($this->tenant_campus_id > 0) {
+            $where['cr.campus_id'] = $this->tenant_campus_id;
+        }
         if ($activity_id > 0) {
             $where['cr.activity_id'] = $activity_id;
         }
@@ -377,8 +395,12 @@ class CheckinController extends CommonController
             }
         }
 
-        // 获取活动列表
-        $activities = M('checkin_activity')->field('id, title')->select();
+        // 获取活动列表（按校区过滤）
+        $activity_where = array();
+        if ($this->tenant_campus_id > 0) {
+            $activity_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $activities = M('checkin_activity')->field('id, title')->where($activity_where)->select();
         $this->assign('activities', $activities);
         $this->assign('status_map', $status_map);
         $this->assign('list', $list);
@@ -397,23 +419,37 @@ class CheckinController extends CommonController
     {
         $activity_id = I('activity_id', 0, 'intval');
 
-        // 活动统计
-        $activity = M('checkin_activity')->find($activity_id);
-
+        $stats_where = array('activity_id' => $activity_id);
+        if ($this->tenant_campus_id > 0) {
+            $stats_where['campus_id'] = $this->tenant_campus_id;
+        }
         // 参与人数
-        $total_participants = M('checkin_progress')->where(array('activity_id' => $activity_id))->count();
+        $total_participants = M('checkin_progress')->where($stats_where)->count();
+        $progress_where = $stats_where;
+        $progress_where['status'] = 1;
         // 完成人数
-        $total_completed = M('checkin_progress')->where(array('activity_id' => $activity_id, 'status' => 1))->count();
+        $total_completed = M('checkin_progress')->where($progress_where)->count();
+        unset($progress_where['status']);
+        $progress_where['status'] = 0;
         // 进行中人数
-        $total_ongoing = M('checkin_progress')->where(array('activity_id' => $activity_id, 'status' => 0))->count();
+        $total_ongoing = M('checkin_progress')->where($progress_where)->count();
 
         // 打卡记录总数
-        $total_records = M('checkin_record')->where(array('activity_id' => $activity_id))->count();
+        $record_where = array('activity_id' => $activity_id);
+        if ($this->tenant_campus_id > 0) {
+            $record_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $total_records = M('checkin_record')->where($record_where)->count();
+        $pending_where = array_merge($record_where, array('status' => 0));
         // 待审核数
-        $total_pending = M('checkin_record')->where(array('activity_id' => $activity_id, 'status' => 0))->count();
+        $total_pending = M('checkin_record')->where($pending_where)->count();
 
         // 连续打卡排行
-        $ranking = M('checkin_progress')->where(array('activity_id' => $activity_id))
+        $ranking_where = array('activity_id' => $activity_id);
+        if ($this->tenant_campus_id > 0) {
+            $ranking_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $ranking = M('checkin_progress')->where($ranking_where)
             ->order('continuous_days DESC, total_points DESC')
             ->limit(20)
             ->select();
@@ -421,19 +457,30 @@ class CheckinController extends CommonController
         // 获取学生姓名
         $student_ids = array_filter(array_unique(array_column($ranking, 'student_id')));
         if ($student_ids) {
-            $students = M('student')->where(array('id' => array('in', $student_ids)))->getField('id,name', true);
+            $student_where = array('id' => array('in', $student_ids));
+        if ($this->tenant_campus_id > 0) {
+            $student_where['campus_id'] = $this->tenant_campus_id;
+        }
+        $students = M('student')->where($student_where)->getField('id,name', true);
             foreach ($ranking as &$item) {
                 $item['student_name'] = $students[$item['student_id']] ?: '';
             }
         }
 
+        $daily_where = array('activity_id' => $activity_id);
+        if ($this->tenant_campus_id > 0) {
+            $daily_where['campus_id'] = $this->tenant_campus_id;
+        }
         // 每日打卡趋势
         $daily_trend = M('checkin_record')
             ->field("FROM_UNIXTIME(checkin_time, '%Y-%m-%d') as date, COUNT(*) as count")
-            ->where(array('activity_id' => $activity_id))
+            ->where($daily_where)
             ->group("FROM_UNIXTIME(checkin_time, '%Y-%m-%d')")
             ->order('date ASC')
             ->select();
+
+        // 活动统计
+        $activity = M('checkin_activity')->find($activity_id);
 
         $this->assign('activity', $activity);
         $this->assign('stats', array(
