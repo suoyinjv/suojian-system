@@ -55,8 +55,9 @@ class IndexController extends CommonController
 				'mysql_ver'		=>	isset($mysql_ver[0]['ver']) ? $mysql_ver[0]['ver'] : '',
 				'os_ver'		=>	PHP_OS,
 				'host'			=>	isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : '',
-				'ver'			=>	L('common_application_name').' '.L('common_application_ver'),
-			);
+			'ver'			=>	L('common_application_name').' '.L('common_application_ver'),
+			'finish_date'	=>	'2026-05-13',
+		);
 		$this->assign('data', $data);
 		$this->display('Init');
 	}
