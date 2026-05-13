@@ -1,7 +1,1789 @@
-.am-gallery-item-bottom { background: #f7f7f7; padding: 0px 8px 5px 8px; }
-.am-gallery-desc * { font-size: 12px; }
-.am-gallery-item:hover { border: 1px solid #f60; }
-.theme-active { border: 3px solid #5eb95e !important; }
-#form-theme-tips {  }
-input[name="theme"] { width: 105px !important; height: 32px; }
-.am-gallery-title .submit-delete { color:#C13932 !important; }
+/* ===================================================================
+ * SchoolCMS 管理后台现代化主题 Theme.css
+ * 风格: 类 Ant Design Pro / Laravel Nova
+ * 说明: 此文件覆盖并增强 AmazeUI 默认样式，不修改任何已有CSS
+ * =================================================================== */
+
+/* -------------------------------------------------------------------
+ * 1. 全局变量与基础样式
+ * ------------------------------------------------------------------- */
+:root {
+  --primary: #4e73df;
+  --primary-dark: #2e59d9;
+  --primary-light: #6f8ff0;
+  --success: #1cc88a;
+  --success-dark: #17a673;
+  --info: #36b9cc;
+  --info-dark: #2c9faf;
+  --warning: #f6c23e;
+  --warning-dark: #dda20a;
+  --danger: #e74a3b;
+  --danger-dark: #be3a2e;
+  --secondary: #858796;
+  --dark: #5a5c69;
+  --light: #f8f9fc;
+  --body-bg: #f0f2f5;
+  --sidebar-bg: #f8f9fa;
+  --sidebar-hover: #eaecf4;
+  --sidebar-active: #4e73df;
+  --sidebar-text: #3a3b45;
+  --header-bg-start: #1a1a2e;
+  --header-bg-end: #16213e;
+  --header-text: #ffffff;
+  --card-bg: #ffffff;
+  --card-radius: 8px;
+  --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  --card-shadow-hover: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+  --border-color: #e3e6f0;
+  --input-border: #d1d3e2;
+  --input-focus-border: #4e73df;
+  --input-focus-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --sidebar-width: 200px;
+  --header-height: 56px;
+  --transition-base: all 0.2s ease-in-out;
+  --transition-fade: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 全局字体与背景 */
+html, body {
+  font-family: var(--font-family);
+  background-color: var(--body-bg);
+  color: #5a5c69;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  outline: none !important;
+}
+
+a {
+  color: var(--primary);
+  transition: var(--transition-base);
+}
+a:hover {
+  color: var(--primary-dark);
+  text-decoration: none;
+}
+
+/* -------------------------------------------------------------------
+ * 2. 顶部导航栏 Header
+ * ------------------------------------------------------------------- */
+.admin-header,
+header.am-topbar-inverse,
+header {
+  background: linear-gradient(135deg, var(--header-bg-start), var(--header-bg-end)) !important;
+  min-height: var(--header-height) !important;
+  height: var(--header-height);
+  border: none !important;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
+
+.admin-header .am-topbar-brand {
+  height: var(--header-height);
+  line-height: var(--header-height);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}
+
+.admin-header .am-topbar-brand h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  line-height: var(--header-height);
+}
+
+.admin-header .am-topbar-brand h2 .admin-site-vice-name {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.admin-header .tpl-header-list-link {
+  color: rgba(255,255,255,0.8) !important;
+  font-size: 13px;
+  padding: 0 15px;
+  height: var(--header-height);
+  line-height: var(--header-height);
+  display: inline-block;
+  transition: var(--transition-base);
+}
+
+.admin-header .tpl-header-list-link:hover,
+.admin-header .tpl-header-list-link:focus {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1) !important;
+}
+
+.admin-header .admin-header-list .am-dropdown {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+}
+
+.admin-header .admin-header-list .am-dropdown > a {
+  height: var(--header-height);
+  line-height: var(--header-height);
+}
+
+.admin-header .am-dropdown-content {
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  margin-top: 8px;
+  min-width: 160px;
+  padding: 8px 0;
+}
+
+.admin-header .am-dropdown-content li a {
+  padding: 8px 20px;
+  color: #5a5c69;
+  font-size: 14px;
+  transition: var(--transition-base);
+}
+
+.admin-header .am-dropdown-content li a:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--primary);
+}
+
+.admin-header .am-dropdown-content li a i {
+  margin-right: 8px;
+  width: 18px;
+  text-align: center;
+  color: var(--secondary);
+}
+
+/* 顶部加载进度条动画 */
+.admin-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-light), var(--primary), var(--primary-light), transparent);
+  background-size: 200% 100%;
+  animation: header-progress 3s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes header-progress {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 移动端汉堡菜单 */
+.admin-header .header-nav-submit {
+  background: rgba(255,255,255,0.15) !important;
+  border: none !important;
+  margin-top: 10px;
+  color: #fff !important;
+}
+
+/* -------------------------------------------------------------------
+ * 3. 左侧边栏 Sidebar / Menu
+ * ------------------------------------------------------------------- */
+.admin-sidebar {
+  width: var(--sidebar-width) !important;
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  z-index: 1020;
+  padding-top: 10px;
+}
+
+.admin .admin-sidebar {
+  width: var(--sidebar-width) !important;
+}
+
+.admin-offcanvas-bar {
+  background: transparent !important;
+  width: 100% !important;
+}
+
+.admin-offcanvas-bar:after {
+  display: none !important;
+}
+
+.admin-sidebar-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-sidebar-list li {
+  border: none !important;
+}
+
+.admin-sidebar-list li a {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px !important;
+  color: var(--sidebar-text) !important;
+  font-size: 14px;
+  font-weight: 400;
+  border-left: 3px solid transparent;
+  transition: var(--transition-base);
+  text-decoration: none;
+}
+
+.admin-sidebar-list li a:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary) !important;
+  border-left-color: var(--primary);
+}
+
+.admin-sidebar-list li a.common-left-menu-active {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary) !important;
+  border-left-color: var(--primary) !important;
+  font-weight: 600;
+}
+
+.admin-sidebar-list li a span {
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 侧栏子菜单 */
+.admin-sidebar-sub {
+  background: #f0f1f4 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.admin-sidebar-sub li {
+  border: none !important;
+}
+
+.admin-sidebar-sub li:first-child {
+  border-top: none !important;
+}
+
+.admin-sidebar-sub li a {
+  padding: 8px 20px 8px 47px !important;
+  font-size: 13px !important;
+  border-left: 3px solid transparent !important;
+}
+
+.admin-sidebar-sub li a:hover {
+  border-left-color: var(--primary) !important;
+}
+
+/* 侧栏父菜单指示器 */
+.admin-parent > a .am-icon-angle-down {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--secondary);
+  transition: transform 0.3s ease;
+}
+
+.admin-parent > a[aria-expanded="true"] .am-icon-angle-down {
+  transform: rotate(0deg) !important;
+}
+
+.admin-parent > a .am-icon-angle-down.left-menu-more-ico-rotate {
+  transform: rotate(-90deg);
+}
+
+/* -------------------------------------------------------------------
+ * 4. 内容区域
+ * ------------------------------------------------------------------- */
+.admin {
+  padding-top: var(--header-height) !important;
+  background: var(--body-bg);
+  display: flex;
+  min-height: 100vh;
+}
+
+.content-right {
+  margin-left: var(--sidebar-width) !important;
+  flex: 1;
+  overflow: auto;
+  min-height: 100vh;
+  padding-bottom: 30px;
+}
+
+.content-right .content {
+  padding: 20px 25px !important;
+}
+
+/* -------------------------------------------------------------------
+ * 5. 卡片 Card 风格
+ * ------------------------------------------------------------------- */
+.card-box {
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: none;
+  transition: var(--transition-fade);
+}
+
+.card-box:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* AmazeUI panel 转为卡片 */
+.am-panel {
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: none;
+  margin-bottom: 20px;
+}
+
+.am-panel-default {
+  border-color: var(--border-color);
+}
+
+.am-panel-hd {
+  background: #f8f9fc;
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+}
+
+.am-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.am-panel-bd {
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+}
+
+.am-panel-success .am-panel-hd { background: var(--success); color: #fff; border: none; }
+.am-panel-success .am-panel-title { color: #fff; }
+.am-panel-primary .am-panel-hd { background: var(--primary); color: #fff; border: none; }
+.am-panel-primary .am-panel-title { color: #fff; }
+.am-panel-warning .am-panel-hd { background: var(--warning); color: #fff; border: none; }
+.am-panel-warning .am-panel-title { color: #fff; }
+.am-panel-danger .am-panel-hd { background: var(--danger); color: #fff; border: none; }
+.am-panel-danger .am-panel-title { color: #fff; }
+.am-panel-secondary .am-panel-hd { background: var(--secondary); color: #fff; border: none; }
+.am-panel-secondary .am-panel-title { color: #fff; }
+
+/* -------------------------------------------------------------------
+ * 6. 表格 Table
+ * ------------------------------------------------------------------- */
+.am-table {
+  background: #fff;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 20px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.am-table thead tr {
+  background: #f8f9fc;
+}
+
+.am-table thead th {
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--secondary);
+  padding: 12px 15px;
+  white-space: nowrap;
+}
+
+.am-table tbody tr {
+  transition: var(--transition-base);
+}
+
+.am-table tbody tr:hover {
+  background-color: rgba(78, 115, 223, 0.04) !important;
+}
+
+.am-table tbody td {
+  padding: 12px 15px;
+  vertical-align: middle;
+  border-top: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.am-table-striped > tbody > tr:nth-child(even) {
+  background-color: #f8f9fc;
+}
+
+.am-table-striped > tbody > tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.am-table-bordered {
+  border: 1px solid var(--border-color);
+}
+
+.am-table > thead > tr > td.active,
+.am-table > tbody > tr > td.active,
+.am-table > tfoot > tr > td.active,
+.am-table > thead > tr > th.active,
+.am-table > tbody > tr > th.active,
+.am-table > tfoot > tr > th.active,
+.am-table > thead > tr.active > td,
+.am-table > tbody > tr.active > td,
+.am-table > tfoot > tr.active > td,
+.am-table > thead > tr.active > th,
+.am-table > tbody > tr.active > th,
+.am-table > tfoot > tr.active > th {
+  background-color: rgba(78, 115, 223, 0.08);
+}
+
+/* 表格外层包裹 */
+.table-responsive {
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+/* -------------------------------------------------------------------
+ * 7. 按钮 Button
+ * ------------------------------------------------------------------- */
+.am-btn {
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  transition: var(--transition-fade);
+  border: none;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.am-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.am-btn:active {
+  transform: translateY(0);
+}
+
+.am-btn-xs {
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.am-btn-sm {
+  padding: 6px 14px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.am-btn-lg {
+  padding: 10px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.am-btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+}
+.am-btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  color: #fff;
+}
+
+.am-btn-secondary {
+  background: linear-gradient(135deg, var(--secondary), #6b6d7d);
+  color: #fff;
+}
+.am-btn-secondary:hover {
+  background: linear-gradient(135deg, #6b6d7d, var(--secondary));
+  color: #fff;
+}
+
+.am-btn-success {
+  background: linear-gradient(135deg, var(--success), var(--success-dark));
+  color: #fff;
+}
+.am-btn-success:hover {
+  background: linear-gradient(135deg, var(--success-dark), var(--success));
+  color: #fff;
+}
+
+.am-btn-warning {
+  background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+  color: #fff;
+}
+.am-btn-warning:hover {
+  background: linear-gradient(135deg, var(--warning-dark), var(--warning));
+  color: #fff;
+}
+
+.am-btn-danger {
+  background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+  color: #fff;
+}
+.am-btn-danger:hover {
+  background: linear-gradient(135deg, var(--danger-dark), var(--danger));
+  color: #fff;
+}
+
+.am-btn-default {
+  background: #fff;
+  color: var(--dark);
+  border: 1px solid var(--border-color);
+}
+.am-btn-default:hover {
+  background: #f8f9fc;
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.am-btn-link {
+  background: transparent;
+  color: var(--primary);
+  box-shadow: none;
+}
+.am-btn-link:hover {
+  background: rgba(78, 115, 223, 0.06);
+  color: var(--primary-dark);
+}
+
+/* 按钮加载状态 */
+.am-btn .am-icon-spinner {
+  animation: btn-spin 1s linear infinite;
+}
+
+@keyframes btn-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------------------------
+ * 8. 表单 Form
+ * ------------------------------------------------------------------- */
+.am-form-group {
+  margin-bottom: 18px;
+}
+
+.am-form-group label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--dark);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.am-form-group:hover > label {
+  color: var(--primary) !important;
+}
+
+.am-form-field,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea.form-control,
+select,
+.am-form select,
+.am-form textarea,
+.am-form input[type="text"],
+.am-form input[type="password"],
+.am-form input[type="datetime"],
+.am-form input[type="datetime-local"],
+.am-form input[type="date"],
+.am-form input[type="month"],
+.am-form input[type="time"],
+.am-form input[type="week"],
+.am-form input[type="number"],
+.am-form input[type="email"],
+.am-form input[type="url"],
+.am-form input[type="search"],
+.am-form input[type="tel"],
+.am-form input[type="color"] {
+  border: 1px solid var(--input-border) !important;
+  border-radius: 6px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  height: auto !important;
+  min-height: 38px;
+  color: #6e707e;
+  background-color: #fff;
+  transition: var(--transition-fade);
+  box-shadow: none !important;
+  width: 100%;
+  max-width: 100%;
+}
+
+.am-form-field:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus,
+.am-form select:focus,
+.am-form textarea:focus,
+.am-form input[type="text"]:focus {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+  outline: none !important;
+}
+
+input[type="text"]:hover,
+select:hover,
+textarea:hover,
+.chosen-choices:hover,
+.chosen-single:hover,
+input[type="text"][readonly]:hover {
+  border: 1px solid var(--input-focus-border) !important;
+  box-shadow: 0 0 0 0.1rem rgba(78, 115, 223, 0.15) !important;
+}
+
+/* 搜索框 */
+.form-keyword,
+.am-form input.form-keyword {
+  width: auto !important;
+  display: inline-block !important;
+  min-width: 200px;
+}
+
+/* 表单验证状态 */
+.has-success .form-control,
+.has-success .am-form-field {
+  border-color: var(--success) !important;
+}
+.has-success .form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(28, 200, 138, 0.25) !important;
+}
+
+.has-warning .form-control,
+.has-warning .am-form-field {
+  border-color: var(--warning) !important;
+}
+.has-warning .form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(246, 194, 62, 0.25) !important;
+}
+
+.has-error .form-control,
+.has-error .am-form-field {
+  border-color: var(--danger) !important;
+}
+.has-error .form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(231, 74, 59, 0.25) !important;
+}
+
+/* Chosen 下拉选择器 */
+.chosen-container {
+  width: 100% !important;
+}
+
+.chosen-choices,
+.chosen-single {
+  border-radius: 6px !important;
+  border-color: var(--input-border) !important;
+  background: #fff !important;
+  padding: 4px 8px !important;
+  min-height: 38px;
+  box-shadow: none !important;
+}
+
+.chosen-choices li.search-field input[type="text"] {
+  height: 28px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.chosen-container-active .chosen-choices,
+.chosen-container-active .chosen-single {
+  border-color: var(--input-focus-border) !important;
+  box-shadow: var(--input-focus-shadow) !important;
+}
+
+.chosen-container .chosen-drop {
+  border-radius: 0 0 6px 6px;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.chosen-container .chosen-results li.highlighted {
+  background-color: var(--primary) !important;
+}
+
+/* AmazeUI Switch */
+.am-switch {
+  border-radius: 20px !important;
+}
+
+/* -------------------------------------------------------------------
+ * 9. 分页 Pagination
+ * ------------------------------------------------------------------- */
+.pagination {
+  display: flex;
+  gap: 4px;
+  margin: 20px 0;
+}
+
+.pagination > li {
+  display: inline-block;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px !important;
+  padding: 7px 14px !important;
+  color: var(--dark) !important;
+  font-size: 13px;
+  background: #fff;
+  transition: var(--transition-base);
+  margin-left: 0 !important;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  transform: scale(1.05);
+  z-index: 1;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
+}
+
+.pagination > .disabled > a,
+.pagination > .disabled > span {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-split li {
+  margin-left: 4px;
+}
+
+.pagination-split li:first-child {
+  margin-left: 0;
+}
+
+.pagination-split li a {
+  border-radius: 6px !important;
+}
+
+/* -------------------------------------------------------------------
+ * 10. 标签 / 徽章 Label / Badge
+ * ------------------------------------------------------------------- */
+.label,
+.badge {
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.25em 0.6em;
+  font-size: 11px;
+}
+
+.label-default,
+.badge-default {
+  background: var(--secondary);
+}
+
+.label-primary,
+.badge-primary {
+  background: var(--primary);
+}
+
+.label-success,
+.badge-success {
+  background: var(--success);
+}
+
+.label-info,
+.badge-info {
+  background: var(--info);
+}
+
+.label-warning,
+.badge-warning {
+  background: var(--warning);
+  color: #333;
+}
+
+.label-danger,
+.badge-danger {
+  background: var(--danger);
+}
+
+.label-purple,
+.badge-purple {
+  background: #5b69bc;
+}
+
+.label-pink,
+.badge-pink {
+  background: #ff8acc;
+}
+
+.label-inverse,
+.badge-inverse {
+  background: var(--dark);
+}
+
+/* -------------------------------------------------------------------
+ * 11. 导航标签 Nav Tabs / Pills
+ * ------------------------------------------------------------------- */
+.nav-tabs {
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 0;
+}
+
+.nav-tabs > li {
+  margin-bottom: -2px;
+}
+
+.nav-tabs > li > a {
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  color: var(--secondary) !important;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 18px;
+  transition: var(--transition-base);
+  margin-right: 2px;
+}
+
+.nav-tabs > li > a:hover {
+  background: transparent !important;
+  border-bottom-color: var(--primary-light) !important;
+  color: var(--primary) !important;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  border: none !important;
+  border-bottom: 2px solid var(--primary) !important;
+  color: var(--primary) !important;
+  background: transparent !important;
+}
+
+.tab-content {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  padding: 20px;
+}
+
+/* Nav Pills (table-nav) */
+.table-nav,
+.am-nav-pills {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 10px 15px;
+  border: none;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.table-nav li,
+.am-nav-pills li {
+  margin: 0;
+}
+
+.table-nav li a,
+.am-nav-pills li a {
+  border-radius: 6px !important;
+  padding: 6px 16px !important;
+  font-size: 13px;
+  color: var(--dark) !important;
+  font-weight: 500;
+  transition: var(--transition-base);
+  border: none !important;
+}
+
+.table-nav li a:hover,
+.am-nav-pills li a:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--primary) !important;
+}
+
+.table-nav li.am-active a,
+.am-nav-pills li.am-active a,
+.table-nav li.active a,
+.am-nav-pills li.active a {
+  background: var(--primary) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(78, 115, 223, 0.3);
+}
+
+/* -------------------------------------------------------------------
+ * 12. 面包屑 Breadcrumb
+ * ------------------------------------------------------------------- */
+.breadcrumb {
+  background: transparent;
+  padding: 8px 0;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.breadcrumb > li + li::before {
+  color: var(--secondary);
+  content: "›";
+  font-size: 16px;
+  padding: 0 8px;
+  line-height: 1;
+}
+
+.breadcrumb > li a {
+  color: var(--primary);
+}
+
+.breadcrumb > .active {
+  color: var(--secondary);
+}
+
+/* -------------------------------------------------------------------
+ * 13. 弹窗 / 模态框 Modal
+ * ------------------------------------------------------------------- */
+.am-modal-dialog {
+  border-radius: var(--card-radius) !important;
+  box-shadow: 0 0.5rem 2rem rgba(0,0,0,0.2);
+  border: none;
+}
+
+.am-modal-dialog .am-modal-hd {
+  border-bottom: 1px solid var(--border-color);
+  padding: 18px 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.am-modal-dialog .am-modal-bd {
+  padding: 20px;
+  font-size: 14px;
+  color: #5a5c69;
+}
+
+.am-modal-dialog .am-modal-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 12px 20px;
+}
+
+.am-modal-btn {
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  transition: var(--transition-base);
+}
+
+.am-modal-btn[data-am-modal-confirm] {
+  background: var(--primary);
+  color: #fff;
+}
+
+.am-modal-btn[data-am-modal-cancel] {
+  background: #fff;
+  color: var(--dark);
+  border: 1px solid var(--border-color);
+}
+
+/* -------------------------------------------------------------------
+ * 14. 警告 / 提示 Alert
+ * ------------------------------------------------------------------- */
+.am-alert {
+  border-radius: 6px;
+  border: none;
+  padding: 14px 18px;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+.am-alert-success {
+  background-color: rgba(28, 200, 138, 0.12);
+  color: #0f8f62;
+}
+
+.am-alert-info,
+.am-alert-secondary {
+  background-color: rgba(54, 185, 204, 0.12);
+  color: #1e7e8a;
+}
+
+.am-alert-warning {
+  background-color: rgba(246, 194, 62, 0.12);
+  color: #b8860b;
+}
+
+.am-alert-danger {
+  background-color: rgba(231, 74, 59, 0.12);
+  color: #b83a2c;
+}
+
+.am-alert-tips {
+  background-color: #ffffe9 !important;
+  border: 1px solid #faebd2 !important;
+  color: #8b6914;
+}
+
+/* -------------------------------------------------------------------
+ * 15. 进度条 Progress
+ * ------------------------------------------------------------------- */
+.am-progress {
+  border-radius: 20px;
+  height: 10px;
+  background: #eaecf4;
+}
+
+.am-progress-bar {
+  border-radius: 20px;
+  background: var(--primary);
+}
+
+/* -------------------------------------------------------------------
+ * 16. 列表 List Group
+ * ------------------------------------------------------------------- */
+.am-list {
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+.am-list > li {
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 16px;
+  transition: var(--transition-base);
+}
+
+.am-list > li:last-child {
+  border-bottom: none;
+}
+
+.am-list > li:hover {
+  background-color: #f8f9fc;
+}
+
+.am-list > li > a {
+  color: var(--dark);
+}
+
+/* -------------------------------------------------------------------
+ * 17. 弹出框 Popover / Dropdown
+ * ------------------------------------------------------------------- */
+.dropdown-menu {
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+  padding: 8px 0;
+}
+
+.dropdown-menu > li > a {
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--dark);
+  transition: var(--transition-base);
+}
+
+.dropdown-menu > li > a:hover {
+  background-color: var(--sidebar-hover);
+  color: var(--primary);
+}
+
+/* -------------------------------------------------------------------
+ * 18. 排列布局 Grid helpers
+ * ------------------------------------------------------------------- */
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.page-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.header-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+/* 为空提示 */
+.table-no {
+  text-align: center;
+  padding: 40px 20px !important;
+  background: #fff !important;
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+/* DL 详情列表 */
+.dl-content dt {
+  float: left;
+  width: 120px;
+  padding: 10px 10px 10px 0;
+  font-weight: 600;
+  color: var(--dark);
+  overflow: hidden;
+  clear: left;
+}
+
+.dl-content dd {
+  border-bottom: 1px solid var(--border-color);
+  padding: 10px 0 10px 120px;
+  min-height: 38px;
+  color: #5a5c69;
+}
+
+.dl-content dt,
+.dl-content dd {
+  line-height: 24px;
+  font-size: 13px;
+}
+
+/* 搜索区域 */
+.view-list .am-g {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 操作按钮区域 */
+.view-list + .am-g,
+.view-list ~ .am-g {
+  margin-top: 15px;
+}
+
+/* 图标按钮 */
+.am-icon-btn {
+  border-radius: 6px;
+  transition: var(--transition-base);
+}
+
+.am-icon-btn:hover {
+  transform: scale(1.1);
+}
+
+/* -------------------------------------------------------------------
+ * 19. 滚动条美化
+ * ------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d3e2;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b7b9cc;
+}
+
+/* -------------------------------------------------------------------
+ * 20. 响应式适配
+ * ------------------------------------------------------------------- */
+@media only screen and (max-width: 1024px) {
+  .content-right .content {
+    padding: 15px !important;
+  }
+}
+
+/* 平板端 */
+@media only screen and (max-width: 768px) {
+  .admin-sidebar {
+    width: 240px !important;
+  }
+  .content-right {
+    margin-left: 0 !important;
+  }
+  .admin-sidebar-list li a {
+    padding: 12px 18px !important;
+  }
+  .am-table {
+    font-size: 12px;
+  }
+}
+
+/* 手机端 */
+@media only screen and (max-width: 640px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+  .admin-sidebar {
+    width: 260px !important;
+  }
+  .admin-sidebar.am-active {
+    z-index: 1600;
+  }
+  .content-right .content {
+    padding: 10px !important;
+  }
+  .form-keyword,
+  .am-form input.form-keyword {
+    width: 100% !important;
+    min-width: auto;
+    margin-bottom: 8px;
+  }
+  view-list .am-g {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .am-table {
+    font-size: 11px;
+  }
+  .am-table thead th,
+  .am-table tbody td {
+    padding: 8px 10px;
+  }
+  .am-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+}
+
+/* -------------------------------------------------------------------
+ * 21. AmazeUI 特定覆盖增强
+ * ------------------------------------------------------------------- */
+/* 列表新闻头 */
+.am-list-news-hd {
+  background: #f8f9fc !important;
+  padding: 12px 16px !important;
+  color: var(--dark) !important;
+  font-weight: 600;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Offcanvas Bar 移动端 */
+.am-offcanvas-bar {
+  background: var(--sidebar-bg) !important;
+}
+
+.am-offcanvas-bar:after {
+  background: rgba(0,0,0,0.1) !important;
+}
+
+/* 登录页面 */
+.account-pages {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.wrapper-page .logo {
+  color: #fff !important;
+  font-size: 38px;
+  font-weight: 700;
+}
+
+.account-pages .panel-body {
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: 30px;
+}
+
+/* 友情链接 */
+.my-link legend {
+  background: transparent;
+  color: var(--dark);
+}
+
+/* 上传组件 */
+input[name="excel"],
+input[name="theme"],
+input[name="home_site_logo_img"] {
+  width: auto !important;
+  height: auto !important;
+  min-height: 32px;
+}
+
+/* 树形表格 */
+#tree tr:hover .submit {
+  display: block !important;
+}
+
+/* 提示消息渐变动画 */
+#common-prompt {
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* 分页的父容器 */
+.page-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+
+/* 预览卡片 */
+#form-img-logo {
+  max-width: 180px;
+  max-height: 38px;
+}
+
+/* 表单分组内的行 */
+.form-horizontal .form-group {
+  margin-bottom: 18px;
+}
+
+/* -------------------------------------------------------------------
+ * 22. 额外动画效果
+ * ------------------------------------------------------------------- */
+/* 淡入动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content-right .content > * {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* 导航标签切换 */
+.am-tabs-d2 .am-tabs-nav {
+  background: #fff;
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  box-shadow: var(--card-shadow);
+  padding: 10px 15px 0;
+}
+
+/* -------------------------------------------------------------------
+ * 23. 打印样式
+ * ------------------------------------------------------------------- */
+@media print {
+  .admin-sidebar,
+  .admin-header,
+  .common-nav-bar {
+    display: none !important;
+  }
+  .content-right {
+    margin-left: 0 !important;
+  }
+  .content-right .content {
+    padding: 0 !important;
+  }
+}
+
+/* -------------------------------------------------------------------
+ * 24. 模块特定样式覆盖
+ * ------------------------------------------------------------------- */
+
+/* 权限树列表 */
+.tree-list li {
+  list-style-type: none;
+  padding-left: 5px !important;
+  border-bottom: 1px dashed #e8edf2 !important;
+  background: #fafbfc !important;
+  padding: 8px 5px !important;
+  transition: var(--transition-base);
+}
+.tree-list li:hover {
+  background: #f0f4ff !important;
+}
+.tree-list li label {
+  display: inline;
+  font-weight: 400;
+  cursor: pointer;
+}
+.tree-list i {
+  width: 10px;
+}
+.list-find {
+  margin: 0 0 5px 35px;
+}
+.list-find li {
+  line-height: 26px;
+  background: #f4f8ff !important;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 2px 0;
+}
+.list-find span {
+  font-weight: normal;
+}
+.list-submit, .find-submit {
+  display: none;
+}
+.tree-list li:hover .list-submit,
+.list-find li:hover .find-submit {
+  display: block !important;
+}
+
+/* 布局编辑器 */
+.layout-view {
+  border: 2px dashed #d1d3e2;
+  border-radius: 6px;
+  margin: 0 0 10px 0;
+  padding: 10px;
+  background: #fafbfc;
+}
+.layout-view-drag {
+  background-color: #fff !important;
+  border: 3px dashed var(--primary) !important;
+}
+.layout-view-hidden {
+  border: 3px dashed var(--danger) !important;
+  opacity: 0.8;
+}
+.layout-view-hidden > div:first-child {
+  background: #fdeeee !important;
+}
+.layout-list {
+  padding: 5px;
+}
+.layout-content-submit {
+  text-align: right;
+  background: #f8f9fc;
+  padding: 10px;
+  border-radius: 0 0 6px 6px;
+}
+.drag-submit {
+  background: #e8ecf1 !important;
+  cursor: move !important;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+/* 角色权限 */
+.power-text {
+  width: 45%;
+}
+.role-list .submit-delete {
+  display: inline-block;
+}
+
+/* 分数字段 */
+.form-fraction-list input {
+  width: 16% !important;
+  display: initial !important;
+}
+
+/* 更多筛选 */
+.more-submit:hover {
+  color: var(--primary) !important;
+}
+.more-submit input {
+  display: none;
+}
+
+/* 课程/用户等通用列表查询 */
+.view-list select,
+.view-list input,
+.admin-list select,
+.admin-list input {
+  width: auto !important;
+  display: inline-block !important;
+  min-width: 140px;
+}
+
+/* 操作列 */
+.view-operation button {
+  margin: 2px;
+}
+
+/* 文章td标题 */
+.td-title {
+  width: 30%;
+}
+
+/* 颜色选择器 */
+.colorpicker-submit img {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+
+/* 确认删除弹窗 */
+#common-confirm-delete .am-modal-bd {
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 15px;
+}
+
+/* 提示弹窗 */
+#common-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin-top: 0;
+  padding: 8px 5px;
+  font-size: 14px;
+  z-index: 10000;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  font-weight: 500;
+}
+
+/* popup 弹出层 */
+.am-popup-hd {
+  background: #f8f9fc;
+  border-bottom: 1px solid var(--border-color);
+}
+.am-popup-hd .am-popup-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--dark);
+}
+.am-popup-bd {
+  background: #fff;
+  padding: 15px;
+}
+
+/* Layout 模块弹出 */
+#layout-module-win .am-popup-hd {
+  border-bottom: 0;
+  background: #f8f9fc;
+  height: 40px;
+}
+#layout-module-win .am-popup-hd .am-popup-title {
+  line-height: 40px;
+}
+#layout-module-win .am-popup-inner {
+  padding-top: 40px;
+}
+#layout-module-win .am-popup-bd {
+  padding: 0;
+}
+.layout-module-win-content {
+  margin: 0;
+}
+.layout-module-win-content .am-tabs-bd {
+  border: 0;
+}
+.layout-module-win-content label[class*="am-u-"] {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* iframe 内容 */
+#ifcontent {
+  border: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* 画廊画廊 */
+.am-gallery-item {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: var(--transition-fade);
+}
+.am-gallery-item:hover {
+  border-color: var(--primary) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+.am-gallery-item-bottom {
+  background: #f8f9fc;
+  padding: 8px 12px;
+}
+.am-gallery-desc * {
+  font-size: 12px;
+}
+.am-gallery-title .submit-delete {
+  color: var(--danger) !important;
+}
+.theme-active {
+  border: 3px solid var(--success) !important;
+}
+
+/* excel导入 */
+.excel-form input[name="excel"],
+#layout-import-win input[name="file"] {
+  width: auto !important;
+  height: auto !important;
+  min-height: 32px;
+}
+
+/* 管理列表标题 */
+.list-title {
+  margin: 0 !important;
+  line-height: 30px;
+  background: #f8f9fc;
+  padding: 8px 15px;
+  border-radius: 6px 6px 0 0;
+  font-weight: 600;
+  color: var(--dark);
+  border-bottom: 1px solid var(--border-color);
+}
+.dl-content {
+  margin-top: 0 !important;
+}
+
+/* 内联选择/输入区域 */
+.param-where, .param-date input {
+  display: initial !important;
+}
+@media only screen and (min-width: 641px) {
+  .param-where {
+    width: 32% !important;
+    float: left;
+    margin-left: 8px;
+  }
+  .param-date input {
+    width: 45% !important;
+  }
+  .param-where:nth-child(1),
+  .param-where:nth-child(4) {
+    margin-left: 0 !important;
+  }
+}
+@media only screen and (max-width: 641px) {
+  .param-where {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  .param-date input {
+    width: 47% !important;
+  }
+}
+
+/* =============  后台登录页增强 ============= */
+.account-pages {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+.wrapper-page .logo {
+  color: #fff !important;
+  font-size: 38px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  letter-spacing: 2px;
+}
+.wrapper-page {
+  margin: auto;
+  position: relative;
+  width: 420px;
+  max-width: 90%;
+}
+.wrapper-page .card-box {
+  padding: 30px;
+  background: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+}
+.wrapper-page .panel-body {
+  padding: 0;
+}
+.wrapper-page .am-form-group {
+  margin-bottom: 20px;
+}
+.wrapper-page .am-btn {
+  width: 100%;
+  padding: 10px 18px;
+  font-size: 15px;
+}
+.wrapper-page .text-muted {
+  color: var(--secondary);
+  font-size: 13px;
+}
+.wrapper-page .text-muted:hover {
+  color: var(--primary);
+}
+
+/* 数据概览卡片 */
+.data-variable {
+  margin-top: 3px;
+}
+
+/* 总结：让各个面板内的表格保持卡片风格 */
+.am-panel-bd .am-table {
+  box-shadow: none;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+.am-panel-bd .am-table thead th:first-child {
+  border-top-left-radius: 0;
+}
+.am-panel-bd .am-table thead th:last-child {
+  border-top-right-radius: 0;
+}
+
+/* 内联按钮组 */
+.am-btn-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+.am-btn-toolbar .am-btn {
+  margin: 0;
+}
+
+/* form view-save 视图保存表单 */
+.view-save .am-form-group {
+  width: 75%;
+}
+@media only screen and (max-width: 641px) {
+  .view-save .am-form-group {
+    width: 100%;
+  }
+}
