@@ -47,6 +47,24 @@ for t in $TABLES; do
 done
 echo "  共添加 $COUNT 张表"
 
+# 3.5 数据迁移: 把旧数据分配到第一个校区(campus_id=1)，避免新加campus_id后数据消失
+echo "[3.5/6] 迁移旧数据到默认校区..."
+BUSINESS_TABLES=$(mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -N -e "
+  SELECT TABLE_NAME FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA='$DB_NAME'
+    AND COLUMN_NAME='campus_id'
+    AND TABLE_NAME LIKE 'sc_%'
+  ORDER BY TABLE_NAME;
+" 2>/dev/null)
+for t in $BUSINESS_TABLES; do
+  # 跳过系统表
+  case "$t" in
+    sc_admin|sc_campus|sc_campus_config|sc_config|sc_power|sc_role|sc_role_power|sc_region|sc_article_class|sc_custom_view|sc_layout|sc_layout_module|sc_interval|sc_subject|sc_week|sc_semester) continue ;;
+  esac
+  affected=$(mysql -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -N -e "UPDATE $t SET campus_id=1 WHERE campus_id=0 OR campus_id IS NULL; SELECT ROW_COUNT();" 2>/dev/null)
+  [ "$affected" -gt 0 ] && echo "  $t: $affected 条"
+done
+
 # 3. 确保扩展字段存在
 echo "[3/6] 确保 sc_campus 扩展字段..."
 for col_sql in \
