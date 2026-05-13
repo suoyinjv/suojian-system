@@ -1,5 +1,4 @@
 <?php if (!defined('THINK_PATH')) exit();?>
-
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
@@ -61,10 +60,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach($$list as $$vo): ?>
+						<?php if(!empty($list)): foreach($list as $vo): ?>
 						<tr>
 							<td><?php echo $vo['id']; ?></td>
-							<td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+							<td><?php echo $vo['send_time'] ? date('Y-m-d H:i', $vo['send_time']) : '-'; ?></td>
 							<td>
 								<p class="am-margin-0"><?php echo $vo['receiver_name']; ?></p>
 								<p class="am-text-xs am-text-muted am-margin-0"><?php echo $vo['receiver_phone']; ?></p>
@@ -92,20 +91,13 @@
 								<a href="javascript:;" onclick="viewDetail(<?php echo $vo['id']; ?>)" class="am-btn am-btn-xs am-btn-secondary am-radius"><?php echo L('message_log_view'); ?></a>
 							</td>
 						</tr>
-						<?php endforeach; ?>
-						<?php if(!isset($$list)): ?>
+						<?php endforeach; else: ?>
 						<tr>
 							<td colspan="7" class="am-text-center"><?php echo L('message_log_empty'); ?></td>
 						</tr>
 						<?php endif; ?>
 					</tbody>
 				</table>
-
-				<div class="am-cf">
-					<div class="am-fr">
-						<?php echo $page; ?>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>

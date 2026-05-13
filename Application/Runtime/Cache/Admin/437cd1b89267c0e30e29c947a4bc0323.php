@@ -12,10 +12,10 @@
         <div class="am-g am-margin-top am-padding-top-sm">
             <div class="am-u-sm-12">
                 <div class="am-btn-toolbar am-fr">
-                    <a href="/admin.php/Admin/Transfer/transfer" class="am-btn am-btn-primary am-radius">
+                    <a href="<?php echo U('Admin/Transfer/transfer'); ?>" class="am-btn am-btn-primary am-radius">
                         <i class="am-icon-plus"></i> 发起转校
                     </a>
-                    <a href="/admin.php/Admin/Transfer/getHistory" class="am-btn am-btn-success am-radius">
+                    <a href="<?php echo U('Admin/Transfer/getHistory'); ?>" class="am-btn am-btn-success am-radius">
                         <i class="am-icon-history"></i> 转校历史
                     </a>
                 </div>
@@ -25,15 +25,15 @@
             <div class="am-u-sm-12">
                 <form method="get" class="am-form-inline am-margin-bottom">
                     <div class="am-form-group">
-                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名/学号" value="{:I('keyword')}">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名/学号" value="<?php echo I('keyword'); ?>">
                     </div>
                     <div class="am-form-group">
                         <select name="status" class="am-form-field">
                             <option value="">全部状态</option>
-                            <option value="0" <?php if(I('status') == '0'): ?>selected<?php endif; ?>>待审核</option>
-                            <option value="1" <?php if(I('status') == '1'): ?>selected<?php endif; ?>>已通过</option>
-                            <option value="2" <?php if(I('status') == '2'): ?>selected<?php endif; ?>>已拒绝</option>
-                            <option value="3" <?php if(I('status') == '3'): ?>selected<?php endif; ?>>已取消</option>
+                            <option value="0" <?php if(I('status') === '0'): ?>selected<?php endif; ?>>待审核</option>
+                            <option value="1" <?php if(I('status') === '1'): ?>selected<?php endif; ?>>已通过</option>
+                            <option value="2" <?php if(I('status') === '2'): ?>selected<?php endif; ?>>已拒绝</option>
+                            <option value="3" <?php if(I('status') === '3'): ?>selected<?php endif; ?>>已取消</option>
                         </select>
                     </div>
                     <button type="submit" class="am-btn am-btn-default"><i class="am-icon-search"></i> 搜索</button>
@@ -53,32 +53,39 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if(is_array($list)): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><tr>
-                            <td class="am-text-center">{$vo.id}</td>
-                            <td>{$vo.student_name}</td>
-                            <td>{$vo.from_campus}</td>
-                            <td>{$vo.to_campus}</td>
-                            <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                        <?php if(!empty($list)): foreach($list as $vo): ?>
+                        <tr>
+                            <td class="am-text-center"><?php echo $vo['id']; ?></td>
+                            <td><?php echo $vo['student_name']; ?></td>
+                            <td><?php echo $vo['from_campus_name']; ?></td>
+                            <td><?php echo $vo['to_campus_name']; ?></td>
+                            <td><?php echo $vo['apply_time'] ? date('Y-m-d H:i', $vo['apply_time']) : '-'; ?></td>
                             <td>
-                                <?php if($vo['status'] == 0): ?><span class="am-badge am-badge-warning">待审核</span>
+                                <?php if($vo['status'] == 0): ?>
+                                    <span class="am-badge am-badge-warning">待审核</span>
                                 <?php elseif($vo['status'] == 1): ?>
                                     <span class="am-badge am-badge-success">已通过</span>
                                 <?php elseif($vo['status'] == 2): ?>
                                     <span class="am-badge am-badge-danger">已拒绝</span>
                                 <?php elseif($vo['status'] == 3): ?>
-                                    <span class="am-badge am-badge-default">已取消</span><?php endif; ?>
+                                    <span class="am-badge am-badge-default">已取消</span>
+                                <?php endif; ?>
                             </td>
                             <td>
-                                <a href="/admin.php/Admin/Transfer/add/id/{$vo.id}" class="am-btn am-btn-xs am-btn-primary am-radius"><i class="am-icon-eye"></i> 查看</a>
-                                <?php if($vo['status'] == 0): ?><a href="javascript:;" onclick="cancelConfirm('/admin.php/Admin/Transfer/cancel/id/{$vo.id}')" class="am-btn am-btn-xs am-btn-warning am-radius"><i class="am-icon-close"></i> 取消</a><?php endif; ?>
+                                <a href="<?php echo U('Admin/Transfer/transfer', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-primary am-radius"><i class="am-icon-eye"></i> 查看</a>
+                                <?php if($vo['status'] == 0): ?>
+                                    <a href="javascript:;" onclick="cancelConfirm('<?php echo U('Admin/Transfer/cancel', array('id'=>$vo['id'])); ?>')" class="am-btn am-btn-xs am-btn-warning am-radius"><i class="am-icon-close"></i> 取消</a>
+                                <?php endif; ?>
                             </td>
-                        </tr><?php endforeach; endif; else: echo "" ;endif; ?>
-                        <?php if(!isset($list)): ?><tr>
+                        </tr>
+                        <?php endforeach; else: ?>
+                        <tr>
                             <td colspan="7" class="am-text-center am-text-danger">暂无转校申请</td>
-                        </tr><?php endif; ?>
+                        </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
-                {$page}
+                <?php echo $page; ?>
             </div>
         </div>
     </div>

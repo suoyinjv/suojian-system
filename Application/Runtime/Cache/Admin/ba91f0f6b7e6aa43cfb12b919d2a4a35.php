@@ -67,63 +67,75 @@
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<!-- table nav start -->
-		
-		<!-- table nav end -->
-
 		<div class="am-panel am-panel-primary">
 			<div class="am-panel-hd">
-				<h3 class="am-panel-title"><i class="am-icon-university"></i> 校区管理</h3>
+				<h3 class="am-panel-title">
+					<i class="am-icon-plus"></i> <?php if(isset($data['id'])): echo L('message_edit_template'); else: echo L('message_add_template'); endif; ?>
+				</h3>
 			</div>
 			<div class="am-panel-bd">
-				<div class="am-btn-toolbar">
-					<a href="<?php echo U('Admin/Campus/add'); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-plus"></i> 添加校区</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 跨校学员</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 跨校老师</a>
-				</div>
-				<table class="am-table am-table-bordered am-table-striped am-table-hover">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>校区名称</th>
-							<th>编码</th>
-							<th>地址</th>
-							<th>电话</th>
-							<th>负责人</th>
-							<th>学员数</th>
-							<th>老师数</th>
-							<th>班级数</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if(!empty($list)): foreach($list as $vo): ?>
-						<tr>
-							<td><?php echo $vo['id']; ?></td>
-							<td><?php echo $vo['name']; ?></td>
-							<td><?php echo $vo['code']; ?></td>
-							<td><?php echo $vo['address']; ?></td>
-							<td><?php echo $vo['phone']; ?></td>
-							<td><?php echo $vo['principal']; ?></td>
-							<td><span class="am-badge am-badge-primary"><?php echo $vo['student_count']; ?></span></td>
-							<td><span class="am-badge am-badge-success"><?php echo $vo['teacher_count']; ?></span></td>
-							<td><span class="am-badge am-badge-warning"><?php echo $vo['class_count']; ?></span></td>
-							<td><?php echo $vo['status_text']; ?></td>
-							<td>
-								<a href="<?php echo U('Admin/Campus/overview', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius">数据</a>
-								<a href="<?php echo U('Admin/Campus/edit', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-primary am-radius">编辑</a>
-								<a href="javascript:;" onclick="deleteConfirm('<?php echo U('Admin/Campus/delete', array('id'=>$vo['id'])); ?>')" class="am-btn am-btn-xs am-btn-danger am-radius">删除</a>
-							</td>
-						</tr>
-						<?php endforeach; else: ?>
-						<tr><td colspan="11" class="am-text-center">暂无校区数据</td></tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
-				<div class="am-cf">
-					<div class="am-fr"><?php echo $page; ?></div>
-				</div>
+				<form class="am-form am-form-horizontal form-validation" action="<?php echo U('Admin/Message/saveTemplate'); ?>" method="POST">
+
+					<?php if(isset($data['id'])): ?>
+					<input type="hidden" name="id" value="<?php echo $data['id']; ?>" />
+					<?php endif; ?>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_name'); ?> <span class="am-text-danger">*</span></label>
+						<div class="am-u-sm-8">
+							<input type="text" name="name" class="am-form-field am-radius" placeholder="<?php echo L('message_template_name_tips'); ?>" value="<?php if(isset($data)): echo $data['name']; endif; ?>" required />
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_type'); ?></label>
+						<div class="am-u-sm-8">
+							<select name="type" class="am-form-field am-radius">
+								<option value="1" <?php if(isset($data) and $data['type'] == 1): ?>selected<?php endif; ?>><?php echo L('message_type_notice'); ?></option>
+								<option value="2" <?php if(isset($data) and $data['type'] == 2): ?>selected<?php endif; ?>><?php echo L('message_type_marketing'); ?></option>
+								<option value="3" <?php if(isset($data) and $data['type'] == 3): ?>selected<?php endif; ?>><?php echo L('message_type_reminder'); ?></option>
+								<option value="4" <?php if(isset($data) and $data['type'] == 4): ?>selected<?php endif; ?>><?php echo L('message_type_other'); ?></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_send_channel'); ?></label>
+						<div class="am-u-sm-8">
+							<select name="channel" class="am-form-field am-radius">
+								<option value="sms" <?php if(isset($data) and $data['channel'] == 'sms'): ?>selected<?php endif; ?>><?php echo L('message_channel_sms'); ?></option>
+								<option value="weixin" <?php if(isset($data) and $data['channel'] == 'weixin'): ?>selected<?php endif; ?>><?php echo L('message_channel_weixin'); ?></option>
+								<option value="both" <?php if(isset($data) and $data['channel'] == 'both'): ?>selected<?php endif; ?>><?php echo L('message_channel_both'); ?></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_content'); ?> <span class="am-text-danger">*</span></label>
+						<div class="am-u-sm-8">
+							<textarea name="content" class="am-form-field am-radius" rows="6" placeholder="<?php echo L('message_template_content_tips'); ?>" required><?php if(isset($data)): echo $data['content']; endif; ?></textarea>
+							<p class="am-text-sm am-text-muted"><?php echo L('message_template_var_tips'); ?>: {name}, {course}, {date}, {time}, {class}</p>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_status'); ?></label>
+						<div class="am-u-sm-8">
+							<select name="status" class="am-form-field am-radius">
+								<option value="1" <?php if(!isset($data) or $data['status'] == 1): ?>selected<?php endif; ?>><?php echo L('common_status_on'); ?></option>
+								<option value="0" <?php if(isset($data) and $data['status'] == 0): ?>selected<?php endif; ?>><?php echo L('common_status_off'); ?></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<div class="am-u-sm-8 am-u-sm-offset-2">
+							<button type="submit" class="am-btn am-btn-primary am-radius"><i class="am-icon-check"></i> <?php echo L('common_operation_save'); ?></button>
+							<a href="<?php echo U('Admin/Message/template'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> <?php echo L('common_operation_cancel'); ?></a>
+						</div>
+					</div>
+
+				</form>
 			</div>
 		</div>
 	</div>
@@ -171,11 +183,3 @@
 
 <!-- 控制器 -->
 <?php if(!empty($module_js)): ?><script type="text/javascript" src="/Public/<?php echo ($module_js); ?>"></script><?php endif; ?>
-
-<script>
-function deleteConfirm(url) {
-	if(confirm('确定要删除吗？')) {
-		location.href = url;
-	}
-}
-</script>

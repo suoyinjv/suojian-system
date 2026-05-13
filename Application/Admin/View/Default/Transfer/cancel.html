@@ -17,45 +17,47 @@
                         </div>
                         <div class="am-modal-bd">
                             <h4>确定要取消转校申请吗？</h4>
-                            <if condition="$info">
+                            <?php if(!empty($info)): ?>
                             <div class="am-alert am-alert-secondary am-margin-top">
                                 <p><strong>转校信息：</strong></p>
-                                <p>学员：{$info.student_name}</p>
-                                <p>原校区：{$info.from_campus}</p>
-                                <p>目标校区：{$info.to_campus}</p>
-                                <p>申请时间：{$info.create_time|date='Y-m-d H:i',###}</p>
+                                <p>学员：<?php echo isset($info['student_name']) ? $info['student_name'] : '-'; ?></p>
+                                <p>原校区：<?php echo isset($info['from_campus']) ? $info['from_campus'] : '-'; ?></p>
+                                <p>目标校区：<?php echo isset($info['to_campus']) ? $info['to_campus'] : '-'; ?></p>
+                                <p>申请时间：<?php echo isset($info['create_time']) && $info['create_time'] ? date('Y-m-d H:i', $info['create_time']) : '-'; ?></p>
                                 <p>状态：
-                                    <if condition="$info['status'] == 0">
+                                    <?php if(isset($info['status']) && $info['status'] == 0): ?>
                                         <span class="am-badge am-badge-warning">待审核</span>
-                                    <else/>
-                                        <span class="am-badge am-badge-default">{$info.status_text}</span>
-                                    </if>
+                                    <?php else: ?>
+                                        <span class="am-badge am-badge-default"><?php echo isset($info['status_text']) ? $info['status_text'] : '-'; ?></span>
+                                    <?php endif; ?>
                                 </p>
                             </div>
                             <p class="am-text-warning am-margin-top"><i class="am-icon-info-circle"></i> 取消后如需再次申请，请重新发起。</p>
-                            </if>
+                            <?php endif; ?>
                         </div>
                         <div class="am-modal-footer">
-                            <span class="am-modal-btn" data-am-modal-confirm onclick="location.href='__CONTROLLER__/cancel/id/{$info.id}'">
+                            <?php if(!empty($info)): ?>
+                            <span class="am-modal-btn" data-am-modal-confirm onclick="location.href='<?php echo U('Admin/Transfer/cancel', array('id'=>$info['id'])); ?>'">
                                 <i class="am-icon-check"></i> 确定取消
                             </span>
-                            <span class="am-modal-btn" data-am-modal-cancel onclick="location.href='__CONTROLLER__/index'">
+                            <?php endif; ?>
+                            <span class="am-modal-btn" data-am-modal-cancel onclick="location.href='<?php echo U('Admin/Transfer/index'); ?>'">
                                 <i class="am-icon-close"></i> 返回
                             </span>
                         </div>
                     </div>
                 </div>
 
-                <notpresent name="info">
+                <?php if(empty($info)): ?>
                 <div class="am-alert am-alert-danger">
                     <i class="am-icon-times-circle"></i> 转校申请不存在或已被处理
                 </div>
                 <div class="am-text-center am-margin-top">
-                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default">
+                    <a href="<?php echo U('Admin/Transfer/index'); ?>" class="am-btn am-btn-default">
                         <i class="am-icon-arrow-left"></i> 返回列表
                     </a>
                 </div>
-                </notpresent>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -63,9 +65,9 @@
 <script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
-    <if condition="$info">
+    <?php if(!empty($info)): ?>
     $('#cancelModal').modal('open');
-    </if>
+    <?php endif; ?>
 });
 </script>
 </body>

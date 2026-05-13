@@ -13,6 +13,7 @@
 	<?php if(!empty($module_css)): ?><link rel="stylesheet" type="text/css" href="/Public/<?php echo ($module_css); ?>" /><?php endif; ?>
 </head>
 <body>
+<!-- nav start -->
 <header class="am-topbar am-topbar-inverse admin-header">
 	<div class="am-topbar-brand">
 		<a href="<?php echo U('Admin/Index/Index');?>">
@@ -63,73 +64,48 @@
 		</ul>
 	</div>
 </header>
-
-<!-- right content start  -->
-<div class="content-right">
-	<div class="content">
-		<!-- table nav start -->
+<!-- nav end -->
 		
-		<!-- table nav end -->
-
-		<div class="am-panel am-panel-primary">
-			<div class="am-panel-hd">
-				<h3 class="am-panel-title"><i class="am-icon-university"></i> 校区管理</h3>
-			</div>
-			<div class="am-panel-bd">
-				<div class="am-btn-toolbar">
-					<a href="<?php echo U('Admin/Campus/add'); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-plus"></i> 添加校区</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 跨校学员</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 跨校老师</a>
-				</div>
-				<table class="am-table am-table-bordered am-table-striped am-table-hover">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>校区名称</th>
-							<th>编码</th>
-							<th>地址</th>
-							<th>电话</th>
-							<th>负责人</th>
-							<th>学员数</th>
-							<th>老师数</th>
-							<th>班级数</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if(!empty($list)): foreach($list as $vo): ?>
-						<tr>
-							<td><?php echo $vo['id']; ?></td>
-							<td><?php echo $vo['name']; ?></td>
-							<td><?php echo $vo['code']; ?></td>
-							<td><?php echo $vo['address']; ?></td>
-							<td><?php echo $vo['phone']; ?></td>
-							<td><?php echo $vo['principal']; ?></td>
-							<td><span class="am-badge am-badge-primary"><?php echo $vo['student_count']; ?></span></td>
-							<td><span class="am-badge am-badge-success"><?php echo $vo['teacher_count']; ?></span></td>
-							<td><span class="am-badge am-badge-warning"><?php echo $vo['class_count']; ?></span></td>
-							<td><?php echo $vo['status_text']; ?></td>
-							<td>
-								<a href="<?php echo U('Admin/Campus/overview', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius">数据</a>
-								<a href="<?php echo U('Admin/Campus/edit', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-primary am-radius">编辑</a>
-								<a href="javascript:;" onclick="deleteConfirm('<?php echo U('Admin/Campus/delete', array('id'=>$vo['id'])); ?>')" class="am-btn am-btn-xs am-btn-danger am-radius">删除</a>
-							</td>
-						</tr>
-						<?php endforeach; else: ?>
-						<tr><td colspan="11" class="am-text-center">暂无校区数据</td></tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
-				<div class="am-cf">
-					<div class="am-fr"><?php echo $page; ?></div>
-				</div>
-			</div>
-		</div>
+<!-- content start -->
+<div class="admin">
+	<!-- left menu start -->
+	<div class="admin-sidebar am-offcanvas  am-padding-0" id="admin-offcanvas">
+	<div class="am-offcanvas-bar admin-offcanvas-bar">
+		<ul class="am-list admin-sidebar-list common-left-menu">
+			<li>
+				<a href="javascript:;" data-type="menu" data-url="<?php echo U('Admin/Index/Init');?>" class="common-left-menu-active"><span class="am-icon-home"></span> <?php echo L('common_home_text');?></a>
+			</li>
+			<?php if(is_array($left_menu)): foreach($left_menu as $key=>$v): if(empty($v['item'])): ?><li>
+						<a href="javascript:;" data-type="menu" data-url="<?php echo U('Admin/'.$v['control'].'/'.$v['action']);?>"><?php if(!empty($v['icon'])): ?><span class="<?php echo ($v["icon"]); ?>"></span><?php endif; ?> <?php echo ($v["name"]); ?></a>
+					</li>
+				<?php else: ?>
+					<li class="admin-parent">
+						<a data-type="menu" class="am-cf" data-am-collapse="{target: '#power-menu-<?php echo ($v["id"]); ?>'}">
+							<?php if(!empty($v['icon'])): ?><span class="<?php echo ($v["icon"]); ?>"></span><?php endif; ?> <?php echo ($v["name"]); ?>
+							<i class="am-icon-angle-down am-fr am-margin-right left-menu-more-ico-rotate"></i>
+						</a>
+						<ul class="am-list am-collapse admin-sidebar-sub" id="power-menu-<?php echo ($v["id"]); ?>">
+							<?php if(is_array($v["item"])): foreach($v["item"] as $key=>$vs): ?><li>
+									<a href="javascript:;" data-type="menu" data-url="<?php echo U('Admin/'.$vs['control'].'/'.$vs['action']);?>"><?php if(!empty($vs['icon'])): ?><span class="<?php echo ($vs["icon"]); ?>"></span><?php endif; ?> <?php echo ($vs["name"]); ?></a>
+								</li><?php endforeach; endif; ?>
+						</ul>
+					</li><?php endif; endforeach; endif; ?>
+		</ul>
 	</div>
 </div>
-<!-- right content end  -->
+	<!-- left menu end -->
 
+	<!-- right content start  -->
+	<iframe id="ifcontent" src="<?php echo U('Admin/Index/Init');?>"></iframe>
+	<!-- right content end  -->
+</div>
+<!-- content end -->
+
+<!-- navbar start -->
+<a href="javascript:;" class="am-icon-btn am-icon-th-list am-show-sm-only common-nav-bar" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+<!-- navbar end -->
+		
+<!-- footer start -->
 <!-- commom html start -->
 <!-- delete html start -->
 <div class="am-modal am-modal-confirm" tabindex="-1" id="common-confirm-delete">
@@ -171,11 +147,4 @@
 
 <!-- 控制器 -->
 <?php if(!empty($module_js)): ?><script type="text/javascript" src="/Public/<?php echo ($module_js); ?>"></script><?php endif; ?>
-
-<script>
-function deleteConfirm(url) {
-	if(confirm('确定要删除吗？')) {
-		location.href = url;
-	}
-}
-</script>
+<!-- footer end -->

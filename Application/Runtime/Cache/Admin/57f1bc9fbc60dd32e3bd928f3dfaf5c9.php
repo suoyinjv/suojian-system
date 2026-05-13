@@ -1,5 +1,4 @@
 <?php if (!defined('THINK_PATH')) exit();?>
-
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
@@ -31,7 +30,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach($$list as $$vo): ?>
+						<?php if(!empty($list)): foreach($list as $vo): ?>
 						<tr>
 							<td><?php echo $vo['id']; ?></td>
 							<td><?php echo $vo['name']; ?></td>
@@ -63,26 +62,19 @@
 									<span class="am-badge am-badge-default"><?php echo L('common_status_off'); ?></span>
 								<?php endif; ?>
 							</td>
-							<td>{$vo.create_time|date='Y-m-d',###}</td>
+							<td><?php echo $vo['create_time'] ? date('Y-m-d', $vo['create_time']) : '-'; ?></td>
 							<td>
 								<a href="<?php echo U('Admin/Message/addTemplate?id='.$vo['id']); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius"><?php echo L('common_operation_edit'); ?></a>
 								<a href="<?php echo U('Admin/Message/deleteTemplate?id='.$vo['id']); ?>" class="am-btn am-btn-xs am-btn-danger am-radius" onclick="return confirm('<?php echo L("message_delete_confirm"); ?>')"><?php echo L('common_operation_delete'); ?></a>
 							</td>
 						</tr>
-						<?php endforeach; ?>
-						<?php if(!isset($$list)): ?>
+						<?php endforeach; else: ?>
 						<tr>
 							<td colspan="8" class="am-text-center"><?php echo L('message_template_empty'); ?></td>
 						</tr>
 						<?php endif; ?>
 					</tbody>
 				</table>
-
-				<div class="am-cf">
-					<div class="am-fr">
-						<?php echo $page; ?>
-					</div>
-				</div>
 
 				<hr>
 				<a href="<?php echo U('Admin/Message/Send'); ?>" class="am-btn am-btn-default">

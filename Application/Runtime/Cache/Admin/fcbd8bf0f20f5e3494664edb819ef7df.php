@@ -67,62 +67,104 @@
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<!-- table nav start -->
-		
-		<!-- table nav end -->
-
-		<div class="am-panel am-panel-primary">
-			<div class="am-panel-hd">
-				<h3 class="am-panel-title"><i class="am-icon-university"></i> 校区管理</h3>
-			</div>
-			<div class="am-panel-bd">
-				<div class="am-btn-toolbar">
-					<a href="<?php echo U('Admin/Campus/add'); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-plus"></i> 添加校区</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 跨校学员</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 跨校老师</a>
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<!-- 校区信息 -->
+				<div class="am-panel am-panel-success">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-building"></i> <?php echo $campus['name']; ?> - 数据概览</h3>
+					</div>
+					<div class="am-panel-bd">
+						<p><strong>编码：</strong><?php echo !empty($campus['code']) ? $campus['code'] : '-'; ?></p>
+						<p><strong>地址：</strong><?php echo !empty($campus['address']) ? $campus['address'] : '-'; ?></p>
+						<p><strong>电话：</strong><?php echo !empty($campus['phone']) ? $campus['phone'] : '-'; ?></p>
+						<p><strong>负责人：</strong><?php echo !empty($campus['principal']) ? $campus['principal'] : '-'; ?></p>
+					</div>
 				</div>
-				<table class="am-table am-table-bordered am-table-striped am-table-hover">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>校区名称</th>
-							<th>编码</th>
-							<th>地址</th>
-							<th>电话</th>
-							<th>负责人</th>
-							<th>学员数</th>
-							<th>老师数</th>
-							<th>班级数</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if(!empty($list)): foreach($list as $vo): ?>
-						<tr>
-							<td><?php echo $vo['id']; ?></td>
-							<td><?php echo $vo['name']; ?></td>
-							<td><?php echo $vo['code']; ?></td>
-							<td><?php echo $vo['address']; ?></td>
-							<td><?php echo $vo['phone']; ?></td>
-							<td><?php echo $vo['principal']; ?></td>
-							<td><span class="am-badge am-badge-primary"><?php echo $vo['student_count']; ?></span></td>
-							<td><span class="am-badge am-badge-success"><?php echo $vo['teacher_count']; ?></span></td>
-							<td><span class="am-badge am-badge-warning"><?php echo $vo['class_count']; ?></span></td>
-							<td><?php echo $vo['status_text']; ?></td>
-							<td>
-								<a href="<?php echo U('Admin/Campus/overview', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius">数据</a>
-								<a href="<?php echo U('Admin/Campus/edit', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-primary am-radius">编辑</a>
-								<a href="javascript:;" onclick="deleteConfirm('<?php echo U('Admin/Campus/delete', array('id'=>$vo['id'])); ?>')" class="am-btn am-btn-xs am-btn-danger am-radius">删除</a>
-							</td>
-						</tr>
-						<?php endforeach; else: ?>
-						<tr><td colspan="11" class="am-text-center">暂无校区数据</td></tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
-				<div class="am-cf">
-					<div class="am-fr"><?php echo $page; ?></div>
+
+				<!-- 统计数据 -->
+				<div class="am-g">
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-primary">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-users am-3x am-text-primary"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $student_count; ?></p>
+									<p class="am-text-muted">学员总数</p>
+									<p class="am-text-sm"><span class="am-badge am-badge-success">+<?php echo $new_students; ?></span> 本月新增</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-success">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-black-tie am-3x am-text-success"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $teacher_count; ?></p>
+									<p class="am-text-muted">老师数量</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-warning">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-graduation-cap am-3x am-text-warning"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $class_count; ?></p>
+									<p class="am-text-muted">班级数量</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-danger">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-rmb am-3x am-text-danger"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold">¥<?php echo $month_income; ?></p>
+									<p class="am-text-muted">本月营收</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 课消统计 -->
+				<div class="am-panel am-panel-secondary">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-tachometer"></i> 本月课消统计</h3>
+					</div>
+					<div class="am-panel-bd">
+						<p class="am-text-xl am-text-center">
+							<span class="am-badge am-badge-primary am-legend am-round"><?php echo $month_consumption; ?></span> 课时
+						</p>
+					</div>
+				</div>
+
+				<!-- 快捷操作 -->
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-link"></i> 快捷操作</h3>
+					</div>
+					<div class="am-panel-bd">
+						<a href="<?php echo U('Admin/Campus/edit', array('id'=>$campus['id'])); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-edit"></i> 编辑校区</a>
+						<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 查看学员</a>
+						<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 查看老师</a>
+						<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -171,11 +213,3 @@
 
 <!-- 控制器 -->
 <?php if(!empty($module_js)): ?><script type="text/javascript" src="/Public/<?php echo ($module_js); ?>"></script><?php endif; ?>
-
-<script>
-function deleteConfirm(url) {
-	if(confirm('确定要删除吗？')) {
-		location.href = url;
-	}
-}
-</script>

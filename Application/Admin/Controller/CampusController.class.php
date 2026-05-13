@@ -128,9 +128,9 @@ class CampusController extends CommonController {
         $month_start = strtotime(date('Y-m-01'));
         $month_income = M('order')->where([
             'campus_id'=>$campus_id,
-            'add_time'=>['gt', $month_start],
+            'create_time'=>['gt', $month_start],
             'status'=>['in', '1,2']
-        ])->sum('money');
+        ])->sum('pay_amount');
         
         // 课消统计
         $month_consumption = M('hour_consumption')->where([
@@ -155,7 +155,7 @@ class CampusController extends CommonController {
         $keyword = I('keyword', '', 'trim');
         
         if ($keyword) {
-            $where = "student_name LIKE '%{$keyword}%' OR phone LIKE '%{$keyword}%'";
+            $where = "username LIKE '%{$keyword}%' OR my_mobile LIKE '%{$keyword}%'";
         } else {
             $where = 1;
         }
@@ -188,12 +188,12 @@ class CampusController extends CommonController {
         $keyword = I('keyword', '', 'trim');
         
         if ($keyword) {
-            $where = "teacher_name LIKE '%{$keyword}%' OR phone LIKE '%{$keyword}%'";
+            $where = "username LIKE '%{$keyword}%' OR mobile LIKE '%{$keyword}%'";
         } else {
             $where = 1;
         }
         
-        $list = M('teacher')->where($where)->select();
+        $list = M('teacher')->field('id, username, mobile, sex, campus_id, add_time')->where($where)->select();
         
         $campus_ids = array_unique(array_column($list, 'campus_id'));
         $campuses = !empty($campus_ids) ? M('campus')->where(['id'=>['in', $campus_ids]])->getField('id,name', true) : [];

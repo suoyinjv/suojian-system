@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>发起转校 - SchoolCMS</title>
+    <title>处理转校 - SchoolCMS</title>
     <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
 </head>
@@ -13,93 +13,68 @@
             <div class="am-u-sm-10 am-u-sm-centered">
                 <div class="am-panel am-panel-warning">
                     <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-exchange"></i> 发起转校申请</h3>
+                        <h3 class="am-panel-title"><i class="fa fa-exchange"></i> 处理转校申请</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">选择学员 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <select name="student_id" class="am-form-field" required>
-                                        <option value="">请选择学员</option>
-                                        <volist name="studentList" id="student">
-                                        <option value="{$student.id}">{$student.name} ({$student.student_no})</option>
-                                        </volist>
-                                    </select>
+                        <div class="am-panel am-panel-default">
+                            <div class="am-panel-hd">学员信息</div>
+                            <div class="am-panel-bd">
+                                <p><strong>学员：</strong><?php echo !empty($student) ? $student['username'] : '-'; ?></p>
+                                <p><strong>手机号：</strong><?php echo !empty($student) ? $student['my_mobile'] : '-'; ?></p>
+                                <p><strong>转校原因：</strong><?php echo !empty($transfer) ? $transfer['reason'] : '-'; ?></p>
+                            </div>
+                        </div>
+
+                        <div class="am-g">
+                            <div class="am-u-sm-6">
+                                <div class="am-panel am-panel-danger">
+                                    <div class="am-panel-hd">源校区</div>
+                                    <div class="am-panel-bd">
+                                        <p><strong>校区：</strong><?php echo !empty($from_campus) ? $from_campus['name'] : '-'; ?></p>
+                                        <p><strong>班级：</strong><?php echo !empty($from_class) ? $from_class['class_name'] : '-'; ?></p>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">原校区 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <select name="from_campus_id" class="am-form-field" required>
-                                        <option value="">请选择原校区</option>
-                                        <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}">{$campus.name}</option>
-                                        </volist>
-                                    </select>
+                            <div class="am-u-sm-6">
+                                <div class="am-panel am-panel-success">
+                                    <div class="am-panel-hd">目标校区</div>
+                                    <div class="am-panel-bd">
+                                        <p><strong>校区：</strong><?php echo !empty($to_campus) ? $to_campus['name'] : '-'; ?></p>
+                                        <p><strong>班级：</strong><?php echo !empty($to_class) ? $to_class['class_name'] : '-'; ?></p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <form class="am-form am-form-horizontal" method="POST" action="<?php echo U('Admin/Transfer/transfer'); ?>">
+                            <input type="hidden" name="id" value="<?php echo $transfer['id']; ?>">
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">目标校区 <span class="am-text-danger">*</span></label>
+                                <label class="am-u-sm-3 am-text-right">处理结果</label>
                                 <div class="am-u-sm-7">
-                                    <select name="to_campus_id" class="am-form-field" required>
-                                        <option value="">请选择目标校区</option>
-                                        <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}">{$campus.name}</option>
-                                        </volist>
-                                    </select>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="status" value="1" checked> 批准转校
+                                    </label>
+                                    <label class="am-radio-inline">
+                                        <input type="radio" name="status" value="2"> 拒绝转校
+                                    </label>
                                 </div>
                             </div>
-
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">转校原因 <span class="am-text-danger">*</span></label>
+                                <label class="am-u-sm-3 am-text-right">处理备注</label>
                                 <div class="am-u-sm-7">
-                                    <select name="reason_type" class="am-form-field" id="reasonType" required>
-                                        <option value="">请选择原因类型</option>
-                                        <option value="搬家">家庭搬迁</option>
-                                        <option value="升学">升学</option>
-                                        <option value="教学质量">教学质量</option>
-                                        <option value="距离问题">距离问题</option>
-                                        <option value="其他">其他</option>
-                                    </select>
+                                    <textarea name="remark" class="am-form-field" rows="3" placeholder="处理备注（选填）"></textarea>
                                 </div>
                             </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">详细说明</label>
-                                <div class="am-u-sm-7">
-                                    <textarea name="reason" class="am-form-field" rows="4" placeholder="请详细说明转校原因及特殊情况"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">期望生效日期</label>
-                                <div class="am-u-sm-7">
-                                    <input type="date" name="expected_date" class="am-form-field" placeholder="选择期望的转校生效日期">
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">附件上传</label>
-                                <div class="am-u-sm-7">
-                                    <input type="file" name="attachment" class="am-form-field" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
-                                    <p class="am-text-sm am-text-muted">支持 JPG、PNG、PDF、DOC 格式，可上传转学证明等材料</p>
-                                </div>
-                            </div>
-
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
                                     <button type="submit" class="am-btn am-btn-primary am-btn-block">
-                                        <i class="am-icon-paper-plane"></i> 提交申请
+                                        <i class="am-icon-check"></i> 提交处理
                                     </button>
                                 </div>
                             </div>
-
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-btn-block">
+                                    <a href="<?php echo U('Admin/Transfer/index'); ?>" class="am-btn am-btn-default am-btn-block">
                                         <i class="am-icon-arrow-left"></i> 返回列表
                                     </a>
                                 </div>

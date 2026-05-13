@@ -67,65 +67,65 @@
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<!-- table nav start -->
-		
-		<!-- table nav end -->
+		<div class="am-btn-toolbar am-margin-bottom">
+			<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius">
+				<i class="am-icon-arrow-left"></i> 返回校区管理
+			</a>
+			<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius">
+				<i class="am-icon-user"></i> 跨校老师查询
+			</a>
+		</div>
 
-		<div class="am-panel am-panel-primary">
+		<div class="am-panel am-panel-success">
 			<div class="am-panel-hd">
-				<h3 class="am-panel-title"><i class="am-icon-university"></i> 校区管理</h3>
+				<h3 class="am-panel-title"><i class="fa fa-search"></i> 跨校区学员查询</h3>
 			</div>
 			<div class="am-panel-bd">
-				<div class="am-btn-toolbar">
-					<a href="<?php echo U('Admin/Campus/add'); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-plus"></i> 添加校区</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 跨校学员</a>
-					<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 跨校老师</a>
-				</div>
-				<table class="am-table am-table-bordered am-table-striped am-table-hover">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>校区名称</th>
-							<th>编码</th>
-							<th>地址</th>
-							<th>电话</th>
-							<th>负责人</th>
-							<th>学员数</th>
-							<th>老师数</th>
-							<th>班级数</th>
-							<th>状态</th>
-							<th>操作</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php if(!empty($list)): foreach($list as $vo): ?>
-						<tr>
-							<td><?php echo $vo['id']; ?></td>
-							<td><?php echo $vo['name']; ?></td>
-							<td><?php echo $vo['code']; ?></td>
-							<td><?php echo $vo['address']; ?></td>
-							<td><?php echo $vo['phone']; ?></td>
-							<td><?php echo $vo['principal']; ?></td>
-							<td><span class="am-badge am-badge-primary"><?php echo $vo['student_count']; ?></span></td>
-							<td><span class="am-badge am-badge-success"><?php echo $vo['teacher_count']; ?></span></td>
-							<td><span class="am-badge am-badge-warning"><?php echo $vo['class_count']; ?></span></td>
-							<td><?php echo $vo['status_text']; ?></td>
-							<td>
-								<a href="<?php echo U('Admin/Campus/overview', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius">数据</a>
-								<a href="<?php echo U('Admin/Campus/edit', array('id'=>$vo['id'])); ?>" class="am-btn am-btn-xs am-btn-primary am-radius">编辑</a>
-								<a href="javascript:;" onclick="deleteConfirm('<?php echo U('Admin/Campus/delete', array('id'=>$vo['id'])); ?>')" class="am-btn am-btn-xs am-btn-danger am-radius">删除</a>
-							</td>
-						</tr>
-						<?php endforeach; else: ?>
-						<tr><td colspan="11" class="am-text-center">暂无校区数据</td></tr>
-						<?php endif; ?>
-					</tbody>
-				</table>
-				<div class="am-cf">
-					<div class="am-fr"><?php echo $page; ?></div>
-				</div>
+				<form class="am-form am-form-inline" action="" method="GET">
+					<div class="am-form-group">
+						<input type="text" name="keyword" class="am-form-field" placeholder="姓名/手机号" value="<?php echo I('keyword'); ?>">
+					</div>
+					<button type="submit" class="am-btn am-btn-primary"><i class="am-icon-search"></i> 搜索</button>
+					<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-default">清空</a>
+				</form>
 			</div>
 		</div>
+
+		<table class="am-table am-table-bordered am-table-striped am-table-hover">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>姓名</th>
+					<th>手机号</th>
+					<th>性别</th>
+					<th>所属校区</th>
+					<th>剩余课时</th>
+					<th>添加时间</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if(!empty($list)): foreach($list as $vo): ?>
+				<tr>
+					<td><?php echo $vo['id']; ?></td>
+					<td><?php echo $vo['username']; ?></td>
+					<td><?php echo $vo['my_mobile']; ?></td>
+					<td><?php if($vo['sex'] == 1): ?>男<?php else: ?>女<?php endif; ?></td>
+					<td><span class="am-badge am-badge-primary"><?php echo $vo['campus_name']; ?></span></td>
+					<td><span class="am-badge am-badge-success"><?php echo $vo['balance_hours']; ?></span></td>
+					<td><?php echo $vo['add_time'] ? date('Y-m-d', $vo['add_time']) : '-'; ?></td>
+					<td>
+						<a href="<?php echo U('Student/view', array('id'=>$vo['id'])); ?>">详情</a>
+						<a href="<?php echo U('Student/edit', array('id'=>$vo['id'])); ?>">编辑</a>
+					</td>
+				</tr>
+				<?php endforeach; else: ?>
+				<tr>
+					<td colspan="8" class="am-text-center">暂无数据</td>
+				</tr>
+				<?php endif; ?>
+			</tbody>
+		</table>
 	</div>
 </div>
 <!-- right content end  -->
@@ -171,11 +171,3 @@
 
 <!-- 控制器 -->
 <?php if(!empty($module_js)): ?><script type="text/javascript" src="/Public/<?php echo ($module_js); ?>"></script><?php endif; ?>
-
-<script>
-function deleteConfirm(url) {
-	if(confirm('确定要删除吗？')) {
-		location.href = url;
-	}
-}
-</script>

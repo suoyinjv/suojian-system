@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{$info ? '编辑转校申请' : '添加转校'} - SchoolCMS</title>
+    <title>添加转校申请 - SchoolCMS</title>
     <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
     <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
 </head>
@@ -13,18 +13,18 @@
             <div class="am-u-sm-10 am-u-sm-centered">
                 <div class="am-panel am-panel-warning">
                     <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-edit"></i> {$info ? '编辑转校申请' : '添加转校'}</h3>
+                        <h3 class="am-panel-title"><i class="fa fa-edit"></i> 添加转校申请</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                        <form class="am-form am-form-horizontal" action="<?php echo U('Admin/Transfer/add'); ?>" method="POST">
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">选择学员 <span class="am-text-danger">*</span></label>
                                 <div class="am-u-sm-7">
                                     <select name="student_id" class="am-form-field" required>
                                         <option value="">请选择学员</option>
-                                        <volist name="studentList" id="student">
-                                        <option value="{$student.id}" <if condition="$info['student_id'] eq $student['id']">selected</if>>{$student.name} ({$student.student_no})</option>
-                                        </volist>
+                                        <?php if(!empty($studentList)): foreach($studentList as $student): ?>
+                                        <option value="<?php echo $student['id']; ?>"><?php echo $student['username']; ?> (<?php echo $student['number']; ?>)</option>
+                                        <?php endforeach; endif; ?>
                                     </select>
                                 </div>
                             </div>
@@ -34,9 +34,9 @@
                                 <div class="am-u-sm-7">
                                     <select name="from_campus_id" class="am-form-field" required>
                                         <option value="">请选择原校区</option>
-                                        <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}" <if condition="$info['from_campus_id'] eq $campus['id']">selected</if>>{$campus.name}</option>
-                                        </volist>
+                                        <?php if(!empty($campusList)): foreach($campusList as $campus): ?>
+                                        <option value="<?php echo $campus['id']; ?>"><?php echo $campus['name']; ?></option>
+                                        <?php endforeach; endif; ?>
                                     </select>
                                 </div>
                             </div>
@@ -46,21 +46,9 @@
                                 <div class="am-u-sm-7">
                                     <select name="to_campus_id" class="am-form-field" required>
                                         <option value="">请选择目标校区</option>
-                                        <volist name="campusList" id="campus">
-                                        <option value="{$campus.id}" <if condition="$info['to_campus_id'] eq $campus['id']">selected</if>>{$campus.name}</option>
-                                        </volist>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">申请状态</label>
-                                <div class="am-u-sm-7">
-                                    <select name="status" class="am-form-field">
-                                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>待审核</option>
-                                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>已通过</option>
-                                        <option value="2" <if condition="$info['status'] eq 2">selected</if>>已拒绝</option>
-                                        <option value="3" <if condition="$info['status'] eq 3">selected</if>>已取消</option>
+                                        <?php if(!empty($campusList)): foreach($campusList as $campus): ?>
+                                        <option value="<?php echo $campus['id']; ?>"><?php echo $campus['name']; ?></option>
+                                        <?php endforeach; endif; ?>
                                     </select>
                                 </div>
                             </div>
@@ -68,28 +56,21 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">转校原因 <span class="am-text-danger">*</span></label>
                                 <div class="am-u-sm-7">
-                                    <textarea name="reason" class="am-form-field" rows="4" placeholder="请详细说明转校原因" required>{$info.reason}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">审核备注</label>
-                                <div class="am-u-sm-7">
-                                    <textarea name="audit_remark" class="am-form-field" rows="3" placeholder="审核备注信息">{$info.audit_remark}</textarea>
+                                    <textarea name="reason" class="am-form-field" rows="4" placeholder="请详细说明转校原因" required></textarea>
                                 </div>
                             </div>
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
                                     <button type="submit" class="am-btn am-btn-primary am-btn-block">
-                                        <i class="am-icon-check"></i> 保存
+                                        <i class="am-icon-check"></i> 提交申请
                                     </button>
                                 </div>
                             </div>
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-btn-block">
+                                    <a href="<?php echo U('Admin/Transfer/index'); ?>" class="am-btn am-btn-default am-btn-block">
                                         <i class="am-icon-arrow-left"></i> 返回列表
                                     </a>
                                 </div>

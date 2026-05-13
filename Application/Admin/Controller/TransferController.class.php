@@ -254,12 +254,12 @@ class TransferController extends CommonController
         }
 
         // 获取学员列表
-        $students = M('student')->field('id, name, phone, campus_id')->select();
+        $studentList = M('student')->field('id, username, number, my_mobile, campus_id')->select();
         // 获取校区列表
         $campuses = M('campus')->field('id, name')->select();
 
-        $this->assign('students', $students);
-        $this->assign('campuses', $campuses);
+        $this->assign('studentList', $studentList);
+        $this->assign('campusList', $campuses);
         $this->display();
     }
 

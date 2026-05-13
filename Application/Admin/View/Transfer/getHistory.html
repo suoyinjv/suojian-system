@@ -12,7 +12,7 @@
         <div class="am-g am-margin-top am-padding-top-sm">
             <div class="am-u-sm-12">
                 <div class="am-btn-toolbar am-fr">
-                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-radius">
+                    <a href="<?php echo U('Admin/Transfer/index'); ?>" class="am-btn am-btn-default am-radius">
                         <i class="am-icon-arrow-left"></i> 返回申请列表
                     </a>
                 </div>
@@ -22,18 +22,18 @@
             <div class="am-u-sm-12">
                 <form method="get" class="am-form-inline am-margin-bottom">
                     <div class="am-form-group">
-                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名" value="{:I('keyword')}">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="学员姓名" value="<?php echo I('keyword'); ?>">
                     </div>
                     <div class="am-form-group">
                         <select name="year" class="am-form-field">
                             <option value="">全部年份</option>
-                            <volist name="yearList" id="year">
-                            <option value="{$year}" <if condition="I('year') eq $year">selected</if>>{$year}年</option>
-                            </volist>
+                            <?php if(!empty($yearList)): foreach($yearList as $year): ?>
+                            <option value="<?php echo $year; ?>" <?php if(I('year') == $year): ?>selected<?php endif; ?>><?php echo $year; ?>年</option>
+                            <?php endforeach; endif; ?>
                         </select>
                     </div>
                     <button type="submit" class="am-btn am-btn-default"><i class="am-icon-search"></i> 搜索</button>
-                    <a href="{:U('getHistory?export=1')}" class="am-btn am-btn-success"><i class="am-icon-download"></i> 导出</a>
+                    <a href="<?php echo U('getHistory', array('export'=>1)); ?>" class="am-btn am-btn-success"><i class="am-icon-download"></i> 导出</a>
                 </form>
             </div>
             <div class="am-u-sm-12">
@@ -52,35 +52,40 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <volist name="list" id="vo">
+                        <?php if(!empty($list)): foreach($list as $vo): ?>
                         <tr>
-                            <td class="am-text-center">{$vo.id}</td>
-                            <td>{$vo.student_name}</td>
-                            <td>{$vo.student_no}</td>
-                            <td>{$vo.from_campus}</td>
-                            <td>{$vo.to_campus}</td>
-                            <td>{$vo.create_time|date='Y-m-d',###}</td>
-                            <td>{$vo.complete_time|date='Y-m-d',###}</td>
+                            <td class="am-text-center"><?php echo $vo['id']; ?></td>
+                            <td><?php echo isset($vo['student_name']) ? $vo['student_name'] : '-'; ?></td>
+                            <td><?php echo isset($vo['student_no']) ? $vo['student_no'] : '-'; ?></td>
+                            <td><?php echo isset($vo['from_campus']) ? $vo['from_campus'] : (isset($vo['from_campus_id']) ? '校区#' . $vo['from_campus_id'] : '-'); ?></td>
+                            <td><?php echo isset($vo['to_campus']) ? $vo['to_campus'] : (isset($vo['to_campus_id']) ? '校区#' . $vo['to_campus_id'] : '-'); ?></td>
+                            <td><?php echo isset($vo['create_time']) && $vo['create_time'] ? date('Y-m-d', $vo['create_time']) : '-'; ?></td>
+                            <td><?php echo isset($vo['complete_time']) && $vo['complete_time'] ? date('Y-m-d', $vo['complete_time']) : '-'; ?></td>
                             <td>
-                                <if condition="$vo['status'] eq 1">
-                                    <span class="am-badge am-badge-success"><i class="am-icon-check"></i> 已完成</span>
-                                <elseif condition="$vo['status'] eq 2"/>
-                                    <span class="am-badge am-badge-danger"><i class="am-icon-times"></i> 已拒绝</span>
-                                <elseif condition="$vo['status'] eq 3"/>
-                                    <span class="am-badge am-badge-default"><i class="am-icon-ban"></i> 已取消</span>
-                                </if>
+                                <?php if(isset($vo['status'])): ?>
+                                    <?php if($vo['status'] == 1): ?>
+                                        <span class="am-badge am-badge-success"><i class="am-icon-check"></i> 已完成</span>
+                                    <?php elseif($vo['status'] == 2): ?>
+                                        <span class="am-badge am-badge-danger"><i class="am-icon-times"></i> 已拒绝</span>
+                                    <?php elseif($vo['status'] == 3): ?>
+                                        <span class="am-badge am-badge-default"><i class="am-icon-ban"></i> 已取消</span>
+                                    <?php else: ?>
+                                        <span class="am-badge am-badge-warning">待审核</span>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    -
+                                <?php endif; ?>
                             </td>
-                            <td>{$vo.operator_name}</td>
+                            <td><?php echo isset($vo['operator_name']) ? $vo['operator_name'] : '-'; ?></td>
                         </tr>
-                        </volist>
-                        <notpresent name="list">
+                        <?php endforeach; else: ?>
                         <tr>
                             <td colspan="9" class="am-text-center am-text-danger">暂无历史记录</td>
                         </tr>
-                        </notpresent>
+                        <?php endif; ?>
                     </tbody>
                 </table>
-                {$page}
+                <?php echo isset($page) ? $page : ''; ?>
             </div>
 
             <div class="am-u-sm-12 am-margin-top">
@@ -91,19 +96,19 @@
                     <div class="am-panel-bd">
                         <div class="am-g">
                             <div class="am-u-sm-3 am-text-center">
-                                <p class="am-text-xxl am-text-primary">{$totalCount}</p>
+                                <p class="am-text-xxl am-text-primary"><?php echo isset($totalCount) ? $totalCount : 0; ?></p>
                                 <p>总申请数</p>
                             </div>
                             <div class="am-u-sm-3 am-text-center">
-                                <p class="am-text-xxl am-text-success">{$successCount}</p>
+                                <p class="am-text-xxl am-text-success"><?php echo isset($successCount) ? $successCount : 0; ?></p>
                                 <p>已完成</p>
                             </div>
                             <div class="am-u-sm-3 am-text-center">
-                                <p class="am-text-xxl am-text-danger">{$rejectCount}</p>
+                                <p class="am-text-xxl am-text-danger"><?php echo isset($rejectCount) ? $rejectCount : 0; ?></p>
                                 <p>已拒绝</p>
                             </div>
                             <div class="am-u-sm-3 am-text-center">
-                                <p class="am-text-xxl am-text-warning">{$cancelCount}</p>
+                                <p class="am-text-xxl am-text-warning"><?php echo isset($cancelCount) ? $cancelCount : 0; ?></p>
                                 <p>已取消</p>
                             </div>
                         </div>

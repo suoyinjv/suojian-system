@@ -12,7 +12,7 @@
 				<h3 class="am-panel-title"><i class="am-icon-send"></i> <?php echo L('message_send_title'); ?></h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form form-validation view-save" action="<?php echo U('Admin/Message/DoSend'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/Send'); ?>">
+				<form class="am-form form-validation view-save" action="<?php echo U('Admin/Message/send'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/Send'); ?>">
 
 					<div class="am-form-group">
 						<label><?php echo L('message_send_receiver_type'); ?></label>
