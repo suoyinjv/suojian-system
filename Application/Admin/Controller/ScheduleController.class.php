@@ -11,10 +11,9 @@ class ScheduleController extends Controller {
      * 初始化 - 租户校区过滤
      */
     public function _initialize() {
-        parent::_initialize();
-        GetTenantCampusId();
+        $this->tenant_campus_id = GetTenantCampusId();
     }
-    
+
     /**
      * 排课列表（页面 / JSON API）
      */

@@ -14,7 +14,6 @@ class StudentCourseController extends Controller {
      * 初始化 - 租户校区过滤
      */
     public function _initialize() {
-        parent::_initialize();
         $this->tenant_campus_id = GetTenantCampusId();
     }
 
