@@ -1,0 +1,101 @@
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>资源管理 - SchoolCMS</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/font-awesome-4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="am-cf admin-main">
+    <div class="admin-content">
+        <div class="am-g am-margin-top am-padding-top-sm">
+            <div class="am-u-sm-12">
+                <div class="am-btn-toolbar am-fr">
+                    <a href="/upload" class="am-btn am-btn-primary am-radius">
+                        <i class="am-icon-upload"></i> 上传资源
+                    </a>
+                </div>
+                <h2 class="am-text-xl"><i class="am-icon-file"></i> 资源列表</h2>
+                <hr>
+            </div>
+            <div class="am-u-sm-12">
+                <form method="get" class="am-form-inline am-margin-bottom">
+                    <div class="am-form-group">
+                        <input type="text" name="keyword" class="am-form-field" placeholder="资源名称" value="<?php echo I('keyword'); ?>">
+                    </div>
+                    <div class="am-form-group">
+                        <select name="type" class="am-form-field">
+                            <option value="">全部类型</option>
+                            <option value="1" <?php if(I('type') == 1): ?>selected<?php endif; ?>>文档</option>
+                            <option value="2" <?php if(I('type') == 2): ?>selected<?php endif; ?>>图片</option>
+                            <option value="3" <?php if(I('type') == 3): ?>selected<?php endif; ?>>视频</option>
+                            <option value="4" <?php if(I('type') == 4): ?>selected<?php endif; ?>>音频</option>
+                            <option value="5" <?php if(I('type') == 5): ?>selected<?php endif; ?>>压缩包</option>
+                            <option value="6" <?php if(I('type') == 6): ?>selected<?php endif; ?>>其他</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="am-btn am-btn-default"><i class="am-icon-search"></i> 搜索</button>
+                </form>
+            </div>
+            <div class="am-u-sm-12">
+                <table class="am-table am-table-bordered am-table-striped am-table-hover">
+                    <thead>
+                        <tr>
+                            <th class="am-text-center">ID</th>
+                            <th>资源名称</th>
+                            <th>类型</th>
+                            <th>大小</th>
+                            <th>分类</th>
+                            <th>上传时间</th>
+                            <th>共享</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($$list as $$vo): ?>
+                        <tr>
+                            <td class="am-text-center"><?php echo $vo['id']; ?></td>
+                            <td>
+                                <i class="am-icon <?php if($vo[\"type\"] == 1): ?>am-icon-file-word-o<?php elseif($vo[\"type\"] == 2): ?>am-icon-file-image-o<?php elseif($vo[\"type\"] == 3): ?>am-icon-file-video-o<?php elseif($vo[\"type\"] == 4): ?>am-icon-file-audio-o<?php elseif($vo[\"type\"] == 5): ?>am-icon-file-archive-o<?php else: ?>am-icon-file-o<?php endif; ?>"></i> <?php echo $vo['name']; ?>
+                            </td>
+                            <td><?php echo $vo['type_text']; ?></td>
+                            <td><?php echo $vo['size_text']; ?></td>
+                            <td><?php echo $vo['category']; ?></td>
+                            <td>{$vo.create_time|date='Y-m-d H:i',###}</td>
+                            <td>
+                                <?php if($vo['is_shared'] == 1): ?>
+                                    <span class="am-badge am-badge-success">已共享</span>
+                                <?php else: ?>
+                                    <span class="am-badge am-badge-default">私有</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="/save/id/<?php echo $vo['id']; ?>" class="am-btn am-btn-xs am-btn-primary am-radius"><i class="am-icon-edit"></i> 编辑</a>
+                                <a href="/share/id/<?php echo $vo['id']; ?>" class="am-btn am-btn-xs am-btn-warning am-radius"><i class="am-icon-share"></i> 分享</a>
+                                <a href="javascript:;" onclick="deleteConfirm('/delete/id/<?php echo $vo['id']; ?>')" class="am-btn am-btn-xs am-btn-danger am-radius"><i class="am-icon-trash"></i> 删除</a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <?php if(!isset($$list)): ?>
+                        <tr>
+                            <td colspan="8" class="am-text-center am-text-danger">暂无资源</td>
+                        </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+                <?php echo $page; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
+<script>
+function deleteConfirm(url) {
+    if(confirm('确定要删除此资源吗？此操作不可恢复！')) {
+        location.href = url;
+    }
+}
+</script>
+</body>
+</html>

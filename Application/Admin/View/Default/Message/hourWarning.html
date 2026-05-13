@@ -100,7 +100,7 @@
 					<div class="am-form-group">
 						<label class="am-u-sm-3"><?php echo L('message_hour_warning_content'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-9">
-							<textarea name="content" class="am-form-field am-radius" rows="5" id="msgContent" placeholder="<?php echo L('message_hour_warning_content_tips'); ?>" required data-validation-message="<?php echo L('message_hour_warning_content_required'); ?>"><?php if(isset($$data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
+							<textarea name="content" class="am-form-field am-radius" rows="5" id="msgContent" placeholder="<?php echo L('message_hour_warning_content_tips'); ?>" required data-validation-message="<?php echo L('message_hour_warning_content_required'); ?>"><?php if(isset($data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
 							<p class="am-text-sm am-text-muted"><?php echo L('message_template_var_tips'); ?>: {name}, {course}, {remain_hours}, {expire_date}, {parent_name}</p>
 						</div>
 					</div>

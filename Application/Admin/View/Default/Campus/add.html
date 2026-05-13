@@ -1,89 +1,71 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>添加校区 - SchoolCMS</title>
-    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
-    <link rel="stylesheet" href="/Public/font-awesome-4.4.0/css/font-awesome.min.css">
-</head>
-<body>
-<div class="am-cf admin-main">
-    <div class="admin-content">
-        <div class="am-g am-margin-top">
-            <div class="am-u-sm-8 am-u-sm-centered">
-                <div class="am-panel am-panel-warning">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-building"></i> 添加校区</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="" method="POST">
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">校区名称 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="name" class="am-form-field" placeholder="请输入校区名称" required>
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">校区编码</label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="code" class="am-form-field" placeholder="如: HQ, CD, SH">
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">校区地址</label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="address" class="am-form-field" placeholder="详细地址">
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">联系电话</label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="phone" class="am-form-field" placeholder="校区联系电话">
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">负责人</label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="principal" class="am-form-field" placeholder="校区负责人姓名">
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">状态</label>
-                                <div class="am-u-sm-7">
-                                    <select name="status" class="am-form-field">
-                                        <option value="1">启用</option>
-                                        <option value="0">禁用</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
-                                        <i class="am-icon-check"></i> 提交
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="/index" class="am-btn am-btn-default am-btn-block">
-                                        <i class="am-icon-arrow-left"></i> 返回列表
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<include file="Public/Header" />
+<include file="Public/Nav" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<div class="am-panel am-panel-warning">
+			<div class="am-panel-hd">
+				<h3 class="am-panel-title"><i class="fa fa-edit"></i> 添加校区</h3>
+			</div>
+			<div class="am-panel-bd">
+				<form class="am-form am-form-horizontal form-validation" action="<?php echo U('Admin/Campus/add'); ?>" method="POST">
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">校区名称 <span class="am-text-danger">*</span></label>
+						<div class="am-u-sm-7">
+							<input type="text" name="name" class="am-form-field" placeholder="请输入校区名称" required>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">校区编码</label>
+						<div class="am-u-sm-7">
+							<input type="text" name="code" class="am-form-field" placeholder="如: HQ, CD, SH">
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">校区地址</label>
+						<div class="am-u-sm-7">
+							<input type="text" name="address" class="am-form-field" placeholder="详细地址">
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">联系电话</label>
+						<div class="am-u-sm-7">
+							<input type="text" name="phone" class="am-form-field" placeholder="校区联系电话">
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">负责人</label>
+						<div class="am-u-sm-7">
+							<input type="text" name="principal" class="am-form-field" placeholder="校区负责人姓名">
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">状态</label>
+						<div class="am-u-sm-7">
+							<select name="status" class="am-form-field">
+								<option value="1">启用</option>
+								<option value="0">禁用</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="am-form-group">
+						<div class="am-u-sm-7 am-u-sm-offset-3">
+							<button type="submit" class="am-btn am-btn-primary am-radius">提交</button>
+							<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
-<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
-</body>
-</html>
+<!-- right content end  -->
+
+<include file="Public/Footer" />

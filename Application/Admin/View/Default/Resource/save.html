@@ -1,91 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{$info ? '编辑资源' : '添加资源'} - SchoolCMS</title>
-    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
-    <link rel="stylesheet" href="/Public/font-awesome-4.4.0/css/font-awesome.min.css">
-</head>
-<body>
-<div class="am-cf admin-main">
-    <div class="admin-content">
-        <div class="am-g am-margin-top am-padding-top-sm">
-            <div class="am-u-sm-10 am-u-sm-centered">
-                <div class="am-panel am-panel-warning">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-edit"></i> {$info ? '编辑资源' : '添加资源'}</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="" method="POST">
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源名称 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="name" class="am-form-field" value="<?php echo $info['name']; ?>" placeholder="请输入资源名称" required>
-                                </div>
-                            </div>
+<include file="Public/Header" />
+<include file="Public/Nav" />
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源分类 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <select name="category" class="am-form-field" required>
-                                        <option value="">请选择分类</option>
-                                        <option value="课件" <?php if($info['category'] == '课件'): ?>selected<?php endif; ?>>课件</option>
-                                        <option value="教案" <?php if($info['category'] == '教案'): ?>selected<?php endif; ?>>教案</option>
-                                        <option value="试题" <?php if($info['category'] == '试题'): ?>selected<?php endif; ?>>试题</option>
-                                        <option value="教材" <?php if($info['category'] == '教材'): ?>selected<?php endif; ?>>教材</option>
-                                        <option value="视频" <?php if($info['category'] == '视频'): ?>selected<?php endif; ?>>视频</option>
-                                        <option value="音频" <?php if($info['category'] == '音频'): ?>selected<?php endif; ?>>音频</option>
-                                        <option value="图片" <?php if($info['category'] == '图片'): ?>selected<?php endif; ?>>图片</option>
-                                        <option value="其他" <?php if($info['category'] == '其他'): ?>selected<?php endif; ?>>其他</option>
-                                    </select>
-                                </div>
-                            </div>
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<div class="am-panel am-panel-warning">
+			<div class="am-panel-hd">
+				<h3 class="am-panel-title"><i class="fa fa-edit"></i> <?php if(!empty($info)): ?>编辑资源<?php else: ?>添加资源<?php endif; ?></h3>
+			</div>
+			<div class="am-panel-bd">
+				<form class="am-form am-form-horizontal" action="<?php echo U('Admin/Resource/save'); ?>" method="POST">
+					<input type="hidden" name="id" value="<?php echo I('id'); ?>">
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源标签</label>
-                                <div class="am-u-sm-7">
-                                    <input type="text" name="tags" class="am-form-field" value="<?php echo $info['tags']; ?>" placeholder="多个标签用逗号分隔，如：语文,课件,初一">
-                                </div>
-                            </div>
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">资源名称 <span class="am-text-danger">*</span></label>
+						<div class="am-u-sm-7">
+							<input type="text" name="title" class="am-form-field" value="<?php echo !empty($info['title']) ? $info['title'] : ''; ?>" placeholder="请输入资源名称" required>
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源描述</label>
-                                <div class="am-u-sm-7">
-                                    <textarea name="description" class="am-form-field" rows="4" placeholder="请输入资源描述"><?php echo $info['description']; ?></textarea>
-                                </div>
-                            </div>
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">所属课程</label>
+						<div class="am-u-sm-7">
+							<select name="course_id" class="am-form-field">
+								<option value="">请选择课程</option>
+								<?php if(!empty($courses)): foreach($courses as $course): ?>
+								<option value="<?php echo $course['id']; ?>" <?php if(!empty($info['course_id']) && $info['course_id'] == $course['id']): ?>selected<?php endif; ?>><?php echo $course['course_name']; ?></option>
+								<?php endforeach; endif; ?>
+							</select>
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">是否共享</label>
-                                <div class="am-u-sm-7 am-padding-top-xs">
-                                    <label class="am-checkbox">
-                                        <input type="checkbox" name="is_shared" value="1" <?php if($info['is_shared'] == 1): ?>checked<?php endif; ?>> 允许其他用户查看此资源
-                                    </label>
-                                </div>
-                            </div>
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">资源描述</label>
+						<div class="am-u-sm-7">
+							<textarea name="description" class="am-form-field" rows="4" placeholder="请输入资源描述"><?php echo !empty($info['description']) ? $info['description'] : ''; ?></textarea>
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
-                                        <i class="am-icon-check"></i> 保存
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="/index" class="am-btn am-btn-default am-btn-block">
-                                        <i class="am-icon-arrow-left"></i> 返回列表
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="am-form-group">
+						<div class="am-u-sm-7 am-u-sm-offset-3">
+							<button type="submit" class="am-btn am-btn-primary am-radius"><i class="am-icon-check"></i> 保存</button>
+							<a href="<?php echo U('Admin/Resource/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
-<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
-</body>
-</html>
+<!-- right content end  -->
+
+<include file="Public/Footer" />

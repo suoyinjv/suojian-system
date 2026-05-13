@@ -1,29 +1,26 @@
-
+<include file="Public/Header" />
+<include file="Public/Nav" />
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<!-- table nav start -->
-		
-		<!-- table nav end -->
-
 		<div class="am-panel am-panel-primary">
 			<div class="am-panel-hd">
 				<h3 class="am-panel-title">
-					<i class="am-icon-plus"></i> <present name="data.id"><?php echo L('message_edit_template'); ?><?php else: ?><?php echo L('message_add_template'); ?><?php endif; ?>
+					<i class="am-icon-plus"></i> <?php if(isset($data['id'])): ?><?php echo L('message_edit_template'); ?><?php else: ?><?php echo L('message_add_template'); ?><?php endif; ?>
 				</h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form am-form-horizontal form-validation view-save" action="<?php echo U('Admin/Message/SaveTemplate'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/Template'); ?>">
+				<form class="am-form am-form-horizontal form-validation" action="<?php echo U('Admin/Message/saveTemplate'); ?>" method="POST">
 
-					<present name="data.id">
+					<?php if(isset($data['id'])): ?>
 					<input type="hidden" name="id" value="<?php echo $data['id']; ?>" />
 					<?php endif; ?>
 
 					<div class="am-form-group">
 						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_name'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-8">
-							<input type="text" name="name" class="am-form-field am-radius" placeholder="<?php echo L('message_template_name_tips'); ?>" value="<?php if(isset($$data)): ?><?php echo $data['name']; ?><?php endif; ?>" required data-validation-message="<?php echo L('message_template_name_required'); ?>" />
+							<input type="text" name="name" class="am-form-field am-radius" placeholder="<?php echo L('message_template_name_tips'); ?>" value="<?php if(isset($data)): ?><?php echo $data['name']; ?><?php endif; ?>" required />
 						</div>
 					</div>
 
@@ -53,7 +50,7 @@
 					<div class="am-form-group">
 						<label class="am-u-sm-2 am-text-right"><?php echo L('message_template_content'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-8">
-							<textarea name="content" class="am-form-field am-radius" rows="6" placeholder="<?php echo L('message_template_content_tips'); ?>" required data-validation-message="<?php echo L('message_template_content_required'); ?>"><?php if(isset($$data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
+							<textarea name="content" class="am-form-field am-radius" rows="6" placeholder="<?php echo L('message_template_content_tips'); ?>" required><?php if(isset($data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
 							<p class="am-text-sm am-text-muted"><?php echo L('message_template_var_tips'); ?>: {name}, {course}, {date}, {time}, {class}</p>
 						</div>
 					</div>
@@ -70,19 +67,11 @@
 
 					<div class="am-form-group">
 						<div class="am-u-sm-8 am-u-sm-offset-2">
-							<button type="submit" class="am-btn am-btn-primary btn-loading-example am-radius" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}">
-								<i class="am-icon-check"></i> <?php echo L('common_operation_save'); ?>
-							</button>
+							<button type="submit" class="am-btn am-btn-primary am-radius"><i class="am-icon-check"></i> <?php echo L('common_operation_save'); ?></button>
+							<a href="<?php echo U('Admin/Message/template'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> <?php echo L('common_operation_cancel'); ?></a>
 						</div>
 					</div>
 
-					<div class="am-form-group">
-						<div class="am-u-sm-8 am-u-sm-offset-2">
-							<a href="<?php echo U('Admin/Message/Template'); ?>" class="am-btn am-btn-default am-radius">
-								<i class="am-icon-arrow-left"></i> <?php echo L('common_operation_cancel'); ?>
-							</a>
-						</div>
-					</div>
 				</form>
 			</div>
 		</div>
@@ -90,6 +79,4 @@
 </div>
 <!-- right content end  -->
 
-<!-- footer start -->
-
-<!-- footer end -->
+<include file="Public/Footer" />
