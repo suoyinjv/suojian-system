@@ -88,6 +88,10 @@ class BubbleController extends CommonController
 	private function GetIndexWhere()
 	{
 		$where = array();
+		$campus_id = $this->tenant_campus_id;
+		if($campus_id > 0) {
+			$where['m.campus_id'] = $campus_id;
+		}
 
 		// 模糊
 		if(!empty($_REQUEST['keyword']))
@@ -248,8 +252,9 @@ class BubbleController extends CommonController
 		// 开启事务
 		$m->startTrans();
 
-		// 数据删除[说说,点赞,评论]
-		$mood_state = $m->where(array('id'=>$id))->delete();
+		// 数据删除[说说,点赞,评论]-加租户隔离
+		$del_where = array('id'=>$id, 'campus_id'=>$this->tenant_campus_id);
+		$mood_state = $m->where($del_where)->delete();
 		$praise_state = M('MoodPraise')->where(array('mood_id'=>$id))->delete();
 		$comments_state = M('MoodComments')->where(array('mood_id'=>$id))->delete();
 		if($mood_state !== false && $praise_state !== false && $comments_state !== false)
