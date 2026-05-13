@@ -4,29 +4,40 @@
 <div class="account-pages">
 	<div class="wrapper-page">
 		<div class="text-center">
-            <span class="logo fw-700">{{:L('common_site_name')}}</span>
+			<?php if (!empty($tenant_campus_logo)): ?>
+			<img src="<?php echo $tenant_campus_logo; ?>" style="max-height:60px;margin-bottom:10px" />
+			<?php endif; ?>
+            <span class="logo fw-700" style="color:<?php echo !empty($tenant_theme_color) ? $tenant_theme_color : '#4e73df'; ?>">
+            	<?php echo !empty($tenant_campus_name) ? $tenant_campus_name : L('common_site_name'); ?>
+            </span>
         </div>
         <div class="m-t-40 card-box">
             <div class="panel-body">
-            	<form class="am-form form-validation" action="{{:U('Admin/Admin/Login')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Index/Index')}}">
+            	<form class="am-form form-validation" action="<?php echo U('Admin/Admin/Login'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Index/Index'); ?>">
+            		<input type="hidden" name="campus_id" value="<?php echo $tenant_campus_id; ?>" />
             		<div class="am-g">
             			<div class="am-form-group">
-					      <input type="text" placeholder="{{:L('login_username_text')}}" name="username" pattern="{{:L('common_regex_username')}}" data-validation-message="{{:L('login_username_format')}}" class="am-radius" required />
+					      <input type="text" placeholder="<?php echo L('login_username_text'); ?>" name="username" pattern="<?php echo L('common_regex_username'); ?>" data-validation-message="<?php echo L('login_username_format'); ?>" class="am-radius" required />
 					    </div>
 					    <div class="am-form-group form-horizontal m-t-20">
-					      <input type="password" placeholder="{{:L('login_login_pwd_text')}}" name="login_pwd" pattern="{{:L('common_regex_pwd')}}" data-validation-message="{{:L('login_login_pwd_format')}}" class="am-radius" required />
+					      <input type="password" placeholder="<?php echo L('login_login_pwd_text'); ?>" name="login_pwd" pattern="<?php echo L('common_regex_pwd'); ?>" data-validation-message="<?php echo L('login_login_pwd_format'); ?>" class="am-radius" required />
 					    </div>
                         <div class="am-form-group">
-                        	<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_login_loading_tips')}}'}">{{:L('login_button_text')}}</button>
+                        	<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" style="background:<?php echo !empty($tenant_theme_color) ? $tenant_theme_color : '#4e73df'; ?>;border-color:<?php echo !empty($tenant_theme_color) ? $tenant_theme_color : '#4e73df'; ?>" data-am-loading="{loadingText:'<?php echo L('common_login_loading_tips'); ?>'}"><?php echo L('login_button_text'); ?></button>
                         </div>
                         
                         <div class="am-form-group">
-                        	<a href="javascript:;" class="text-muted" data-am-popover="{theme: 'danger sm', content: '{{:L('login_forgot_pwd_tips')}}', trigger: 'hover focus'}">{{:L('login_forgot_pwd_text')}}</a>
+                        	<a href="javascript:;" class="text-muted" data-am-popover="{theme: 'danger sm', content: '<?php echo L('login_forgot_pwd_tips'); ?>', trigger: 'hover focus'}"><?php echo L('login_forgot_pwd_text'); ?></a>
                         </div>
             		</div>
             	</form>
             </div>
         </div>
+        <?php if (!empty($tenant_campus_name)): ?>
+        <div class="text-center m-t-20">
+        	<a href="<?php echo U('Admin/Admin/LoginInfo'); ?>">&larr; <?php echo L('common_site_name'); ?> 总后台</a>
+        </div>
+        <?php endif; ?>
 	</div>
 </div>
 <!-- content end -->

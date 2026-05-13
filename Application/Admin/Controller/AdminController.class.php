@@ -310,8 +310,8 @@ class AdminController extends CommonController
 		$m = D('Admin');
 		if($m->create($_POST, 4))
 		{
-\t\t\t// 获取管理员
-\t\t\t$user = $m->field(array('id', 'username', 'login_pwd', 'login_salt', 'mobile', 'login_total', 'role_id', 'campus_id', 'is_super'))->where(array('username'=>I('username')))->find();
+			// 获取管理员
+			$user = $m->field(array('id', 'username', 'login_pwd', 'login_salt', 'mobile', 'login_total', 'role_id', 'campus_id', 'is_super'))->where(array('username'=>I('username')))->find();
 			if(empty($user))
 			{
 				$this->ajaxReturn(L('login_username_no_exist'), -2);

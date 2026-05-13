@@ -157,12 +157,15 @@ class CommonController extends Controller
 		$this->left_menu = S(C('cache_admin_left_menu_key').$admin_id);
 		$this->power = S(C('cache_admin_power_key').$admin_id);
 
+		// 机构管理员（有校区、非超管）拥有本校区全部权限
+		$is_campus_admin = !empty($_SESSION['admin']['campus_id']) && empty($_SESSION['admin']['is_super']);
+
 		// 缓存没数据则从数据库重新读取
-		if(($role_id > 0 || $admin_id == 1) && empty($this->left_menu))
+		if(($role_id > 0 || $admin_id == 1 || $is_campus_admin) && empty($this->left_menu))
 		{
 			// 获取一级数据
 			$p = M('Power');
-			if($admin_id == 1)
+			if($admin_id == 1 || $is_campus_admin)
 			{
 				$field = array('id', 'name', 'control', 'action', 'is_show', 'icon');
 				$this->left_menu = $p->where(array('pid' => 0))->field($field)->order('sort')->select();
@@ -180,7 +183,7 @@ class CommonController extends Controller
 					$this->power[$v['id']] = strtolower($v['control'].'_'.$v['action']);
 
 					// 获取子权限
-					if($admin_id == 1)
+					if($admin_id == 1 || $is_campus_admin)
 					{
 						$item = $p->where(array('pid' => $v['id']))->field($field)->order('sort')->select();
 					} else {
