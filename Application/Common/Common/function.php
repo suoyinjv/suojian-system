@@ -1106,4 +1106,103 @@ function exportExcel($header, $data, $title = '导出报表')
     $objWriter->save('php://output');
     exit;
 }
+
+// ============================================================
+// 多租户辅助函数 (Multi-Tenant)
+// ============================================================
+
+/**
+ * 获取当前租户校区ID
+ * 优先级: 1.URL参数  2.Nginx子域名  3.已登录管理员所属校区
+ * @return int campus_id (0=超管/无租户)
+ */
+function GetTenantCampusId() {
+    // 1. URL参数方式（兼容测试）
+    $campus_id = I('campus_id', 0, 'intval');
+    if ($campus_id > 0) {
+        session('tenant_campus_id', $campus_id);
+        return $campus_id;
+    }
+
+    // 2. Nginx子域名
+    $tenant_name = $_SERVER['TENANT_NAME'] ?? '';
+    if (!empty($tenant_name)) {
+        $campus = M('Campus')->where(array('domain' => $tenant_name))->find();
+        if (!empty($campus) && $campus['status'] == 1) {
+            session('tenant_campus_id', $campus['id']);
+            session('tenant_campus_name', $campus['site_name'] ?: $campus['name']);
+            return $campus['id'];
+        }
+    }
+
+    // 3. 已登录管理员所属校区
+    $admin_campus_id = session('admin.campus_id');
+    if (!empty($admin_campus_id) && $admin_campus_id > 0) {
+        session('tenant_campus_id', $admin_campus_id);
+        return $admin_campus_id;
+    }
+
+    // 4. 当前 session 中的租户
+    $session_tenant = session('tenant_campus_id');
+    if (!empty($session_tenant)) {
+        return $session_tenant;
+    }
+
+    return 0; // 超管/无租户
+}
+
+/**
+ * 带租户隔离的M()查询 — 自动加 campus_id 条件
+ * @param string $model 模型名
+ * @param array  $where 已有查询条件
+ * @return object M()查询对象
+ */
+function M_T($model, $where = array()) {
+    $m = M($model);
+    $campus_id = GetTenantCampusId();
+
+    if ($campus_id > 0) {
+        if (empty($where)) {
+            $where = array('campus_id' => $campus_id);
+        } else {
+            // 合并条件，确保 campus_id 被追加
+            $where['campus_id'] = $campus_id;
+        }
+    }
+
+    return $m->where($where);
+}
+
+/**
+ * 读取租户级配置
+ * @param string $key 配置键名
+ * @param mixed $default 默认值
+ * @param int $campus_id 校区ID（默认当前租户）
+ * @return mixed 配置值
+ */
+function MyCampusConfig($key, $default = null, $campus_id = 0) {
+    if ($campus_id <= 0) {
+        $campus_id = GetTenantCampusId();
+    }
+    if ($campus_id <= 0) return $default;
+
+    $value = S('campus_config_' . $campus_id . '_' . $key);
+    if ($value !== false) return $value;
+
+    $config = M('CampusConfig')->where(array('campus_id' => $campus_id, 'name' => $key))->find();
+    if (!empty($config)) {
+        S('campus_config_' . $campus_id . '_' . $key, $config['value']);
+        return $config['value'];
+    }
+
+    return $default;
+}
+
+/**
+ * 是否为超管
+ * @return bool
+ */
+function IsSuperAdmin() {
+    return session('admin.is_super') == 1;
+}
 ?>

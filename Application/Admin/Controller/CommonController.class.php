@@ -21,6 +21,9 @@ class CommonController extends Controller
 	// 左边权限菜单
 	protected $left_menu;
 
+	// 多租户 — 当前校区ID
+	protected $tenant_campus_id = 0;
+
 	/**
 	 * [__construt 构造方法]
 	 * @author   Devil
@@ -35,6 +38,16 @@ class CommonController extends Controller
 	{
 		// 配置信息初始化
 		MyConfigInit();
+		
+		// 多租户初始化 — 识别当前校区
+		$this->tenant_campus_id = GetTenantCampusId();
+		$this->assign('tenant_campus_id', $this->tenant_campus_id);
+		if ($this->tenant_campus_id > 0) {
+			$tenant_campus = M('Campus')->find($this->tenant_campus_id);
+			$this->assign('tenant_campus_name', $tenant_campus['site_name'] ?: $tenant_campus['name']);
+			$this->assign('tenant_campus_logo', $tenant_campus['logo']);
+			$this->assign('tenant_theme_color', !empty($tenant_campus['theme_color']) ? $tenant_campus['theme_color'] : '#4e73df');
+		}
 		
 		// 权限
 		$this->PowerInit();
