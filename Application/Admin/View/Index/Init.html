@@ -1,47 +1,38 @@
-<include file="Public/Header" />
+<?php include dirname(__FILE__) . '/../Public/Header.html'; ?>
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<p class="fw-700 list-title">{{:L('os_view_title')}}</p>
+		<p class="fw-700 list-title"><?php echo L('os_view_title'); ?></p>
 		<dl class="dl-content">
-			<dt>{{:L('ver_name')}}</dt>
-			<dd>{{$data.ver}}<a href="{{:L('common_application_website')}}" target="_blank" class="m-l-10">{{:L('ver_to_view_name')}}</a></dd>
+			<dt><?php echo L('ver_name'); ?></dt>
+			<dd><?php echo $data['ver']; ?><a href="#" class="m-l-10"><?php echo L('ver_to_view_name'); ?></a></dd>
 
-			<dt>{{:L('os_ver_name')}}</dt>
-			<dd>{{$data.os_ver}}</dd>
+			<dt><?php echo L('os_ver_name'); ?></dt>
+			<dd><?php echo $data['os_ver']; ?></dd>
 
-			<dt>{{:L('php_ver_name')}}</dt>
-			<dd>{{$data.php_ver}}</dd>
+			<dt><?php echo L('php_ver_name'); ?></dt>
+			<dd><?php echo $data['php_ver']; ?></dd>
 
-			<dt>{{:L('mysql_ver_name')}}</dt>
-			<dd>{{$data.mysql_ver}}</dd>
+			<dt><?php echo L('mysql_ver_name'); ?></dt>
+			<dd><?php echo $data['mysql_ver']; ?></dd>
 
-			<dt>{{:L('server_ver_name')}}</dt>
-			<dd>{{$data.server_ver}}</dd>
+			<dt><?php echo L('server_ver_name'); ?></dt>
+			<dd><?php echo $data['server_ver']; ?></dd>
 
-			<dt>{{:L('host_name')}}</dt>
-			<dd>{{$data.host}}</dd>
+			<dt><?php echo L('host_name'); ?></dt>
+			<dd><?php echo $data['host']; ?></dd>
 		</dl>
 
-		<p class="fw-700 list-title">{{:L('team_view_title')}}</p>
+		<p class="fw-700 list-title"><?php echo L('team_view_title'); ?></p>
 		<dl class="dl-content">
-			<dt>{{:L('copyright_name')}}</dt>
-			<dd>{{:L('common_application_name')}}</dd>
-
-			<dt>{{:L('originator_name')}}</dt>
-			<dd>龚哥哥</dd>
-
-			<dt>{{:L('research_name')}}</dt>
-			<dd>
-				<a href="http://gong.gg/" target="_blank">龚哥哥</a>
-				<a href="javascript:;" class="m-l-10">小会</a>
-			</dd>
+			<dt><?php echo L('copyright_name'); ?></dt>
+			<dd>SUOJIAN</dd>
 		</dl>
 	</div>
 </div>
 <!-- right content end  -->
 
 <!-- footer start -->
-<include file="Public/Footer" />
+<?php include dirname(__FILE__) . '/../Public/Footer.html'; ?>
 <!-- footer end -->

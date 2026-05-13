@@ -16,7 +16,7 @@ return array(
 	// 应用信息
 	'common_application_name'			=>	'SUOJIAN',
 	'common_application_ver'			=>	'v2.3.1',
-	'common_application_website'		=>	'http://schoolcms.org/',
+	'common_application_website'		=>	'#',
 
 	// 公共
 	'common_login_success'				=>	'登录成功',
