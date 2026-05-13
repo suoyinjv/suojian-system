@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>请假申请 - SchoolCMS</title>
+    <title>请假申请 - SUOJIAN</title>
     <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
     <style>
         .status-0 { color: #fa8c16; }
@@ -75,7 +75,7 @@
                 </div>
                 </volist>
                 
-                <if condition="$vo['status'] eq 0">
+                <if condition="$vo['status'] == 0">
                 <div style="margin-top: 20px;">
                     <a href="{:U('approve', array('id'=>$vo['id']))}" class="am-btn am-btn-success am-radius" onclick="return confirm('确认批准此请假申请？')">
                         <i class="am-icon-check"></i> 批准

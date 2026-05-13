@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <title>发放优惠券</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-g am-g-fixed am-margin-top">
@@ -14,17 +14,17 @@
             <h3 class="am-panel-title"><i class="am-icon-gift"></i> 发放优惠券</h3>
         </div>
         <div class="am-panel-bd">
-            <form action="__SELF__" method="POST" class="am-form am-form-horizontal" id="sendForm">
+            <form action="" method="POST" class="am-form am-form-horizontal" id="sendForm">
                 <div class="am-form-group">
                     <label class="am-u-sm-2 am-text-right">选择优惠券</label>
                     <div class="am-u-sm-6">
                         <select name="coupon_id" class="am-form-field" required>
                             <option value="">请选择优惠券</option>
-                            <volist name="couponList" id="vo">
-                            <option value="{$vo.id}" <if condition="I('coupon_id') eq $vo['id']">selected</if>>
-                                {$vo.name} (剩余: {$vo.remain_count})
+                            <?php foreach($$couponList as $$vo): ?>
+                            <option value="<?php echo $vo['id']; ?>" <?php if(I('coupon_id') == $vo['id']): ?>selected<?php endif; ?>>
+                                <?php echo $vo['name']; ?> (剩余: <?php echo $vo['remain_count']; ?>)
                             </option>
-                            </volist>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                 
                 <div class="am-form-group">
                     <div class="am-u-sm-offset-2 am-u-sm-6">
-                        <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                        <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                     </div>
                 </div>
             </form>
@@ -98,8 +98,8 @@
     </div>
 </div>
 
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 var selectedStudents = [];
 

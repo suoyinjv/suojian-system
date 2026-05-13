@@ -1,0 +1,99 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form form-validation view-save" action="{<?php echo U('Admin/Marketing/Save'); ?>}" method="POST" request-type="ajax-url" request-value="{<?php echo U('Admin/Marketing/Index'); ?>}">
+			<legend>
+				<span class="fs-16">
+					<?php if(empty($data['id'])): ?>
+						新增活动
+					<?php else: ?>
+						编辑活动
+					<?php endif; ?>
+				</span>
+				<a href="{<?php echo U('Admin/Marketing/Index'); ?>}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {<?php echo L('common_operation_back'); ?>}</a>
+			</legend>
+
+			<div class="am-form-group">
+				<label>活动名称</label>
+				<input type="text" name="name" placeholder="活动名称" class="am-radius" <?php if(!empty($$data)): ?> value="{<?php echo $data['name']; ?>}"<?php endif; ?> required />
+			</div>
+
+			<div class="am-form-group">
+				<label>活动类型</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="1" <?php if(!isset($data['type']) or $data['type'] == 1): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 公开课
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="2" <?php if(isset($data['type']) and $data['type'] == 2): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 体验课
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="3" <?php if(isset($data['type']) and $data['type'] == 3): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 优惠活动
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="type" value="4" <?php if(isset($data['type']) and $data['type'] == 4): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 招生活动
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<label>时间范围</label>
+				<div class="am-g">
+					<div class="am-u-sm-5">
+						<input type="text" name="start_time" class="am-radius" placeholder="开始时间" <?php if(!empty($$data)): ?> value="{<?php echo $data['start_time']; ?>}"<?php endif; ?> data-am-datepicker="{format: 'yyyy-mm-dd hh:ii:ss', viewMode: 'days'}" readonly required />
+					</div>
+					<div class="am-u-sm-1 am-text-center">~</div>
+					<div class="am-u-sm-5">
+						<input type="text" name="end_time" class="am-radius" placeholder="结束时间" <?php if(!empty($$data)): ?> value="{<?php echo $data['end_time']; ?>}"<?php endif; ?> data-am-datepicker="{format: 'yyyy-mm-dd hh:ii:ss', viewMode: 'days'}" readonly required />
+					</div>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<label>活动规则</label>
+				<textarea name="rules" id="editor" class="am-radius"><?php if(!empty($$data)): ?>{<?php echo $data['rules']; ?>}<?php endif; ?></textarea>
+			</div>
+
+			<div class="am-form-group">
+				<label>状态</label>
+				<div>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="0" <?php if(!isset($data['status']) or $data['status'] == 0): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 未开始
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="1" <?php if(isset($data['status']) and $data['status'] == 1): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 进行中
+					</label>
+					<label class="am-radio-inline m-r-10">
+						<input type="radio" name="status" value="2" <?php if(isset($data['status']) and $data['status'] == 2): ?>checked="checked"<?php endif; ?> data-am-ucheck /> 已结束
+					</label>
+				</div>
+			</div>
+
+			<div class="am-form-group">
+				<input type="hidden" name="id" <?php if(!empty($$data)): ?> value="{<?php echo $data['id']; ?>}"<?php endif; ?> />
+				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{<?php echo L('common_form_loading_tips'); ?>}'}">{<?php echo L('common_operation_save'); ?>}</button>
+			</div>
+		</form>
+		<!-- form end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 富文本编辑器
+	if(typeof UE != 'undefined'){
+		var ue = UE.getEditor('editor', {
+			initialFrameWidth: '100%',
+			initialFrameHeight: 300
+		});
+	}
+});
+</script>

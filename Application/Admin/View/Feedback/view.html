@@ -62,7 +62,7 @@
                         <tr>
                             <td>{$vo.id}</td>
                             <td>{$vo.name}</td>
-                            <td><if condition="$vo['sex'] eq 1">男<else/>女</if></td>
+                            <td><if condition="$vo['sex'] == 1">男<else/>女</if></td>
                             <td>{$vo.phone}</td>
                             <td>{$vo.parent_name|default='-'}</td>
                         </tr>

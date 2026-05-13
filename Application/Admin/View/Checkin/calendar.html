@@ -14,7 +14,7 @@
                     <select name="student_id" class="am-form-field" onchange="this.form.submit()">
                         <option value="">请选择学生</option>
                         <volist name="student_list" id="vo">
-                        <option value="{$vo.id}" <if condition="I('student_id') eq $vo['id']">selected</if>>{$vo.student_name} - {$vo.phone}</option>
+                        <option value="{$vo.id}" <if condition="I('student_id') == $vo['id']">selected</if>>{$vo.student_name} - {$vo.phone}</option>
                         </volist>
                     </select>
                 </div>
@@ -27,7 +27,7 @@
             </div>
         </form>
 
-        <if condition="I('student_id') neq ''">
+        <if condition="I('student_id') != ''">
         <!-- 打卡统计 -->
         <div class="am-g m-b-10">
             <div class="am-u-sm-3">
@@ -84,13 +84,13 @@
                 <div class="am-g">
                     <volist name="calendar_data" id="day">
                     <div class="am-u-sm-1 am-text-center m-b-5">
-                        <if condition="$day.date neq ''">
-                            <div class="calendar-day <if condition='$day.status eq 1'>am-btn-success am-radius<elseif condition="$day.status eq 0' />am-btn-danger am-radius<else />am-btn-default am-radius</if>" 
+                        <if condition="$day.date != ''">
+                            <div class="calendar-day <if condition='$day.status == 1'>am-btn-success am-radius<elseif condition="$day.status == 0' />am-btn-danger am-radius<else />am-btn-default am-radius</if>" 
                                  style="padding:8px 0;cursor:pointer;" onclick="showDayDetail('{$day.date}')">
                                 <div class="am-text-lg">{$day.day}</div>
-                                <if condition="$day.status eq 1">
+                                <if condition="$day.status == 1">
                                     <div class="am-text-xs">✓</div>
-                                <elseif condition="$day.status eq 0" />
+                                <elseif condition="$day.status == 0" />
                                     <div class="am-text-xs">✗</div>
                                 </if>
                             </div>

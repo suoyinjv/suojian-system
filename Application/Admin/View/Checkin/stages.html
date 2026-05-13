@@ -36,7 +36,7 @@
                     <td>{$vo.reward_points}分</td>
                     <td>{$vo.badge|default='无'}</td>
                     <td>
-                        <if condition="$vo['status'] eq 1">
+                        <if condition="$vo['status'] == 1">
                             <span class="am-badge am-badge-success">启用</span>
                         <else />
                             <span class="am-badge am-badge-default">禁用</span>

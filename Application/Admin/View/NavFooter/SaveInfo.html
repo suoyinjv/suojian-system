@@ -35,10 +35,10 @@
 				<label>状态</label>
 				<div>
 					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="is_show" value="1" <if condition="!isset($data['is_show']) or $data['is_show'] eq 1">checked="checked"</if> data-am-ucheck /> 显示
+						<input type="radio" name="is_show" value="1" <if condition="!isset($data['is_show']) or $data['is_show'] == 1">checked="checked"</if> data-am-ucheck /> 显示
 					</label>
 					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="is_show" value="0" <if condition="isset($data['is_show']) and $data['is_show'] eq 0">checked="checked"</if> data-am-ucheck /> 隐藏
+						<input type="radio" name="is_show" value="0" <if condition="isset($data['is_show']) and $data['is_show'] == 0">checked="checked"</if> data-am-ucheck /> 隐藏
 					</label>
 				</div>
 			</div>

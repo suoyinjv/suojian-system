@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>短信模板管理</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -14,7 +14,7 @@
                     <div class="am-panel-hd">
                         <h3 class="am-panel-title">
                             <i class="am-icon-file-text"></i> 短信模板
-                            <a href="{:U('addTemplate')}" class="am-btn am-btn-xs am-btn-primary am-radius am-fr">
+                            <a href="<?php echo U('addTemplate'); ?>" class="am-btn am-btn-xs am-btn-primary am-radius am-fr">
                                 <i class="am-icon-plus"></i> 添加模板
                             </a>
                         </h3>
@@ -33,41 +33,41 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <volist name="list" id="vo">
+                                <?php foreach($$list as $$vo): ?>
                                 <tr>
-                                    <td>{$vo.id}</td>
-                                    <td>{$vo.name}</td>
-                                    <td class="am-text-truncate" style="max-width:300px;">{$vo.content}</td>
+                                    <td><?php echo $vo['id']; ?></td>
+                                    <td><?php echo $vo['name']; ?></td>
+                                    <td class="am-text-truncate" style="max-width:300px;"><?php echo $vo['content']; ?></td>
                                     <td>
-                                        <if condition="$vo['type'] eq 1">
+                                        <?php if($vo['type'] == 1): ?>
                                             <span class="am-badge am-badge-primary">通知</span>
-                                        <elseif condition="$vo['type'] eq 2"/>
+                                        <?php elseif($vo['type'] == 2): ?>
                                             <span class="am-badge am-badge-warning">营销</span>
                                         <else/>
                                             <span class="am-badge am-badge-default">验证码</span>
-                                        </if>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <if condition="$vo['status'] eq 1">
+                                        <?php if($vo['status'] == 1): ?>
                                             <span class="am-badge am-badge-success">启用</span>
                                         <else/>
                                             <span class="am-badge am-badge-default">禁用</span>
-                                        </if>
+                                        <?php endif; ?>
                                     </td>
                                     <td>{$vo.create_time|date='Y-m-d',###}</td>
                                     <td>
-                                        <a href="{:U('editTemplate?id='.$vo['id'])}">编辑</a>
-                                        <a href="{:U('deleteTemplate?id='.$vo['id'])}" onclick="return confirm('确定删除?')">删除</a>
+                                        <a href="<?php echo U('editTemplate?id='.$vo['id']); ?>">编辑</a>
+                                        <a href="<?php echo U('deleteTemplate?id='.$vo['id']); ?>" onclick="return confirm('确定删除?')">删除</a>
                                     </td>
                                 </tr>
-                                </volist>
-                                <notpresent name="list">
+                                <?php endforeach; ?>
+                                <?php if(!isset($$list)): ?>
                                 <tr><td colspan="7" class="text-center">暂无模板</td></tr>
-                                </notpresent>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         
-                        <a href="{:U('send')}" class="am-btn am-btn-default">
+                        <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default">
                             <i class="am-icon-arrow-left"></i> 返回发送页面
                         </a>
                     </div>
@@ -76,6 +76,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

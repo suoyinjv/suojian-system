@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>活动统计 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <title>活动统计 - SUOJIAN</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -14,7 +14,7 @@
                 <div class="am-panel am-panel-primary">
                     <div class="am-panel-bd am-text-center">
                         <i class="am-icon-ticket am-icon-lg am-text-success"></i>
-                        <h2>{$total_activities|default=0}</h2>
+                        <h2><?php echo $total_activities ?? '0'; ?></h2>
                         <p>活动总数</p>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                 <div class="am-panel am-panel-success">
                     <div class="am-panel-bd am-text-center">
                         <i class="am-icon-users am-icon-lg am-text-success"></i>
-                        <h2>{$total_participants|default=0}</h2>
+                        <h2><?php echo $total_participants ?? '0'; ?></h2>
                         <p>参与人次</p>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                 <div class="am-panel am-panel-warning">
                     <div class="am-panel-bd am-text-center">
                         <i class="am-icon-check am-icon-lg am-text-success"></i>
-                        <h2>{$valid_activities|default=0}</h2>
+                        <h2><?php echo $valid_activities ?? '0'; ?></h2>
                         <p>进行中活动</p>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                 <div class="am-panel am-panel-danger">
                     <div class="am-panel-bd am-text-center">
                         <i class="am-icon-gift am-icon-lg am-text-success"></i>
-                        <h2>{$coupon_usage|default=0}</h2>
+                        <h2><?php echo $coupon_usage ?? '0'; ?></h2>
                         <p>优惠券发放</p>
                     </div>
                 </div>
@@ -68,26 +68,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <volist name="activity_stats" id="vo">
+                                <?php foreach($$activity_stats as $$vo): ?>
                                 <tr>
-                                    <td>{$vo.title}</td>
-                                    <td>{$vo.type_text}</td>
-                                    <td>{$vo.start_time} ~ {$vo.end_time}</td>
-                                    <td>{$vo.used_count}</td>
-                                    <td>{$vo.total_count}</td>
-                                    <td>{$vo.usage_rate}%</td>
-                                    <td>{$vo.coupon_count}</td>
+                                    <td><?php echo $vo['title']; ?></td>
+                                    <td><?php echo $vo['type_text']; ?></td>
+                                    <td><?php echo $vo['start_time']; ?> ~ <?php echo $vo['end_time']; ?></td>
+                                    <td><?php echo $vo['used_count']; ?></td>
+                                    <td><?php echo $vo['total_count']; ?></td>
+                                    <td><?php echo $vo['usage_rate']; ?>%</td>
+                                    <td><?php echo $vo['coupon_count']; ?></td>
                                     <td>
-                                        <a href="{:U('detail', array('id'=>$vo['id']))}">详情</a>
-                                        <a href="{:U('records', array('activity_id'=>$vo['id']))}">记录</a>
+                                        <a href="<?php echo U('detail', array('id'=>$vo['id'])); ?>">详情</a>
+                                        <a href="<?php echo U('records', array('activity_id'=>$vo['id'])); ?>">记录</a>
                                     </td>
                                 </tr>
-                                </volist>
-                                <if condition="empty($activity_stats)">
+                                <?php endforeach; ?>
+                                <?php if(empty($activity_stats)): ?>
                                 <tr>
                                     <td colspan="8" class="am-text-center">暂无数据</td>
                                 </tr>
-                                </if>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -96,6 +96,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

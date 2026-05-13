@@ -10,21 +10,21 @@
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">查询</button>
 				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
 					更多筛选
-					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
 					<i class="am-icon-angle-down"></i>
 				</label>
 
-				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
 					<select name="student_id" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="0">选择学员</option>
 						<foreach name="student_list" item="v">
-							<option value="{{$v.id}}" <if condition="isset($param['student_id']) and $param['student_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+							<option value="{{$v.id}}" <if condition="isset($param['student_id']) and $param['student_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 						</foreach>
 					</select>
 					<select name="status" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="">状态</option>
-						<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>已发布</option>
-						<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>待发布</option>
+						<option value="1" <if condition="isset($param['status']) and $param['status'] == 1">selected</if>>已发布</option>
+						<option value="0" <if condition="isset($param['status']) and $param['status'] == 0">selected</if>>待发布</option>
 					</select>
 					<div class="param-date param-where m-l-5">
 						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="开始日期" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
@@ -71,7 +71,7 @@
 								</if>
 							</td>
 							<td>
-								<if condition="$v['status'] eq 1">
+								<if condition="$v['status'] == 1">
 									<span class="am-badge am-badge-success">已发布</span>
 								<else />
 									<span class="am-badge am-badge-warning">待发布</span>
@@ -84,7 +84,7 @@
 								<a href="{{:U('Admin/Growth/SaveShare', array('id'=>$v['id']))}}">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '编辑', trigger: 'hover focus'}"></button>
 								</a>
-								<if condition="$v['status'] eq 0">
+								<if condition="$v['status'] == 0">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-toggle-off publish-btn" data-url="{{:U('Admin/Growth/PublishShare')}}" data-am-popover="{content: '发布', trigger: 'hover focus'}" data-id="{{$v.id}}"></button>
 								<else />
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-toggle-on unpublish-btn" data-url="{{:U('Admin/Growth/UnpublishShare')}}" data-am-popover="{content: '取消发布', trigger: 'hover focus'}" data-id="{{$v.id}}"></button>

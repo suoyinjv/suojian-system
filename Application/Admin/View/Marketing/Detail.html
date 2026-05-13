@@ -1,0 +1,120 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">活动详情</span>
+			<a href="{<?php echo U('Admin/Marketing/Index'); ?>}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {<?php echo L('common_operation_back'); ?>}</a>
+		</legend>
+
+		<!-- 基本信息 -->
+		<div class="am-panel am-panel-primary am-radius m-t-10">
+			<div class="am-panel-hd">活动基本信息</div>
+			<div class="am-panel-bd">
+				<dl class="dl-content">
+					<dt>活动名称</dt>
+					<dd>{<?php echo $data['name']; ?>}</dd>
+					<dt>活动类型</dt>
+					<dd>
+						<?php if($data['type'] == 1): ?>公开课
+						<?php elseif($data['type'] == 2): ?>体验课
+						<?php elseif($data['type'] == 3): ?>优惠活动
+						<?php else: ?>招生活动
+						<?php endif; ?>
+					</dd>
+					<dt>时间范围</dt>
+					<dd>{<?php echo $data['start_time']; ?>} ~ {<?php echo $data['end_time']; ?>}</dd>
+					<dt>活动状态</dt>
+					<dd>
+						<?php if($data['status'] == 0): ?><span class="am-badge">未开始</span>
+						<?php elseif($data['status'] == 1): ?><span class="am-badge am-badge-primary">进行中</span>
+						<?php else: ?><span class="am-badge am-badge-default">已结束</span>
+						<?php endif; ?>
+					</dd>
+					<dt>创建时间</dt>
+					<dd>{<?php echo $data['add_time']; ?>}</dd>
+				</dl>
+			</div>
+		</div>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{<?php echo $data['view_count']; ?>}</p>
+						<p class="am-text-default">浏览量</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{<?php echo $data['uv_count']; ?>}</p>
+						<p class="am-text-default">访问UV</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{<?php echo $data['signup_count']; ?>}</p>
+						<p class="am-text-default">报名数</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{<?php echo $data['conversion_rate']; ?>}%</p>
+						<p class="am-text-default">转化率</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 报名列表 -->
+		<div class="am-panel am-panel-default am-radius m-t-15">
+			<div class="am-panel-hd">报名列表</div>
+			<div class="am-panel-bd">
+				<table class="am-table am-table-striped am-table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>学员姓名</th>
+							<th>手机号</th>
+							<th>报名时间</th>
+							<th>状态</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if(!empty($signup_list)): ?>
+							<foreach name="signup_list" item="v">
+								<tr>
+									<td>{<?php echo $v['id']; ?>}</td>
+									<td>{<?php echo $v['student_name']; ?>}</td>
+									<td>{<?php echo $v['mobile']; ?>}</td>
+									<td>{<?php echo $v['add_time']; ?>}</td>
+									<td>
+										<?php if($v['status'] == 0): ?><span class="am-badge">待确认</span>
+										<?php elseif($v['status'] == 1): ?><span class="am-badge am-badge-success">已确认</span>
+										<?php else: ?><span class="am-badge am-badge-danger">已取消</span>
+										<?php endif; ?>
+									</td>
+								</tr>
+							</foreach>
+						<?php else: ?>
+							<tr><td colspan="5" class="am-text-center">暂无报名记录</td></tr>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

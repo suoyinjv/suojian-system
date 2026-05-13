@@ -56,15 +56,15 @@
                     <td>{$item.title}</td>
                     <td>{$item.target_date}</td>
                     <td>
-                        <if condition="$item.status eq 0">
+                        <if condition="$item.status == 0">
                             <span class="label label-warning">进行中</span>
-                        <elseif condition="$item.status eq 1"/>
+                        <elseif condition="$item.status == 1"/>
                             <span class="label label-success">已完成</span>
                         </if>
                     </td>
                     <td>
                         <a href="{:U('edit?id='.$item['id'])}" class="btn btn-xs btn-primary">编辑</a>
-                        <if condition="$item.status eq 0">
+                        <if condition="$item.status == 0">
                             <a href="{:U('complete?id='.$item['id'])}" class="btn btn-xs btn-success">完成</a>
                         </if>
                         <a href="{:U('delete?id='.$item['id'])}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除?')">删除</a>

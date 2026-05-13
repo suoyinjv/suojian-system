@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>课程套餐管理 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <title>课程套餐管理 - SUOJIAN</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -35,31 +35,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <volist name="list" id="vo">
+                    <?php foreach($$list as $$vo): ?>
                     <tr>
-                        <td>{$vo.id}</td>
-                        <td>{$vo.name}</td>
-                        <td>{$vo.type_text}</td>
-                        <td>{$vo.total_hours}</td>
-                        <td>{$vo.price}</td>
-                        <td>{$vo.gift_hours}</td>
-                        <td>{$vo.valid_days}</td>
-                        <td>{$vo.status_text}</td>
+                        <td><?php echo $vo['id']; ?></td>
+                        <td><?php echo $vo['name']; ?></td>
+                        <td><?php echo $vo['type_text']; ?></td>
+                        <td><?php echo $vo['total_hours']; ?></td>
+                        <td><?php echo $vo['price']; ?></td>
+                        <td><?php echo $vo['gift_hours']; ?></td>
+                        <td><?php echo $vo['valid_days']; ?></td>
+                        <td><?php echo $vo['status_text']; ?></td>
                         <td>
-                            <a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
-                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/{$vo.id}')">删除</a>
+                            <a href="__CONTROLLER__/edit/id/<?php echo $vo['id']; ?>">编辑</a>
+                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/<?php echo $vo['id']; ?>')">删除</a>
                         </td>
                     </tr>
-                    </volist>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="am-pagination">
-                {$page}
+                <?php echo $page; ?>
             </div>
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 function deleteConfirm(url) {
     if(confirm('确定要删除吗？')) {

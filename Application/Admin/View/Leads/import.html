@@ -119,16 +119,16 @@
                             <td>{{$vo.operator_name}}</td>
                             <td>{{$vo.create_date}}</td>
                             <td>
-                                <if condition="$vo['status'] eq 1">
+                                <if condition="$vo['status'] == 1">
                                     <span class="am-badge am-badge-success">成功</span>
-                                <elseif condition="$vo['status'] eq 0" />
+                                <elseif condition="$vo['status'] == 0" />
                                     <span class="am-badge am-badge-warning">进行中</span>
                                 <else />
                                     <span class="am-badge am-badge-danger">失败</span>
                                 </if>
                             </td>
                             <td>
-                                <if condition="$vo['fail_count'] gt 0">
+                                <if condition="$vo['fail_count'] > 0">
                                     <a href="{{:U('Admin/Leads/downloadError', array('id'=>$vo['id']))}}" class="am-btn am-btn-xs am-btn-warning am-radius">
                                         <i class="am-icon-download"></i> 错误日志
                                     </a>
@@ -161,7 +161,7 @@
             <p>总记录数：{{$import_result.total|default=0}}</p>
             <p>成功数量：{{$import_result.success|default=0}}</p>
             <p>失败数量：{{$import_result.fail|default=0}}</p>
-            <if condition="$import_result.fail|default=0 gt 0">
+            <if condition="$import_result.fail|default=0 > 0">
             <p><a href="{{:U('Admin/Leads/downloadError', array('batch_id'=>$import_result.batch_id))}}">点击下载错误日志</a></p>
             </if>
         </div>

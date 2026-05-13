@@ -21,7 +21,7 @@
 				<select name="live_id" class="am-radius" onchange="this.form.submit()">
 					<option value="0">全部课程</option>
 					<foreach name="live_list" item="v">
-						<option value="{{$v.id}}" <if condition="$live_id eq $v['id']">selected</if>>{{$v.title}}</option>
+						<option value="{{$v.id}}" <if condition="$live_id == $v['id']">selected</if>>{{$v.title}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -46,7 +46,7 @@
 						<volist name="list" id="vo">
 						<tr>
 							<td>
-								<if condition="$vo['type'] eq 'img'">
+								<if condition="$vo['type'] == 'img'">
 									<a href="{$vo.file_url}" target="_blank"><img src="{$vo.file_url}" style="width:40px;height:40px;vertical-align:middle;margin-right:5px;object-fit:cover;"></a>
 								</if>
 								{$vo.title}
@@ -64,7 +64,7 @@
 							</td>
 						</tr>
 						</volist>
-						<if condition="count($list) eq 0">
+						<if condition="count($list) == 0">
 						<tr><td colspan="7" class="am-text-center cr-999">暂无资源数据</td></tr>
 						</if>
 					</tbody>

@@ -1,1 +1,68 @@
-Index.html
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">数据统计</span>
+		</legend>
+
+		<!-- 统计卡片 -->
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-primary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$today_students}}</p>
+						<p class="am-text-default">今日新增</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-success am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$month_students}}</p>
+						<p class="am-text-default">本月新增</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-warning am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$total_students}}</p>
+						<p class="am-text-default">学员总数</p>
+					</div>
+				</div>
+			</div>
+			<div class="am-u-sm-3">
+				<div class="am-panel am-panel-secondary am-radius">
+					<div class="am-panel-bd am-text-center">
+						<p class="am-text-xxl">{{$active_students}}</p>
+						<p class="am-text-default">活跃学员</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-12">
+				<a href="{{:U('Admin/Stats/Dashboard')}}" class="am-btn am-btn-secondary am-radius am-btn-lg am-icon-dashboard"> 数据看板</a>
+				<a href="{{:U('Admin/Stats/Recruitment')}}" class="am-btn am-btn-success am-radius am-btn-lg m-l-10 am-icon-user"> 招生统计</a>
+				<a href="{{:U('Admin/Stats/Revenue')}}" class="am-btn am-btn-primary am-radius am-btn-lg m-l-10 am-icon-line-chart"> 营收统计</a>
+				<a href="{{:U('Admin/Stats/Student')}}" class="am-btn am-btn-warning am-radius am-btn-lg m-l-10 am-icon-users"> 学员分析</a>
+			</div>
+		</div>
+
+		<div class="am-g m-t-15">
+			<div class="am-u-sm-12">
+				<a href="{{:U('Admin/Stats/Consumption')}}" class="am-btn am-btn-default am-radius am-btn-lg m-t-10 am-icon-shopping-cart"> 消费统计</a>
+				<a href="{{:U('Admin/Stats/Class')}}" class="am-btn am-btn-default am-radius am-btn-lg m-l-10 m-t-10 am-icon-calendar"> 班级统计</a>
+				<a href="{{:U('Admin/Stats/Export')}}" class="am-btn am-btn-default am-radius am-btn-lg m-l-10 m-t-10 am-icon-download"> 导出报表</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

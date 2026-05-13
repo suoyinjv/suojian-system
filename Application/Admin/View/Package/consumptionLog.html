@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>课消记录</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -17,8 +17,8 @@
                     <div class="am-panel-bd">
                         <!-- 课程包信息 -->
                         <div class="am-alert am-alert-secondary">
-                            <p><strong>课程包：</strong>{$package.package_name}</p>
-                            <p><strong>总课时：</strong>{$package.total_hours} | <strong>剩余课时：</strong>{$package.remaining_hours}</p>
+                            <p><strong>课程包：</strong><?php echo $package['package_name']; ?></p>
+                            <p><strong>总课时：</strong><?php echo $package['total_hours']; ?> | <strong>剩余课时：</strong><?php echo $package['remaining_hours']; ?></p>
                             <p><strong>购买时间：</strong>{$package.create_time|date='Y-m-d',###}</p>
                         </div>
                         
@@ -36,28 +36,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <volist name="logs" id="log">
+                                <?php foreach($$logs as $$log): ?>
                                 <tr>
-                                    <td>{$log.id}</td>
+                                    <td><?php echo $log['id']; ?></td>
                                     <td>{$log.create_time|date='Y-m-d H:i',###}</td>
                                     <td>
-                                        <if condition="$log.type eq 'attendance'">
+                                        <?php if($log['type'] == 'attendance'): ?>
                                             <span class="am-badge am-badge-primary">考勤扣课</span>
-                                        <elseif condition="$log.type eq 'manual'"/>
+                                        <?php elseif($log['type'] == 'manual'): ?>
                                             <span class="am-badge am-badge-warning">手动扣课</span>
                                         <else/>
-                                            <span class="am-badge am-badge-default">{$log.type}</span>
-                                        </if>
+                                            <span class="am-badge am-badge-default"><?php echo $log['type']; ?></span>
+                                        <?php endif; ?>
                                     </td>
-                                    <td><span class="am-text-danger">-{$log.hours}</span></td>
-                                    <td>{$log.before_hours}</td>
-                                    <td>{$log.after_hours}</td>
+                                    <td><span class="am-text-danger">-<?php echo $log['hours']; ?></span></td>
+                                    <td><?php echo $log['before_hours']; ?></td>
+                                    <td><?php echo $log['after_hours']; ?></td>
                                     <td>{$log.remark|default='-'}</td>
                                 </tr>
-                                </volist>
-                                <notpresent name="logs">
+                                <?php endforeach; ?>
+                                <?php if(!isset($$logs)): ?>
                                 <tr><td colspan="7" class="text-center">暂无消费记录</td></tr>
-                                </notpresent>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         
@@ -72,6 +72,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>添加跟进记录</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -12,13 +12,13 @@
             <div class="am-u-sm-8 am-u-sm-centered">
                 <div class="am-panel am-panel-success">
                     <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="am-icon-edit"></i> 添加跟进记录 - {$info.student_name}</h3>
+                        <h3 class="am-panel-title"><i class="am-icon-edit"></i> 添加跟进记录 - <?php echo $info['student_name']; ?></h3>
                     </div>
                     <div class="am-panel-bd">
                         <!-- 线索基本信息 -->
                         <div class="am-alert am-alert-secondary">
-                            <p><strong>电话：</strong>{$info.phone}</p>
-                            <p><strong>来源：</strong>{$info.source}</p>
+                            <p><strong>电话：</strong><?php echo $info['phone']; ?></p>
+                            <p><strong>来源：</strong><?php echo $info['source']; ?></p>
                             <p><strong>意向课程：</strong>{$info.interest_course|default='-'}</p>
                         </div>
                         
@@ -58,15 +58,15 @@
                                         <volist name="info.follow_logs" id="log" name="logs">
                                         <div class="am-panel am-panel-default am-margin-bottom-xs">
                                             <div class="am-panel-bd">
-                                                <p><small class="am-text-muted">{:date('Y-m-d H:i', $log['create_time'])}</small></p>
-                                                <p>{$log.content}</p>
+                                                <p><small class="am-text-muted"><?php echo date('Y-m-d H:i', $log['create_time']); ?></small></p>
+                                                <p><?php echo $log['content']; ?></p>
                                             </div>
                                         </div>
-                                        </volist>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                             </div>
-                            </notempty>
+                            <?php endif; ?>
                             
                             <div class="am-form-group">
                                 <div class="am-u-sm-8 am-u-sm-offset-3">
@@ -78,7 +78,7 @@
                             
                             <div class="am-form-group">
                                 <div class="am-u-sm-8 am-u-sm-offset-3">
-                                    <a href="{:U('index')}" class="am-btn am-btn-default am-btn-block">返回列表</a>
+                                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default am-btn-block">返回列表</a>
                                 </div>
                             </div>
                         </form>
@@ -88,12 +88,12 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $('#followForm').submit(function() {
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if(res.code) {
             location.href = '__CONTROLLER__/index';

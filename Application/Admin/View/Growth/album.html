@@ -10,15 +10,15 @@
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">查询</button>
 				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
 					更多筛选
-					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] eq 1">checked</if> />
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
 					<i class="am-icon-angle-down"></i>
 				</label>
 
-				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] neq 1">none</if>">
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
 					<select name="student_id" class="am-radius c-p m-t-10 m-l-5 param-where">
 						<option value="0">选择学员</option>
 						<foreach name="student_list" item="v">
-							<option value="{{$v.id}}" <if condition="isset($param['student_id']) and $param['student_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+							<option value="{{$v.id}}" <if condition="isset($param['student_id']) and $param['student_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 						</foreach>
 					</select>
 					<div class="param-date param-where m-l-5">

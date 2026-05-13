@@ -1,0 +1,165 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<legend>
+			<span class="fs-16">任务配置 - {{$activity_name}}</span>
+			<a href="{{:U('Admin/Checkin/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
+		</legend>
+
+		<!-- 操作栏 -->
+		<div class="am-g m-b-10">
+			<a href="{{:U('Admin/Checkin/AddTask', array('activity_id'=>$activity_id))}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 添加任务</a>
+			<div class="am-fr">
+				<select id="view-mode" class="am-radius am-select-inline">
+					<option value="list">列表视图</option>
+					<option value="calendar">日历视图</option>
+				</select>
+			</div>
+		</div>
+
+		<!-- 日历视图容器 -->
+		<div id="calendar-view" class="none">
+			<div class="am-panel am-panel-primary am-radius">
+				<div class="am-panel-hd am-text-center">
+					<span id="calendar-month" class="am-text-lg"></span>
+					<button type="button" class="am-btn am-btn-xs am-btn-default am-radius am-m-l-10" onclick="changeMonth(-1)"><i class="am-icon-chevron-left"></i></button>
+					<button type="button" class="am-btn am-btn-xs am-btn-default am-radius" onclick="changeMonth(1)"><i class="am-icon-chevron-right"></i></button>
+				</div>
+				<div class="am-panel-bd">
+					<table class="am-table am-table-bordered am-text-center m-b-0">
+						<thead>
+							<tr>
+								<th class="am-text-center">日</th>
+								<th class="am-text-center">一</th>
+								<th class="am-text-center">二</th>
+								<th class="am-text-center">三</th>
+								<th class="am-text-center">四</th>
+								<th class="am-text-center">五</th>
+								<th class="am-text-center">六</th>
+							</tr>
+						</thead>
+						<tbody id="calendar-body">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- 列表视图 -->
+		<div id="list-view">
+			<table class="am-table am-table-striped am-table-hover am-text-middle">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>任务名称</th>
+						<th>任务内容</th>
+						<th>类型</th>
+						<th>日期</th>
+						<th>奖励</th>
+						<th>{{:L('common_operation_name')}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<if condition="!empty($tasks)">
+						<foreach name="tasks" item="v">
+							<tr>
+								<td>{{$v.id}}</td>
+								<td>{{$v.name}}</td>
+								<td class="am-text-truncate" style="max-width: 200px;">{{$v.content}}</td>
+								<td>
+									<if condition="$v['task_type'] == 1"><span class="am-badge">文字</span>
+									<elseif condition="$v['task_type'] == 2" /><span class="am-badge am-badge-primary">图片</span>
+									<elseif condition="$v['task_type'] == 3" /><span class="am-badge am-badge-success">音频</span>
+									<elseif condition="$v['task_type'] == 4" /><span class="am-badge am-badge-warning">视频</span>
+									<else /><span class="am-badge am-badge-secondary">答题</span>
+									</if>
+								</td>
+								<td>{{$v.task_date}}</td>
+								<td>{{$v.reward_points}}积分</td>
+								<td class="view-operation">
+									<a href="{{:U('Admin/Checkin/EditTask', array('id'=>$v['id']))}}">
+										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit"></button>
+									</a>
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Checkin/DeleteTask')}}" data-id="{{$v.id}}"></button>
+								</td>
+							</tr>
+						</foreach>
+					<else />
+						<tr><td colspan="7" class="am-text-center">{{:L('common_not_data_tips')}}</td></tr>
+					</if>
+				</tbody>
+			</table>
+		</div>
+
+		<!-- page start -->
+		<if condition="!empty($tasks)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+var currentDate = new Date();
+var taskData = {{$task_json}};
+
+$(function(){
+	$('#view-mode').on('change', function(){
+		if($(this).val() == 'calendar'){
+			$('#list-view').addClass('none');
+			$('#calendar-view').removeClass('none');
+			renderCalendar();
+		} else {
+			$('#calendar-view').addClass('none');
+			$('#list-view').removeClass('none');
+		}
+	});
+});
+
+function changeMonth(delta){
+	currentDate.setMonth(currentDate.getMonth() + delta);
+	renderCalendar();
+}
+
+function renderCalendar(){
+	var year = currentDate.getFullYear();
+	var month = currentDate.getMonth();
+	$('#calendar-month').text(year + '年' + (month + 1) + '月');
+	
+	var firstDay = new Date(year, month, 1);
+	var lastDay = new Date(year, month + 1, 0);
+	var startDay = firstDay.getDay();
+	var days = lastDay.getDate();
+	
+	var html = '';
+	for(var i = 0; i < 6; i++){
+		html += '<tr>';
+		for(var j = 0; j < 7; j++){
+			var day = i * 7 + j - startDay + 1;
+			if(day > 0 && day <= days){
+				var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+				var tasks = taskData[dateStr] || [];
+				var taskHtml = tasks.map(function(t){
+					return '<div class="am-badge am-badge-primary am-text-xs">' + t.name + '</div>';
+				}).join('');
+				html += '<td class="am-text-middle" style="min-height: 80px;">' +
+					'<div class="am-text-lg">' + day + '</div>' +
+					'<div>' + taskHtml + '</div>' +
+					'</td>';
+			} else {
+				html += '<td class="am-text-middle am-bg-gray-lighter"></td>';
+			}
+		}
+		html += '</tr>';
+		if(day > days && i > 4) break;
+	}
+	$('#calendar-body').html(html);
+}
+</script>

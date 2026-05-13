@@ -1,280 +1,151 @@
-<include file="../Public/Header" />
+<include file="Public/Header" />
 
-<!-- 学员个人中心首页 -->
-<div class="student-portal">
-	<!-- 头部欢迎信息 -->
-	<div class="portal-header">
-		<div class="am-container">
-			<h1><i class="am-icon-graduation-cap"></i> 欢迎回来，{{$user.student_name|default='学员'}}</h1>
-			<p class="welcome-text">今天是 {{:date('Y年m月d日')}} {{$weekday|default=''}}，祝您学习愉快！</p>
-		</div>
-	</div>
+<!-- header nav start -->
+<include file="Public/HeaderNav" />
+<!-- header nav end -->
 
-	<div class="am-container" style="margin-top: 20px;">
-		<!-- 快捷统计 -->
-		<div class="am-g">
-			<div class="am-u-md-3 am-u-sm-6">
-				<div class="stat-card">
-					<div class="stat-icon" style="color: #667eea;"><i class="am-icon-book"></i></div>
-					<div class="stat-value">{{$stats.course_count|default=0}}</div>
-					<div class="stat-label">我的课程</div>
-				</div>
-			</div>
-			<div class="am-u-md-3 am-u-sm-6">
-				<div class="stat-card">
-					<div class="stat-icon" style="color: #28a745;"><i class="am-icon-check-circle"></i></div>
-					<div class="stat-value">{{$stats.attendance_rate|default='100%'}}</div>
-					<div class="stat-label">出勤率</div>
-				</div>
-			</div>
-			<div class="am-u-md-3 am-u-sm-6">
-				<div class="stat-card">
-					<div class="stat-icon" style="color: #ffc107;"><i class="am-icon-tasks"></i></div>
-					<div class="stat-value">{{$stats.homework_pending|default=0}}</div>
-					<div class="stat-label">待完成作业</div>
-				</div>
-			</div>
-			<div class="am-u-md-3 am-u-sm-6">
-				<div class="stat-card">
-					<div class="stat-icon" style="color: #dc3545;"><i class="am-icon-file-text"></i></div>
-					<div class="stat-value">{{$stats.growth_records|default=0}}</div>
-					<div class="stat-label">成长记录</div>
-				</div>
-			</div>
-		</div>
+<div class="am-cf user-main" <if condition="!empty($max_width_style)">style="{{$max_width_style}}"</if>>
+  <!-- user menu start -->
+  <include file="Public/UserMenu" />
+  <!-- user menu end -->
 
-		<!-- 快捷导航 -->
-		<div class="am-g" style="margin-top: 20px;">
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Course')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #667eea;"><i class="am-icon-book"></i></div>
-						<div class="nav-title">我的课程</div>
-					</div>
-				</a>
-			</div>
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Attendance')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #28a745;"><i class="am-icon-clock-o"></i></div>
-						<div class="nav-title">考勤打卡</div>
-					</div>
-				</a>
-			</div>
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Growth')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #dc3545;"><i class="am-icon-heart"></i></div>
-						<div class="nav-title">成长档案</div>
-					</div>
-				</a>
-			</div>
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Leave')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #ffc107;"><i class="am-icon-calendar-minus-o"></i></div>
-						<div class="nav-title">请假申请</div>
-					</div>
-				</a>
-			</div>
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Live')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #17a2b8;"><i class="am-icon-video-camera"></i></div>
-						<div class="nav-title">直播课程</div>
-					</div>
-				</a>
-			</div>
-			<div class="am-u-md-2 am-u-sm-4">
-				<a href="{{:U('Home/Student/Poster')}}">
-					<div class="nav-card" style="text-align: center;">
-						<div class="nav-icon" style="color: #6f42c1;"><i class="am-icon-image"></i></div>
-						<div class="nav-title">海报中心</div>
-					</div>
-				</a>
-			</div>
-		</div>
+  <!-- content start -->
+  <div class="user-content">
+    <div class="user-content-body p-10">
+      <!-- operation start -->
+      <div class="am-g ">
+          <a href="{{:U('Home/Student/PolyInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> {{:L('student_operation_binding_text')}}</a>
+      </div>
+      <!-- operation end -->
 
-		<!-- 最近课程 & 考勤汇总 -->
-		<div class="am-g" style="margin-top: 20px;">
-			<!-- 最近课程 -->
-			<div class="am-u-md-6">
-				<div class="am-panel am-panel-default" style="border-radius: 8px;">
-					<div class="am-panel-hd" style="background: #fff; border-bottom: 1px solid #eee;">
-						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold;">
-							<i class="am-icon-book" style="color: #667eea;"></i> 最近课程
-						</h3>
-						<a href="{{:U('Home/Student/Course')}}" class="am-btn am-btn-link am-btn-sm am-fr" style="margin-top: -5px;">查看全部</a>
-					</div>
-					<div class="am-panel-bd">
-						<if condition="!empty($recent_courses)">
-							<foreach name="recent_courses" item="course">
-								<div class="course-card">
-									<div class="course-name">{{$course.course_name}}</div>
-									<div class="course-info"><i class="am-icon-user"></i> {{$course.teacher_name}} | <i class="am-icon-map-marker"></i> {{$course.campus_name}}</div>
-									<div class="course-info"><i class="am-icon-clock-o"></i> {{$course.class_time}}</div>
-									<div class="progress-bar" style="margin-top: 8px;">
-										<div class="progress-fill" style="width: {{$course.progress|default=0}}%;"></div>
-									</div>
-									<div class="am-cf" style="margin-top: 5px; font-size: 12px; color: #666;">
-										<span class="am-fl">学习进度: {{$course.progress|default=0}}%</span>
-										<span class="am-fr">
-											<if condition="$course['status'] eq 1">
-												<span class="status-badge status-ongoing">进行中</span>
-											<elseif condition="$course['status'] eq 2" />
-												<span class="status-badge status-finished">已结课</span>
-											<else />
-												<span class="status-badge status-pending">未开始</span>
-											</if>
-										</span>
-									</div>
-								</div>
-							</foreach>
-						<else />
-							<div class="am-text-center" style="padding: 30px; color: #999;">
-								<i class="am-icon-frown-o" style="font-size: 48px;"></i>
-								<p style="margin-top: 10px;">暂无课程记录</p>
-								<a href="{{:U('Home/Student/Course')}}" class="am-btn am-btn-primary am-btn-sm am-radius">去选课</a>
-							</div>
-						</if>
-					</div>
-				</div>
-			</div>
+      <if condition="!empty($list)">
+        <section data-am-widget="accordion" class="am-accordion am-accordion-default student-accordion" data-am-accordion='{ "multiple": true }'>
+          <foreach name="list" item="v">
+            <dl class="am-accordion-item am-active">
+              <dt class="am-accordion-title">{{$v.name}}</dt>
+              <dd class="am-accordion-bd am-collapse am-in">
+                <!-- list start -->
+                <table class="am-table am-table-striped am-table-hover am-text-middle m-b-0">
+                  <thead>
+                    <tr>
+                      <th>{{:L('student_username_name')}}</th>
+                      <th class="am-hide-sm-only">{{:L('common_view_student_number_text')}}</th>
+                      <th>{{:L('common_view_gender_name')}}</th>
+                      <th class="am-hide-sm-only">{{:L('student_class_text')}}</th>
+                      <th class="am-hide-sm-only">{{:L('common_view_student_state_name')}}</th>
+                      <th>{{:L('common_more_name')}}</th>
+                      <th>{{:L('common_operation_name')}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <if condition="!empty($v.item)">
+                      <foreach name="v.item" item="vs">
+                        <tr id="data-list-{{$vs.user_student_id}}">
+                          <td>{{$vs.username}}</td>
+                          <td class="am-hide-sm-only">{{$vs.number}}</td>
+                          <td>{{$vs.gender}}</td>
+                          <td class="am-hide-sm-only">{{$vs.class_name}}</td>
+                          <td class="am-hide-sm-only">{{$vs.state}}</td>
+                          <td>
+                            <span class="am-icon-caret-down c-p" data-am-modal="{target: '#my-popup{{$vs.user_student_id}}'}"> {{:L('common_see_more_name')}}</span>
+                            <div class="am-popup am-radius" id="my-popup{{$vs.user_student_id}}">
+                              <div class="am-popup-inner">
+                                <div class="am-popup-hd">
+                                  <h4 class="am-popup-title">{{:L('common_detail_content')}}</h4>
+                                  <span data-am-modal-close class="am-close">&times;</span>
+                                </div>
+                                <div class="am-popup-bd">
+                                  <dl class="dl-content">
+                                    <dt>{{:L('student_username_name')}}</dt>
+                                    <dd>{{$vs.username}}</dd>
 
-			<!-- 考勤汇总 -->
-			<div class="am-u-md-6">
-				<div class="am-panel am-panel-default" style="border-radius: 8px;">
-					<div class="am-panel-hd" style="background: #fff; border-bottom: 1px solid #eee;">
-						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold;">
-							<i class="am-icon-check-circle" style="color: #28a745;"></i> 本月考勤
-						</h3>
-						<a href="{{:U('Home/Student/Attendance')}}" class="am-btn am-btn-link am-btn-sm am-fr" style="margin-top: -5px;">查看全部</a>
-					</div>
-					<div class="am-panel-bd">
-						<if condition="!empty($attendance_summary)">
-							<div class="am-g">
-								<div class="am-u-md-4">
-									<div class="am-text-center" style="padding: 15px;">
-										<div style="font-size: 32px; color: #28a745; font-weight: bold;">{{$attendance_summary.normal|default=0}}</div>
-										<div style="color: #666; font-size: 12px;">正常</div>
-									</div>
-								</div>
-								<div class="am-u-md-4">
-									<div class="am-text-center" style="padding: 15px;">
-										<div style="font-size: 32px; color: #ffc107; font-weight: bold;">{{$attendance_summary.late|default=0}}</div>
-										<div style="color: #666; font-size: 12px;">迟到</div>
-									</div>
-								</div>
-								<div class="am-u-md-4">
-									<div class="am-text-center" style="padding: 15px;">
-										<div style="font-size: 32px; color: #dc3545; font-weight: bold;">{{$attendance_summary.absent|default=0}}</div>
-										<div style="color: #666; font-size: 12px;">缺勤</div>
-									</div>
-								</div>
-							</div>
-							<div class="am-divider"></div>
-							<div class="am-text-center" style="padding: 10px;">
-								<span style="font-size: 14px; color: #666;">出勤率：</span>
-								<span style="font-size: 24px; color: #28a745; font-weight: bold;">{{$attendance_summary.rate|default='100%'}}</span>
-							</div>
-						<else />
-							<div class="am-text-center" style="padding: 30px; color: #999;">
-								<i class="am-icon-frown-o" style="font-size: 48px;"></i>
-								<p style="margin-top: 10px;">暂无考勤记录</p>
-							</div>
-						</if>
-					</div>
-				</div>
-			</div>
-		</div>
+                                    <dt>{{:L('common_view_student_number_text')}}</dt>
+                                    <dd>{{$vs.number}}</dd>
 
-		<!-- 待完成作业 & 近期直播 -->
-		<div class="am-g" style="margin-top: 20px;">
-			<!-- 待完成作业 -->
-			<div class="am-u-md-6">
-				<div class="am-panel am-panel-default" style="border-radius: 8px;">
-					<div class="am-panel-hd" style="background: #fff; border-bottom: 1px solid #eee;">
-						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold;">
-							<i class="am-icon-tasks" style="color: #ffc107;"></i> 待完成作业
-						</h3>
-					</div>
-					<div class="am-panel-bd">
-						<if condition="!empty($pending_homework)">
-							<table class="am-table am-table-striped">
-								<thead>
-									<tr>
-										<th>作业名称</th>
-										<th>课程</th>
-										<th>截止时间</th>
-										<th>操作</th>
-									</tr>
-								</thead>
-								<tbody>
-									<foreach name="pending_homework" item="hw">
-										<tr>
-											<td>{{$hw.title}}</td>
-											<td>{{$hw.course_name}}</td>
-											<td>{{$hw.deadline}}</td>
-											<td>
-												<a href="{{:U('Home/Student/HomeworkDetail', array('id'=>$hw['id']))}}" class="am-btn am-btn-primary am-btn-xs am-radius">去完成</a>
-											</td>
-										</tr>
-									</foreach>
-								</tbody>
-							</table>
-						<else />
-							<div class="am-text-center" style="padding: 30px; color: #28a745;">
-								<i class="am-icon-check-circle" style="font-size: 48px;"></i>
-								<p style="margin-top: 10px;">太棒了！暂无待完成作业</p>
-							</div>
-						</if>
-					</div>
-				</div>
-			</div>
+                                    <dt>{{:L('common_view_id_card_text')}}</dt>
+                                    <dd>{{$vs.id_card}}</dd>
 
-			<!-- 近期直播 -->
-			<div class="am-u-md-6">
-				<div class="am-panel am-panel-default" style="border-radius: 8px;">
-					<div class="am-panel-hd" style="background: #fff; border-bottom: 1px solid #eee;">
-						<h3 class="am-panel-title" style="font-size: 16px; font-weight: bold;">
-							<i class="am-icon-video-camera" style="color: #17a2b8;"></i> 近期直播
-						</h3>
-						<a href="{{:U('Home/Student/Live')}}" class="am-btn am-btn-link am-btn-sm am-fr" style="margin-top: -5px;">查看全部</a>
-					</div>
-					<div class="am-panel-bd">
-						<if condition="!empty($upcoming_live)">
-							<foreach name="upcoming_live" item="live">
-								<div class="live-item">
-									<div class="live-info">
-										<div class="live-title">{{$live.title}}</div>
-										<div class="live-meta">
-											<i class="am-icon-user"></i> {{$live.teacher_name}} | 
-											<i class="am-icon-clock-o"></i> {{$live.start_time}}
-										</div>
-									</div>
-									<div>
-										<if condition="$live['status'] eq 1">
-											<a href="{{:U('Home/Student/LiveJoin', array('id'=>$live['id']))}}" class="am-btn am-btn-success am-btn-sm am-radius">立即进入</a>
-										<elseif condition="$live['status'] eq 0" />
-											<span class="status-badge status-pending">即将开始</span>
-										<else />
-											<span class="status-badge status-finished">已结束</span>
-										</if>
-									</div>
-								</div>
-							</foreach>
-						<else />
-							<div class="am-text-center" style="padding: 30px; color: #999;">
-								<i class="am-icon-frown-o" style="font-size: 48px;"></i>
-								<p style="margin-top: 10px;">暂无即将开始的直播</p>
-								<a href="{{:U('Home/Student/Live')}}" class="am-btn am-btn-primary am-btn-sm am-radius">查看全部直播</a>
-							</div>
-						</if>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                    <dt>{{:L('common_address_text')}}</dt>
+                                    <dd>{{$vs.region_name}} {{$vs.address}}</dd>
+
+                                    <dt>{{:L('common_view_gender_name')}}</dt>
+                                    <dd>{{$vs.gender}}</dd>
+
+                                    <dt>{{:L('student_birthday_text')}}</dt>
+                                    <dd>{{$vs.birthday}}</dd>
+
+                                    <dt>{{:L('common_view_tel_name')}}</dt>
+                                    <dd>{{$vs.tel}}</dd>
+
+                                    <dt>{{:L('student_my_mobile_name')}}</dt>
+                                    <dd>{{$vs.my_mobile}}</dd>
+
+                                    <dt>{{:L('common_view_parent_mobile_name')}}</dt>
+                                    <dd>{{$vs.parent_mobile}}</dd>
+
+                                    <dt>{{:L('common_email_name')}}</dt>
+                                    <dd>{{$vs.email}}</dd>
+
+                                    <dt>{{:L('student_class_text')}}</dt>
+                                    <dd>{{$vs.class_name}}</dd>
+
+                                    <dt>{{:L('student_semester_text')}}</dt>
+                                    <dd>{{$vs.semester_text}}</dd>
+
+                                    <dt>{{:L('student_tuition_state_text')}}</dt>
+                                    <dd>{{$vs.tuition_state_text}}</dd>
+
+                                    <dt>{{:L('common_view_student_state_name')}}</dt>
+                                    <dd>{{$vs.state}}</dd>
+
+                                    <dt>{{:L('student_sign_up_name')}}</dt>
+                                    <dd>{{$vs.add_time}}</dd>
+
+                                    <dt>{{:L('common_upd_time_name')}}</dt>
+                                    <dd>{{$vs.upd_time}}</dd>
+
+                                    <dt>{{:L('common_bundled_time_name')}}</dt>
+                                    <dd>{{$vs.bundled_time}}</dd>
+                                  </dl>
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="view-operation">
+                            <a href="{{:U('Home/Student/ScoreInfo', array('id'=>$vs['user_student_id']))}}">
+                              <button class="am-btn am-btn-default am-btn-xs am-radius am-icon-mortar-board" data-am-popover="{content: '{{:L('student_score_text')}}', trigger: 'hover focus'}"></button>
+                            </a>
+                            <button class="am-btn am-btn-default am-btn-xs am-radius am-icon-cut submit-delete" data-url="{{:U('Home/Student/Delete')}}" data-am-popover="{content: '{{:L('common_operation_cut')}}', trigger: 'hover focus'}" data-id="{{$vs.user_student_id}}"></button>
+                          </td>
+                        </tr>
+                      </foreach>
+                    <else />
+                      <tr><td colspan="10" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+                    </if>
+                  </tbody>
+                </table>
+                <!-- list end -->
+              </dd>
+            </dl>
+          </foreach>
+        </section>
+      <else />
+        <include file="Public/NoData" />
+      </if>
+      <!-- page start -->
+      <if condition="!empty($list)">
+        {{$page_html}}
+      </if>
+      <!-- page end -->
+    </div>
+  </div>
+  <!-- content end -->
 </div>
 
-<include file="../Public/Footer" />
+<!-- layuot common module start -->
+<include file="Public/CommonModule" />
+<!-- layuot common module end -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

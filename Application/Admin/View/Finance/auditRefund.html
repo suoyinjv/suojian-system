@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>退款审核 - SchoolCMS</title>
+    <title>退款审核 - SUOJIAN</title>
     <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
     <style>
         .audit-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
@@ -61,7 +61,7 @@
         </div>
         </volist>
         
-        <if condition="$vo['status'] eq 0">
+        <if condition="$vo['status'] == 0">
         <div class="am-panel am-panel-default">
             <div class="am-panel-hd">审核操作</div>
             <div class="am-panel-bd">

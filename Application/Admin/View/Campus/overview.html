@@ -1,125 +1,112 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>校区数据概览 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
-</head>
-<body>
-<div class="am-cf admin-main">
-    <div class="admin-content">
-        <div class="am-g am-margin-top">
-            <div class="am-u-sm-12">
-                <!-- 校区信息 -->
-                <div class="am-panel am-panel-success">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-building"></i> {$campus.name} - 数据概览</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <p><strong>编码：</strong>{$campus.code|default='-'}</p>
-                        <p><strong>地址：</strong>{$campus.address|default='-'}</p>
-                        <p><strong>电话：</strong>{$campus.phone|default='-'}</p>
-                        <p><strong>负责人：</strong>{$campus.principal|default='-'}</p>
-                    </div>
-                </div>
-                
-                <!-- 统计数据 -->
-                <div class="am-g am-margin-top">
-                    <div class="am-u-sm-3">
-                        <div class="am-panel am-panel-primary">
-                            <div class="am-panel-bd am-cf">
-                                <div class="am-fl">
-                                    <i class="am-icon-users am-3x am-text-primary"></i>
-                                </div>
-                                <div class="am-fr">
-                                    <p class="am-text-xl am-text-bold">{$student_count}</p>
-                                    <p class="am-text-muted">学员总数</p>
-                                    <p class="am-text-sm"><span class="am-badge am-badge-success">+{$new_students}</span> 本月新增</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="am-u-sm-3">
-                        <div class="am-panel am-panel-success">
-                            <div class="am-panel-bd am-cf">
-                                <div class="am-fl">
-                                    <i class="am-icon-black-tie am-3x am-text-success"></i>
-                                </div>
-                                <div class="am-fr">
-                                    <p class="am-text-xl am-text-bold">{$teacher_count}</p>
-                                    <p class="am-text-muted">老师数量</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="am-u-sm-3">
-                        <div class="am-panel am-panel-warning">
-                            <div class="am-panel-bd am-cf">
-                                <div class="am-fl">
-                                    <i class="am-icon-graduation-cap am-3x am-text-warning"></i>
-                                </div>
-                                <div class="am-fr">
-                                    <p class="am-text-xl am-text-bold">{$class_count}</p>
-                                    <p class="am-text-muted">班级数量</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="am-u-sm-3">
-                        <div class="am-panel am-panel-danger">
-                            <div class="am-panel-bd am-cf">
-                                <div class="am-fl">
-                                    <i class="am-icon-rmb am-3x am-text-danger"></i>
-                                </div>
-                                <div class="am-fr">
-                                    <p class="am-text-xl am-text-bold">¥{$month_income}</p>
-                                    <p class="am-text-muted">本月营收</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 课消统计 -->
-                <div class="am-panel am-panel-secondary am-margin-top">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-tachometer"></i> 本月课消统计</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <p class="am-text-xl am-text-center">
-                            <span class="am-badge am-badge-primary am-legend am-round">{$month_consumption}</span> 课时
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- 快捷操作 -->
-                <div class="am-panel am-panel-default am-margin-top">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-link"></i> 快捷操作</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <a href="__CONTROLLER__/edit/id/{$campus.id}" class="am-btn am-btn-primary am-radius">
-                            <i class="am-icon-edit"></i> 编辑校区
-                        </a>
-                        <a href="__CONTROLLER__/crossCampusStudent" class="am-btn am-btn-success am-radius">
-                            <i class="am-icon-users"></i> 查看学员
-                        </a>
-                        <a href="__CONTROLLER__/crossCampusTeacher" class="am-btn am-btn-warning am-radius">
-                            <i class="am-icon-user"></i> 查看老师
-                        </a>
-                        <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-radius">
-                            <i class="am-icon-arrow-left"></i> 返回列表
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<include file="Public/Header" />
+<include file="Public/Nav" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<div class="am-g">
+			<div class="am-u-sm-12">
+				<!-- 校区信息 -->
+				<div class="am-panel am-panel-success">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-building"></i> <?php echo $campus['name']; ?> - 数据概览</h3>
+					</div>
+					<div class="am-panel-bd">
+						<p><strong>编码：</strong><?php echo !empty($campus['code']) ? $campus['code'] : '-'; ?></p>
+						<p><strong>地址：</strong><?php echo !empty($campus['address']) ? $campus['address'] : '-'; ?></p>
+						<p><strong>电话：</strong><?php echo !empty($campus['phone']) ? $campus['phone'] : '-'; ?></p>
+						<p><strong>负责人：</strong><?php echo !empty($campus['principal']) ? $campus['principal'] : '-'; ?></p>
+					</div>
+				</div>
+
+				<!-- 统计数据 -->
+				<div class="am-g">
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-primary">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-users am-3x am-text-primary"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $student_count; ?></p>
+									<p class="am-text-muted">学员总数</p>
+									<p class="am-text-sm"><span class="am-badge am-badge-success">+<?php echo $new_students; ?></span> 本月新增</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-success">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-black-tie am-3x am-text-success"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $teacher_count; ?></p>
+									<p class="am-text-muted">老师数量</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-warning">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-graduation-cap am-3x am-text-warning"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold"><?php echo $class_count; ?></p>
+									<p class="am-text-muted">班级数量</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="am-u-sm-3">
+						<div class="am-panel am-panel-danger">
+							<div class="am-panel-bd am-cf">
+								<div class="am-fl">
+									<i class="am-icon-rmb am-3x am-text-danger"></i>
+								</div>
+								<div class="am-fr">
+									<p class="am-text-xl am-text-bold">¥<?php echo $month_income; ?></p>
+									<p class="am-text-muted">本月营收</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 课消统计 -->
+				<div class="am-panel am-panel-secondary">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-tachometer"></i> 本月课消统计</h3>
+					</div>
+					<div class="am-panel-bd">
+						<p class="am-text-xl am-text-center">
+							<span class="am-badge am-badge-primary am-legend am-round"><?php echo $month_consumption; ?></span> 课时
+						</p>
+					</div>
+				</div>
+
+				<!-- 快捷操作 -->
+				<div class="am-panel am-panel-default">
+					<div class="am-panel-hd">
+						<h3 class="am-panel-title"><i class="fa fa-link"></i> 快捷操作</h3>
+					</div>
+					<div class="am-panel-bd">
+						<a href="<?php echo U('Admin/Campus/edit', array('id'=>$campus['id'])); ?>" class="am-btn am-btn-primary am-radius"><i class="am-icon-edit"></i> 编辑校区</a>
+						<a href="<?php echo U('Admin/Campus/crossCampusStudent'); ?>" class="am-btn am-btn-success am-radius"><i class="am-icon-users"></i> 查看学员</a>
+						<a href="<?php echo U('Admin/Campus/crossCampusTeacher'); ?>" class="am-btn am-btn-warning am-radius"><i class="am-icon-user"></i> 查看老师</a>
+						<a href="<?php echo U('Admin/Campus/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
-</body>
-</html>
+<!-- right content end  -->
+
+<include file="Public/Footer" />

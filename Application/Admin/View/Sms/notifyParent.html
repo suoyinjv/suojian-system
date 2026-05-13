@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>通知家长</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -14,7 +14,7 @@
                     <div class="am-panel-hd">
                         <h3 class="am-panel-title">
                             <i class="am-icon-bullhorn"></i> 通知单个家长
-                            <a href="{:U('notifyParents')}" class="am-btn am-btn-xs am-btn-default am-fr">
+                            <a href="<?php echo U('notifyParents'); ?>" class="am-btn am-btn-xs am-btn-default am-fr">
                                 <i class="am-icon-group"></i> 批量通知
                             </a>
                         </h3>
@@ -68,7 +68,7 @@
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                    <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                                 </div>
                             </div>
                         </form>
@@ -78,8 +78,8 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
     loadStudents();
@@ -87,7 +87,7 @@ $(function() {
 
     // 加载学生列表
     function loadStudents() {
-        $.get('__CONTROLLER__/getStudentList?json=1', function(res) {
+        $.get('/getStudentList?json=1', function(res) {
             var html = '<option value="">请选择学生</option>';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -100,7 +100,7 @@ $(function() {
 
     // 加载模板列表
     function loadTemplates() {
-        $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+        $.get('/templateLists?json=1', function(res) {
             var html = '<option value="">不使用模板</option>';
             if (res.data) {
                 $.each(res.data, function(i, v) {
@@ -121,7 +121,7 @@ $(function() {
     $('#templateSelect').change(function() {
         var id = $(this).val();
         if (id) {
-            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+            $.get('/getTemplate?id=' + id, function(res) {
                 if (res.data) {
                     $('#smsContent').val(res.data.content);
                     var vars = res.data.content.match(/\{(\w+)\}/g) || [];
@@ -144,10 +144,10 @@ $(function() {
     // 提交表单
     $('#notifyForm').submit(function() {
         var formData = $(this).serialize();
-        $.post('__SELF__', formData, function(res) {
+        $.post('', formData, function(res) {
             alert(res.msg);
             if (res.code) {
-                location.href = '__CONTROLLER__/log';
+                location.href = '/log';
             }
         });
         return false;

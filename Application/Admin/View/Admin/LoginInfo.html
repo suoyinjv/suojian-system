@@ -1,55 +1,36 @@
 <include file="Public/Header" />
 
-<!-- right content start  -->
-<div class="content-right">
-	<div class="content">
-		<legend>
-			<span class="fs-16">登录日志</span>
-			<a href="{{:U('Admin/Admin/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
-		</legend>
-
-		<!-- list start -->
-		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>管理员</th>
-					<th>登录IP</th>
-					<th>登录地点</th>
-					<th>浏览器</th>
-					<th>操作系统</th>
-					<th>登录时间</th>
-				</tr>
-			</thead>
-			<tbody>
-				<if condition="!empty($list)">
-					<foreach name="list" item="v">
-						<tr>
-							<td>{{$v.id}}</td>
-							<td>{{$v.admin_name}}</td>
-							<td>{{$v.login_ip}}</td>
-							<td>{{$v.login_address}}</td>
-							<td>{{$v.browser}}</td>
-							<td>{{$v.os}}</td>
-							<td>{{$v.login_time}}</td>
-						</tr>
-					</foreach>
-				<else />
-					<tr><td colspan="7" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
-				</if>
-			</tbody>
-		</table>
-		<!-- list end -->
-
-		<!-- page start -->
-		<if condition="!empty($list)">
-			{{$page_html}}
-		</if>
-		<!-- page end -->
+<!-- content start -->
+<div class="account-pages">
+	<div class="wrapper-page">
+		<div class="text-center">
+            <span class="logo fw-700">{{:L('common_site_name')}}</span>
+        </div>
+        <div class="m-t-40 card-box">
+            <div class="panel-body">
+            	<form class="am-form form-validation" action="{{:U('Admin/Admin/Login')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Index/Index')}}">
+            		<div class="am-g">
+            			<div class="am-form-group">
+					      <input type="text" placeholder="{{:L('login_username_text')}}" name="username" pattern="{{:L('common_regex_username')}}" data-validation-message="{{:L('login_username_format')}}" class="am-radius" required />
+					    </div>
+					    <div class="am-form-group form-horizontal m-t-20">
+					      <input type="password" placeholder="{{:L('login_login_pwd_text')}}" name="login_pwd" pattern="{{:L('common_regex_pwd')}}" data-validation-message="{{:L('login_login_pwd_format')}}" class="am-radius" required />
+					    </div>
+                        <div class="am-form-group">
+                        	<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_login_loading_tips')}}'}">{{:L('login_button_text')}}</button>
+                        </div>
+                        
+                        <div class="am-form-group">
+                        	<a href="javascript:;" class="text-muted" data-am-popover="{theme: 'danger sm', content: '{{:L('login_forgot_pwd_tips')}}', trigger: 'hover focus'}">{{:L('login_forgot_pwd_text')}}</a>
+                        </div>
+            		</div>
+            	</form>
+            </div>
+        </div>
 	</div>
 </div>
-<!-- right content end  -->
-
+<!-- content end -->
+		
 <!-- footer start -->
 <include file="Public/Footer" />
 <!-- footer end -->

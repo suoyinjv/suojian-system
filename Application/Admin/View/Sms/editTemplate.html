@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>编辑短信模板</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -15,13 +15,13 @@
                         <h3 class="am-panel-title"><i class="am-icon-edit"></i> 编辑短信模板</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
-                            <input type="hidden" name="id" value="{$data.id}">
+                        <form class="am-form am-form-horizontal" action="" method="POST">
+                            <input type="hidden" name="id" value="<?php echo $data['id']; ?>">
 
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">模板名称 <span class="am-text-danger">*</span></label>
                                 <div class="am-u-sm-7">
-                                    <input type="text" name="name" class="am-form-field" placeholder="如: 课后反馈通知" value="{$data.name}" required>
+                                    <input type="text" name="name" class="am-form-field" placeholder="如: 课后反馈通知" value="<?php echo $data['name']; ?>" required>
                                 </div>
                             </div>
 
@@ -29,9 +29,9 @@
                                 <label class="am-u-sm-3 am-text-right">模板类型</label>
                                 <div class="am-u-sm-7">
                                     <select name="type" class="am-form-field">
-                                        <option value="1" <if condition="$data['type'] eq 1">selected</if>>通知</option>
-                                        <option value="2" <if condition="$data['type'] eq 2">selected</if>>营销</option>
-                                        <option value="3" <if condition="$data['type'] eq 3">selected</if>>验证码</option>
+                                        <option value="1" <?php if($data['type'] == 1): ?>selected<?php endif; ?>>通知</option>
+                                        <option value="2" <?php if($data['type'] == 2): ?>selected<?php endif; ?>>营销</option>
+                                        <option value="3" <?php if($data['type'] == 3): ?>selected<?php endif; ?>>验证码</option>
                                     </select>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">模板内容 <span class="am-text-danger">*</span></label>
                                 <div class="am-u-sm-7">
-                                    <textarea name="content" class="am-form-field" rows="5" placeholder="可用变量: {name}, {course}, {date}, {time}" required>{$data.content}</textarea>
+                                    <textarea name="content" class="am-form-field" rows="5" placeholder="可用变量: {name}, {course}, {date}, {time}" required><?php echo $data['content']; ?></textarea>
                                 </div>
                             </div>
 
@@ -47,8 +47,8 @@
                                 <label class="am-u-sm-3 am-text-right">状态</label>
                                 <div class="am-u-sm-7">
                                     <select name="status" class="am-form-field">
-                                        <option value="1" <if condition="$data['status'] eq 1">selected</if>>启用</option>
-                                        <option value="0" <if condition="$data['status'] eq 0">selected</if>>禁用</option>
+                                        <option value="1" <?php if($data['status'] == 1): ?>selected<?php endif; ?>>启用</option>
+                                        <option value="0" <?php if($data['status'] == 0): ?>selected<?php endif; ?>>禁用</option>
                                     </select>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="{:U('template')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                    <a href="<?php echo U('template'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                                 </div>
                             </div>
                         </form>
@@ -71,6 +71,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

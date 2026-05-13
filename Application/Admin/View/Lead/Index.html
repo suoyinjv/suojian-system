@@ -1,0 +1,141 @@
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- form start -->
+		<form class="am-form view-list" action="{<?php echo U('Admin/Lead/Index'); ?>}" method="POST">
+			<div class="am-g">
+				<input type="text" class="am-radius form-keyword" placeholder="姓名/手机号" name="keyword" <present name="param['keyword']"> value="{<?php echo $param['keyword']; ?>}"<?php endif; ?> />
+				<select name="source" class="am-radius c-p m-l-5">
+					<option value="">全部来源</option>
+					<option value="1" <?php if(isset($param['source']) and $param['source'] == 1): ?>selected<?php endif; ?>>线上推广</option>
+					<option value="2" <?php if(isset($param['source']) and $param['source'] == 2): ?>selected<?php endif; ?>>电话咨询</option>
+					<option value="3" <?php if(isset($param['source']) and $param['source'] == 3): ?>selected<?php endif; ?>>地推活动</option>
+					<option value="4" <?php if(isset($param['source']) and $param['source'] == 4): ?>selected<?php endif; ?>>转介绍</option>
+				</select>
+				<select name="intent_level" class="am-radius c-p m-l-5">
+					<option value="">全部意向</option>
+					<option value="1" <?php if(isset($param['intent_level']) and $param['intent_level'] == 1): ?>selected<?php endif; ?>>★</option>
+					<option value="2" <?php if(isset($param['intent_level']) and $param['intent_level'] == 2): ?>selected<?php endif; ?>>★★</option>
+					<option value="3" <?php if(isset($param['intent_level']) and $param['intent_level'] == 3): ?>selected<?php endif; ?>>★★★</option>
+					<option value="4" <?php if(isset($param['intent_level']) and $param['intent_level'] == 4): ?>selected<?php endif; ?>>★★★★</option>
+					<option value="5" <?php if(isset($param['intent_level']) and $param['intent_level'] == 5): ?>selected<?php endif; ?>>★★★★★</option>
+				</select>
+				<select name="status" class="am-radius c-p m-l-5">
+					<option value="-1">全部状态</option>
+					<option value="0" <?php if(isset($param['status']) and $param['status'] == 0): ?>selected<?php endif; ?>>新建</option>
+					<option value="1" <?php if(isset($param['status']) and $param['status'] == 1): ?>selected<?php endif; ?>>跟进中</option>
+					<option value="2" <?php if(isset($param['status']) and $param['status'] == 2): ?>selected<?php endif; ?>>有意向</option>
+					<option value="3" <?php if(isset($param['status']) and $param['status'] == 3): ?>selected<?php endif; ?>>已报名</option>
+					<option value="4" <?php if(isset($param['status']) and $param['status'] == 4): ?>selected<?php endif; ?>>流失</option>
+				</select>
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{<?php echo L('common_operation_query'); ?>}</button>
+			</div>
+		</form>
+		<!-- form end -->
+
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{<?php echo U('Admin/Lead/SaveInfo'); ?>}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增线索</a>
+			<a href="{<?php echo U('Admin/Lead/BatchAssign'); ?>}" class="am-btn am-btn-primary am-radius am-btn-xs m-l-10 am-icon-share"> 批量分配</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th><input type="checkbox" id="select-all" /></th>
+					<th>ID</th>
+					<th>姓名</th>
+					<th>手机号</th>
+					<th>来源</th>
+					<th>意向等级</th>
+					<th>分配顾问</th>
+					<th>跟进状态</th>
+					<th>创建时间</th>
+					<th>{<?php echo L('common_operation_name'); ?>}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if(!empty($list)): ?>
+					<foreach name="list" item="v">
+						<tr id="data-list-{<?php echo $v['id']; ?>}">
+							<td><input type="checkbox" name="ids[]" value="{<?php echo $v['id']; ?>}" /></td>
+							<td>{<?php echo $v['id']; ?>}</td>
+							<td>{<?php echo $v['name']; ?>}</td>
+							<td>{<?php echo $v['mobile']; ?>}</td>
+							<td>
+								<?php if($v['source'] == 1): ?><span class="am-badge am-badge-primary">线上推广</span>
+								<?php elseif($v['source'] == 2): ?><span class="am-badge am-badge-success">电话咨询</span>
+								<?php elseif($v['source'] == 3): ?><span class="am-badge am-badge-warning">地推活动</span>
+								<?php else: ?><span class="am-badge am-badge-secondary">转介绍</span>
+								<?php endif; ?>
+							</td>
+							<td>
+								<switch name="v.intent_level">
+									<?php case '1': ?>★</case>
+									<?php case '2': ?>★★</case>
+									<?php case '3': ?>★★★</case>
+									<?php case '4': ?>★★★★</case>
+									<?php case '5': ?>★★★★★</case>
+									<default />
+								<?php endswitch; ?>
+							</td>
+							<td>{<?php echo $v['advisor_name']; ?>}</td>
+							<td>
+								<?php if($v['status'] == 0): ?><span class="am-badge">新建</span>
+								<?php elseif($v['status'] == 1): ?><span class="am-badge am-badge-primary">跟进中</span>
+								<?php elseif($v['status'] == 2): ?><span class="am-badge am-badge-success">有意向</span>
+								<?php elseif($v['status'] == 3): ?><span class="am-badge am-badge-warning">已报名</span>
+								<?php else: ?><span class="am-badge am-badge-danger">流失</span>
+								<?php endif; ?>
+							</td>
+							<td>{<?php echo $v['add_time']; ?>}</td>
+							<td class="view-operation">
+								<a href="{<?php echo U('Admin/Lead/Detail', array('id'=>$v['id'])); ?>}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-eye" data-am-popover="{content: '查看详情', trigger: 'hover focus'}"></button>
+								</a>
+								<a href="{<?php echo U('Admin/Lead/SaveInfo', array('id'=>$v['id'])); ?>}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{<?php echo L('common_operation_edit'); ?>}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{<?php echo U('Admin/Lead/Delete'); ?>}" data-id="{<?php echo $v['id']; ?>}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<?php else: ?>
+					<tr><td colspan="10" class="table-no">{<?php echo L('common_not_data_tips'); ?>}</td></tr>
+				<?php endif; ?>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<?php if(!empty($list)): ?>
+			{<?php echo $page_html; ?>}
+		<?php endif; ?>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->
+
+<script>
+$(function(){
+	// 全选
+	$('#select-all').on('change', function(){
+		$('input[name="ids[]"]').prop('checked', $(this).prop('checked'));
+	});
+
+	// 状态颜色
+	$('td:contains("新建") .am-badge').parent().addClass('am-text-secondary');
+	$('td:contains("跟进中") .am-badge').parent().addClass('am-text-primary');
+	$('td:contains("有意向") .am-badge').parent().addClass('am-text-success');
+	$('td:contains("已报名") .am-badge').parent().addClass('am-text-warning');
+	$('td:contains("流失") .am-badge').parent().addClass('am-text-danger');
+});
+</script>

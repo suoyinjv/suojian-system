@@ -1,0 +1,72 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend><span class="fs-16 fw-700">🏫 招生数据</span></legend>
+
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">📈 每日新增学员（近30天）</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-text-center">
+                            <thead><tr><th>日期</th><th>新增数</th></tr></thead>
+                            <tbody>
+                                <volist name="daily_new" id="vo">
+                                <tr><td>{{$vo.date}}</td><td class="am-text-success">{{$vo.cnt}}</td></tr>
+                                </volist>
+                                <if condition="count($daily_new) == 0">
+                                <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">📊 来源统计</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered">
+                            <thead><tr><th>来源</th><th>数量</th></tr></thead>
+                            <tbody>
+                                <volist name="source_stats" id="vo">
+                                <tr><td>{{$vo.source|default='未知'}}</td><td>{{$vo.cnt}}</td></tr>
+                                </volist>
+                                <if condition="count($source_stats) == 0">
+                                <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">🎯 线索统计</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered">
+                            <thead><tr><th>状态</th><th>数量</th></tr></thead>
+                            <tbody>
+                                <volist name="leads_stats" id="vo">
+                                <tr><td>
+                                    <if condition="$vo['status'] == 1">待跟进
+                                    <elseif condition="$vo['status'] == 2"/>有意向
+                                    <elseif condition="$vo['status'] == 3"/>已报名
+                                    <else/>其他
+                                    </if>
+                                </td><td>{{$vo.cnt}}</td></tr>
+                                </volist>
+                                <if condition="count($leads_stats) == 0">
+                                <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<include file="Public/Footer" />

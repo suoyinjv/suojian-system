@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>新建营销活动 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <title>新建营销活动 - SUOJIAN</title>
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="admin-content">
@@ -11,13 +11,13 @@
         <div class="am-panel am-panel-default">
             <div class="am-panel-hd"><i class="am-icon-plus"></i> 新建营销活动</div>
             <div class="am-panel-bd">
-                <form class="am-form am-form-horizontal" action="{:U('save')}" method="POST">
+                <form class="am-form am-form-horizontal" action="<?php echo U('save'); ?>" method="POST">
                     <input type="hidden" name="id" value="{$info.id|default=''}">
                     
                     <div class="am-form-group">
                         <label class="am-u-sm-2">活动名称 <span class="am-text-danger">*</span></label>
                         <div class="am-u-sm-10">
-                            <input type="text" name="name" class="am-form-field" value="{$info.name}" placeholder="如：暑期优惠报名活动" required>
+                            <input type="text" name="name" class="am-form-field" value="<?php echo $info['name']; ?>" placeholder="如：暑期优惠报名活动" required>
                         </div>
                     </div>
                     
@@ -46,39 +46,39 @@
                     <div class="am-form-group">
                         <label class="am-u-sm-2">开始时间 <span class="am-text-danger">*</span></label>
                         <div class="am-u-sm-4">
-                            <input type="date" name="start_time" class="am-form-field" value="{:date('Y-m-d', $info['start_time']?$info['start_time']:time())}" required>
+                            <input type="date" name="start_time" class="am-form-field" value="<?php echo date('Y-m-d', $info['start_time']?$info['start_time']:time()); ?>" required>
                         </div>
                         <label class="am-u-sm-2">结束时间 <span class="am-text-danger">*</span></label>
                         <div class="am-u-sm-4">
-                            <input type="date" name="end_time" class="am-form-field" value="{:date('Y-m-d', $info['end_time']?$info['end_time']:strtotime('+30 days'))}" required>
+                            <input type="date" name="end_time" class="am-form-field" value="<?php echo date('Y-m-d', $info['end_time']?$info['end_time']:strtotime('+30 days')); ?>" required>
                         </div>
                     </div>
                     
                     <div class="am-form-group">
                         <label class="am-u-sm-2">优惠内容</label>
                         <div class="am-u-sm-10">
-                            <input type="text" name="discount" class="am-form-field" value="{$info.discount}" placeholder="如：报名立减200元/买一送一">
+                            <input type="text" name="discount" class="am-form-field" value="<?php echo $info['discount']; ?>" placeholder="如：报名立减200元/买一送一">
                         </div>
                     </div>
                     
                     <div class="am-form-group">
                         <label class="am-u-sm-2">活动描述</label>
                         <div class="am-u-sm-10">
-                            <textarea name="description" class="am-form-field" rows="5" placeholder="详细描述活动内容、规则等">{$info.description}</textarea>
+                            <textarea name="description" class="am-form-field" rows="5" placeholder="详细描述活动内容、规则等"><?php echo $info['description']; ?></textarea>
                         </div>
                     </div>
                     
                     <div class="am-form-group">
                         <label class="am-u-sm-2">目标学员</label>
                         <div class="am-u-sm-10">
-                            <textarea name="target" class="am-form-field" rows="3" placeholder="描述目标学员群体，如：3-6年级小学生">{$info.target}</textarea>
+                            <textarea name="target" class="am-form-field" rows="3" placeholder="描述目标学员群体，如：3-6年级小学生"><?php echo $info['target']; ?></textarea>
                         </div>
                     </div>
                     
                     <div class="am-form-group">
                         <div class="am-u-sm-10 am-u-sm-offset-2">
                             <button type="submit" class="am-btn am-btn-primary">保存</button>
-                            <a href="{:U('index')}" class="am-btn am-btn-default">取消</a>
+                            <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default">取消</a>
                         </div>
                     </div>
                 </form>
@@ -86,6 +86,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

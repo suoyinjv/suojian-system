@@ -45,7 +45,7 @@
                                     <select name="student_id" class="am-form-field" required id="studentSelect">
                                         <option value="">请选择学员</option>
                                         <volist name="students" id="vo">
-                                        <option value="{$vo.id}" <if condition="$student_course['student_id'] eq $vo['id']">selected</if>>{$vo.name} ({$vo.phone|default=''})</option>
+                                        <option value="{$vo.id}" <if condition="$student_course['student_id'] == $vo['id']">selected</if>>{$vo.name} ({$vo.phone|default=''})</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -57,7 +57,7 @@
                                     <select name="course_id" class="am-form-field" required id="courseSelect">
                                         <option value="">请选择课程</option>
                                         <volist name="courses" id="vo">
-                                        <option value="{$vo.id}" <if condition="$student_course['course_id'] eq $vo['id']">selected</if>>{$vo.name} (剩余: {$vo.remaining_hours|default=0}课时)</option>
+                                        <option value="{$vo.id}" <if condition="$student_course['course_id'] == $vo['id']">selected</if>>{$vo.name} (剩余: {$vo.remaining_hours|default=0}课时)</option>
                                         </volist>
                                     </select>
                                 </div>

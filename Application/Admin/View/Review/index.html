@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>评价管理</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
 </head>
 <body>
 <div class="panel panel-default">
@@ -14,35 +14,31 @@
     <div class="panel-body">
         <form method="get" class="form-inline search-form">
             <div class="form-group">
-                <input type="text" name="keyword" class="form-control" placeholder="评价内容" value="{:I('keyword')}">
+                <input type="text" name="keyword" class="form-control" placeholder="评价内容" value="<?php echo htmlspecialchars(I('keyword')); ?>">
             </div>
             <div class="form-group">
                 <select name="teacher_id" class="form-control">
                     <option value="">全部老师</option>
-                    <volist name="teachers" id="t">
-                        <option value="{$t.id}" {:I('teacher_id')==$t['id']?'selected':''}>{$t.name}</option>
-                    </volist>
+                    <?php if (!empty($teachers)): ?>
+                    <?php $sel_teacher = I('teacher_id', 0, 'intval'); ?>
+                    <?php foreach ($teachers as $t): ?>
+                        <option value="<?php echo $t['id']; ?>" <?php echo $sel_teacher == $t['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($t['name']); ?></option>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="form-group">
                 <select name="score" class="form-control">
                     <option value="">全部评分</option>
-                    <option value="5" {:I('score')==5?'selected':''}>5星</option>
-                    <option value="4" {:I('score')==4?'selected':''}>4星</option>
-                    <option value="3" {:I('score')==3?'selected':''}>3星</option>
-                    <option value="2" {:I('score')==2?'selected':''}>2星</option>
-                    <option value="1" {:I('score')==1?'selected':''}>1星</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <select name="status" class="form-control">
-                    <option value="-1" {:I('status')==-1?'selected':''}>全部状态</option>
-                    <option value="0" {:I('status')==0?'selected':''}>隐藏</option>
-                    <option value="1" {:I('status')==1?'selected':''}>显示</option>
+                    <option value="5" <?php echo I('score')==5?'selected':''; ?>>5星</option>
+                    <option value="4" <?php echo I('score')==4?'selected':''; ?>>4星</option>
+                    <option value="3" <?php echo I('score')==3?'selected':''; ?>>3星</option>
+                    <option value="2" <?php echo I('score')==2?'selected':''; ?>>2星</option>
+                    <option value="1" <?php echo I('score')==1?'selected':''; ?>>1星</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">搜索</button>
-            <a href="{:U('add')}" class="btn btn-success">添加评价</a>
+            <a href="<?php echo U('save'); ?>" class="btn btn-success">添加评价</a>
         </form>
         
         <table class="table table-bordered table-hover">
@@ -53,48 +49,44 @@
                     <th>老师</th>
                     <th>课程</th>
                     <th>评分</th>
-                    <th>评价内容</th>
-                    <th>状态</th>
+                    <th>内容</th>
+                    <th>时间</th>
                     <th>操作</th>
                 </tr>
             </thead>
             <tbody>
-                <volist name="list" id="item">
+                <?php if (!empty($list)): ?>
+                <?php foreach ($list as $item): ?>
                 <tr>
-                    <td>{$item.id}</td>
-                    <td>{$item.student_name}</td>
-                    <td>{$item.teacher_name}</td>
-                    <td>{$item.course_name}</td>
+                    <td><?php echo $item['id']; ?></td>
+                    <td><?php echo htmlspecialchars($item['student_name'] ?: '-'); ?></td>
+                    <td><?php echo htmlspecialchars($item['teacher_name'] ?: '-'); ?></td>
+                    <td><?php echo htmlspecialchars($item['course_name'] ?: '-'); ?></td>
                     <td>
-                        <span class="stars">
-                            <volist name="item.score" id="s">
-                                <span class="star">★</span>
-                            </volist>
-                        </span>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <span class="glyphicon glyphicon-star<?php echo $i <= $item['score'] ? '' : '-empty'; ?>"></span>
+                        <?php endfor; ?>
                     </td>
-                    <td>{$item.content|msubstr=0,50}</td>
+                    <td title="<?php echo htmlspecialchars($item['content'] ?? ''); ?>"><?php echo htmlspecialchars(mb_substr($item['content'] ?? '', 0, 30)); ?></td>
+                    <td><?php echo $item['create_time'] ? date('Y-m-d H:i', $item['create_time']) : '-'; ?></td>
                     <td>
-                        <if condition="$item.status eq 1">
-                            <span class="label label-success">显示</span>
-                        <else/>
-                            <span class="label label-default">隐藏</span>
-                        </if>
-                    </td>
-                    <td>
-                        <a href="{:U('edit?id='.$item['id'])}" class="btn btn-xs btn-primary">编辑</a>
-                        <a href="{:U('reply?id='.$item['id'])}" class="btn btn-xs btn-info">回复</a>
-                        <a href="{:U('toggleStatus?id='.$item['id'])}" class="btn btn-xs btn-warning">
-                            {$item.status==1?'隐藏':'显示'}
-                        </a>
-                        <a href="{:U('delete?id='.$item['id'])}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除?')">删除</a>
+                        <a href="<?php echo U('save', ['id' => $item['id']]); ?>" class="btn btn-xs btn-primary">编辑</a>
+                        <a href="javascript:;" onclick="if(confirm('确定删除？'))$.get('<?php echo U('delete', ['id' => $item['id']]); ?>', function(){location.reload()})" class="btn btn-xs btn-danger">删除</a>
                     </td>
                 </tr>
-                </volist>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <tr><td colspan="8" class="text-center">暂无评价记录</td></tr>
+                <?php endif; ?>
             </tbody>
         </table>
         
-        {$page}
+        <div class="text-center">
+            共 <?php echo $count; ?> 条记录
+        </div>
     </div>
 </div>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 </body>
 </html>

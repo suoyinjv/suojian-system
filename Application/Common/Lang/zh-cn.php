@@ -9,12 +9,12 @@
  */
 return array(
 	// 站点信息
-	'common_site_name'					=>	'SchoolCMS',
-	'common_site_vice_name'				=>	'教务管理系统',
-	'common_site_title'					=>	'SchoolCMS后台管理系统',
+	'common_site_name'					=>	'SUOJIAN',
+	'common_site_vice_name'				=>	'',
+	'common_site_title'					=>	'SUOJIAN后台管理系统',
 
 	// 应用信息
-	'common_application_name'			=>	'SchoolCMS',
+	'common_application_name'			=>	'SUOJIAN',
 	'common_application_ver'			=>	'v2.3.1',
 	'common_application_website'		=>	'http://schoolcms.org/',
 

@@ -1,89 +1,89 @@
-<include file="Public/Header" />
+
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
 		<!-- table nav start -->
-		<include file="Nav" />
+		
 		<!-- table nav end -->
 
 		<div class="am-panel am-panel-primary">
 			<div class="am-panel-hd">
-				<h3 class="am-panel-title"><i class="am-icon-send"></i> {{:L('message_send_title')}}</h3>
+				<h3 class="am-panel-title"><i class="am-icon-send"></i> <?php echo L('message_send_title'); ?></h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form form-validation view-save" action="{{:U('Admin/Message/DoSend')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Message/Send')}}">
+				<form class="am-form form-validation view-save" action="<?php echo U('Admin/Message/send'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/Send'); ?>">
 
 					<div class="am-form-group">
-						<label>{{:L('message_send_receiver_type')}}</label>
+						<label><?php echo L('message_send_receiver_type'); ?></label>
 						<div class="am-g">
 							<div class="am-u-sm-4">
 								<select name="receiver_type" id="receiverType" class="am-form-field">
-									<option value="student">{{:L('message_receiver_student')}}</option>
-									<option value="parent">{{:L('message_receiver_parent')}}</option>
-									<option value="class">{{:L('message_receiver_class')}}</option>
-									<option value="custom">{{:L('message_receiver_custom')}}</option>
+									<option value="student"><?php echo L('message_receiver_student'); ?></option>
+									<option value="parent"><?php echo L('message_receiver_parent'); ?></option>
+									<option value="class"><?php echo L('message_receiver_class'); ?></option>
+									<option value="custom"><?php echo L('message_receiver_custom'); ?></option>
 								</select>
 							</div>
 							<div class="am-u-sm-8" id="customReceivers" style="display:none;">
-								<input type="text" name="phones" class="am-form-field" placeholder="{{:L('message_custom_phones_tips')}}">
+								<input type="text" name="phones" class="am-form-field" placeholder="<?php echo L('message_custom_phones_tips'); ?>">
 							</div>
 						</div>
 					</div>
 
 					<div class="am-form-group" id="studentSelectGroup">
-						<label>{{:L('message_send_receiver_student')}}</label>
+						<label><?php echo L('message_send_receiver_student'); ?></label>
 						<select name="student_id" id="studentSelect" class="am-form-field">
-							<option value="">{{:L('common_please_select')}}</option>
+							<option value=""><?php echo L('common_please_select'); ?></option>
 						</select>
 					</div>
 
 					<div class="am-form-group" id="classSelectGroup" style="display:none;">
-						<label>{{:L('message_send_receiver_class')}}</label>
+						<label><?php echo L('message_send_receiver_class'); ?></label>
 						<select name="class_id" id="classSelect" class="am-form-field">
-							<option value="">{{:L('common_please_select')}}</option>
+							<option value=""><?php echo L('common_please_select'); ?></option>
 						</select>
 					</div>
 
 					<div class="am-form-group">
-						<label>{{:L('message_send_channel')}}</label>
+						<label><?php echo L('message_send_channel'); ?></label>
 						<div class="am-g">
 							<div class="am-u-sm-4">
 								<select name="channel" id="channelSelect" class="am-form-field">
-									<option value="sms">{{:L('message_channel_sms')}}</option>
-									<option value="weixin">{{:L('message_channel_weixin')}}</option>
-									<option value="both">{{:L('message_channel_both')}}</option>
+									<option value="sms"><?php echo L('message_channel_sms'); ?></option>
+									<option value="weixin"><?php echo L('message_channel_weixin'); ?></option>
+									<option value="both"><?php echo L('message_channel_both'); ?></option>
 								</select>
 							</div>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label>{{:L('message_send_template')}} ({{:L('message_optional')}})</label>
+						<label><?php echo L('message_send_template'); ?> (<?php echo L('message_optional'); ?>)</label>
 						<select id="templateSelect" class="am-form-field">
-							<option value="">{{:L('message_no_template')}}</option>
+							<option value=""><?php echo L('message_no_template'); ?></option>
 						</select>
 					</div>
 
 					<div class="am-form-group">
-						<label>{{:L('message_send_content')}} <span class="am-text-danger">*</span></label>
-						<textarea name="content" class="am-form-field" rows="5" id="msgContent" placeholder="{{:L('message_content_tips')}}" required data-validation-message="{{:L('message_content_required_tips')}}"></textarea>
-						<p class="am-text-sm am-text-muted">{{:L('message_sms_char_tips')}} <span id="charCount">0</span> / 70</p>
+						<label><?php echo L('message_send_content'); ?> <span class="am-text-danger">*</span></label>
+						<textarea name="content" class="am-form-field" rows="5" id="msgContent" placeholder="<?php echo L('message_content_tips'); ?>" required data-validation-message="<?php echo L('message_content_required_tips'); ?>"></textarea>
+						<p class="am-text-sm am-text-muted"><?php echo L('message_sms_char_tips'); ?> <span id="charCount">0</span> / 70</p>
 					</div>
 
 					<div class="am-alert am-alert-warning" data-am-alert>
-						<i class="am-icon-info-circle"></i> {{:L('message_send_tips')}}
+						<i class="am-icon-info-circle"></i> <?php echo L('message_send_tips'); ?>
 					</div>
 
 					<div class="am-form-group">
-						<button type="submit" class="am-btn am-btn-primary am-btn-block btn-loading-example am-radius" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">
-							<i class="am-icon-send"></i> {{:L('message_send_btn')}}
+						<button type="submit" class="am-btn am-btn-primary am-btn-block btn-loading-example am-radius" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}">
+							<i class="am-icon-send"></i> <?php echo L('message_send_btn'); ?>
 						</button>
 					</div>
 
 					<div class="am-form-group">
-						<a href="{{:U('Admin/Message/Log')}}" class="am-btn am-btn-default am-btn-block am-radius">
-							<i class="am-icon-history"></i> {{:L('message_view_log')}}
+						<a href="<?php echo U('Admin/Message/Log'); ?>" class="am-btn am-btn-default am-btn-block am-radius">
+							<i class="am-icon-history"></i> <?php echo L('message_view_log'); ?>
 						</a>
 					</div>
 				</form>
@@ -94,7 +94,7 @@
 <!-- right content end  -->
 
 <!-- footer start -->
-<include file="Public/Footer" />
+
 <!-- footer end -->
 
 <script>
@@ -116,7 +116,7 @@ $(function() {
 
 	$('#templateSelect').change(function() {
 		if ($(this).val()) {
-			$.get('__CONTROLLER__/getTemplate?id=' + $(this).val(), function(res) {
+			$.get('/getTemplate?id=' + $(this).val(), function(res) {
 				if (res.data) {
 					$('#msgContent').val(res.data.content);
 					$('#charCount').text(res.data.content.length);
@@ -127,8 +127,8 @@ $(function() {
 });
 
 function loadStudents() {
-	$.get('__CONTROLLER__/getStudents?json=1', function(res) {
-		var html = '<option value="">{{:L("common_please_select")}}</option>';
+	$.get('/getStudents?json=1', function(res) {
+		var html = '<option value=""><?php echo L("common_please_select"); ?></option>';
 		if (res.data) {
 			$.each(res.data, function(i, v) {
 				html += '<option value="' + v.id + '">' + v.name + '</option>';
@@ -139,8 +139,8 @@ function loadStudents() {
 }
 
 function loadClasses() {
-	$.get('__CONTROLLER__/getClasses?json=1', function(res) {
-		var html = '<option value="">{{:L("common_please_select")}}</option>';
+	$.get('/getClasses?json=1', function(res) {
+		var html = '<option value=""><?php echo L("common_please_select"); ?></option>';
 		if (res.data) {
 			$.each(res.data, function(i, v) {
 				html += '<option value="' + v.id + '">' + v.name + '</option>';
@@ -151,8 +151,8 @@ function loadClasses() {
 }
 
 function loadTemplates() {
-	$.get('__CONTROLLER__/templateLists?json=1', function(res) {
-		var html = '<option value="">{{:L("message_no_template")}}</option>';
+	$.get('/templateLists?json=1', function(res) {
+		var html = '<option value=""><?php echo L("message_no_template"); ?></option>';
 		if (res.data) {
 			$.each(res.data, function(i, v) {
 				html += '<option value="' + v.id + '">' + v.name + '</option>';

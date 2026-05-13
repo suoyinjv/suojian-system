@@ -8,70 +8,53 @@
 			<legend>
 				<span class="fs-16">
 					<if condition="empty($data['id'])">
-						新增用户
+						{{:L('user_add_name')}}
 					<else />
-						编辑用户
+						{{:L('user_edit_name')}}
 					</if>
 				</span>
 				<a href="{{:U('Admin/User/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
 			</legend>
-
 			<div class="am-form-group">
-				<label>用户名</label>
-				<input type="text" name="username" placeholder="用户名" class="am-radius" <notempty name="data"> value="{{$data.username}}"</notempty> required />
+				<label>{{:L('user_nickname_name')}}</label>
+				<input type="text" name="nickname" placeholder="{{:L('user_nickname_name')}}" maxlength="16" data-validation-message="{{:L('user_nickname_format')}}" class="am-radius" <notempty name="data"> value="{{$data.nickname}}"</notempty> />
 			</div>
-
 			<div class="am-form-group">
-				<label>姓名</label>
-				<input type="text" name="name" placeholder="姓名" class="am-radius" <notempty name="data"> value="{{$data.name}}"</notempty> required />
+				<label>{{:L('user_login_pwd_name')}}</label>
+				<input type="password" name="pwd" placeholder="{{:L('user_login_pwd_name')}}" pattern="{{:L('common_regex_pwd')}}" data-validation-message="{{:L('user_login_pwd_format')}}" class="am-radius" />
 			</div>
-
 			<div class="am-form-group">
-				<label>用户类型</label>
-				<select name="user_type" class="am-radius" required>
-					<option value="1" <if condition="isset($data['user_type']) and $data['user_type'] eq 1">selected</if>>学员</option>
-					<option value="2" <if condition="isset($data['user_type']) and $data['user_type'] eq 2">selected</if>>教师</option>
-					<option value="3" <if condition="isset($data['user_type']) and $data['user_type'] eq 3">selected</if>>家长</option>
-				</select>
+				<label>{{:L('common_mobile_name')}}</label>
+				<input type="text" name="mobile" class="am-radius" placeholder="{{:L('common_mobile_name')}}" pattern="{{:L('common_regex_mobile')}}" data-validation-message="{{:L('common_mobile_format_error')}}" <notempty name="data"> value="{{$data.mobile}}"</notempty> />
 			</div>
-
 			<div class="am-form-group">
-				<label>密码<if condition="!empty($data['id'])">（留空则不修改）</if></label>
-				<input type="password" name="password" placeholder="密码" class="am-radius" <if condition="empty($data['id'])">required</if> />
+				<label>{{:L('common_email_name')}}</label>
+				<input type="email" name="email" class="am-radius" placeholder="{{:L('common_email_name')}}" data-validation-message="{{:L('common_email_format_error')}}" <notempty name="data"> value="{{$data.email}}"</notempty> />
 			</div>
-
+			<include file="Lib/Gender" />
 			<div class="am-form-group">
-				<label>手机号</label>
-				<input type="text" name="mobile" placeholder="手机号" class="am-radius" <notempty name="data"> value="{{$data.mobile}}"</notempty> />
+				<label>{{:L('user_birthday_name')}}</label>
+				<input type="text" name="birthday" class="am-radius" placeholder="{{:L('user_birthday_name')}}" pattern="{{:L('common_regex_birthday')}}" data-validation-message="{{:L('user_birthday_format')}}" <notempty name="data"> value="{{$data.birthday}}" </notempty> data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'years'}" readonly />
 			</div>
-
+			<include file="Lib/UserState" />
 			<div class="am-form-group">
-				<label>邮箱</label>
-				<input type="email" name="email" placeholder="邮箱" class="am-radius" <notempty name="data"> value="{{$data.email}}"</notempty> />
+				<label>{{:L('user_signature_name')}}</label>
+				<textarea rows="3" maxlength="168" name="signature" class="am-radius" placeholder="{{:L('user_signature_name')}}" data-validation-message="{{:L('user_signature_format')}}"><present name="data">{{$data.signature}}</present></textarea>
 			</div>
-
 			<div class="am-form-group">
-				<label>状态</label>
-				<div>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="1" <if condition="!isset($data['status']) or $data['status'] eq 1">checked="checked"</if> data-am-ucheck /> 启用
-					</label>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="0" <if condition="isset($data['status']) and $data['status'] eq 0">checked="checked"</if> data-am-ucheck /> 禁用
-					</label>
-				</div>
+				<label>{{:L('user_describe_name')}}</label>
+				<textarea rows="5" maxlength="255" name="describe" class="am-radius" placeholder="{{:L('user_describe_name')}}" data-validation-message="{{:L('user_describe_format')}}"><present name="data">{{$data.describe}}</present></textarea>
 			</div>
-
 			<div class="am-form-group">
 				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
 				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
 			</div>
 		</form>
-		<!-- form end -->
+        <!-- form end -->
 	</div>
 </div>
 <!-- right content end  -->
-
+		
 <!-- footer start -->
 <include file="Public/Footer" />
 <!-- footer end -->

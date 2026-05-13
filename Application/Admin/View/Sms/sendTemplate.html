@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>模板发送</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -58,7 +58,7 @@
                             
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                    <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                                 </div>
                             </div>
                         </form>
@@ -68,8 +68,8 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
     loadTemplates();
@@ -77,7 +77,7 @@ $(function() {
     $('#templateSelect').change(function() {
         var id = $(this).val();
         if (id) {
-            $.get('__CONTROLLER__/getTemplate?id=' + id, function(res) {
+            $.get('/getTemplate?id=' + id, function(res) {
                 if (res.data) {
                     $('#templatePreview').text(res.data.content);
                     // 显示变量输入
@@ -95,7 +95,7 @@ $(function() {
 });
 
 function loadTemplates() {
-    $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+    $.get('/templateLists?json=1', function(res) {
         var html = '<option value="">请选择模板</option>';
         if (res.data) {
             $.each(res.data, function(i, v) {
@@ -108,10 +108,10 @@ function loadTemplates() {
 
 $('#templateForm').submit(function() {
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if (res.code) {
-            location.href = '__CONTROLLER__/log';
+            location.href = '/log';
         }
     });
     return false;

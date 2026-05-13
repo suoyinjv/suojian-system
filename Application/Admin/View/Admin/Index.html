@@ -4,23 +4,23 @@
 <div class="content-right">
 	<div class="content">
 		<!-- form start -->
-		<form class="am-form view-list" action="{{:U('Admin/Admin/Index')}}" method="POST">
+		<form class="am-form admin-list" action="{{:U('Admin/Admin/Index')}}" method="POST">
 			<div class="am-g">
-				<input type="text" class="am-radius form-keyword" placeholder="管理员姓名" name="name" <present name="param['name']"> value="{{$param.name}}"</present> />
-				<select name="status" class="am-radius c-p m-l-5">
-					<option value="-1">全部状态</option>
-					<option value="1" <if condition="isset($param['status']) and $param['status'] eq 1">selected</if>>启用</option>
-					<option value="0" <if condition="isset($param['status']) and $param['status'] eq 0">selected</if>>禁用</option>
+				<select  class="am-radius c-p" name="role_id">
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="role" item="v">
+						<option value="{{$v.id}}" <if condition="isset($param['role_id']) and $param['role_id'] == $v['id']">selected</if>>{{$v.name}}</option>
+					</foreach>
 				</select>
-				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+				<input type="text" class="am-radius" placeholder="{{:L('login_username_text')}}" name="username" <present name="param['username']"> value="{{$param.username}}"</present> />
+				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius">{{:L('common_operation_query')}}</button>
 			</div>
 		</form>
 		<!-- form end -->
 
 		<!-- operation start -->
 		<div class="am-g m-t-15">
-			<a href="{{:U('Admin/Admin/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增管理员</a>
-			<a href="{{:U('Admin/Admin/LoginInfo')}}" class="am-btn am-btn-default am-radius am-btn-xs m-l-10"> 登录日志</a>
+			<a href="{{:U('Admin/Admin/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> {{:L('common_operation_add')}}</a>
 		</div>
 		<!-- operation end -->
 
@@ -28,14 +28,11 @@
 		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>用户名</th>
-					<th>姓名</th>
-					<th>角色</th>
-					<th>手机号</th>
-					<th>邮箱</th>
-					<th>状态</th>
-					<th>最后登录</th>
+					<th>{{:L('common_admin_name')}}</th>
+					<th>{{:L('common_view_gender_name')}}</th>
+					<th>{{:L('login_total_name')}}</th>
+					<th class="am-hide-sm-only">{{:L('login_last_time_name')}}</th>
+					<th class="am-hide-sm-only">{{:L('common_create_time_name')}}</th>
 					<th>{{:L('common_operation_name')}}</th>
 				</tr>
 			</thead>
@@ -43,28 +40,33 @@
 				<if condition="!empty($list)">
 					<foreach name="list" item="v">
 						<tr id="data-list-{{$v.id}}">
-							<td>{{$v.id}}</td>
 							<td>{{$v.username}}</td>
-							<td>{{$v.name}}</td>
-							<td>{{$v.role_name}}</td>
-							<td>{{$v.mobile}}</td>
-							<td>{{$v.email}}</td>
-							<td>
-								<if condition="$v['status'] eq 1"><span class="am-badge am-badge-success">启用</span>
-								<else /><span class="am-badge">禁用</span>
+							<td>{{:L('common_gender_list')[$v['gender']]['name']}}</td>
+							<td>{{$v.login_total}}</td>
+							<td class="am-hide-sm-only">
+								<if condition="$v['login_total'] == 0">
+									{{:L('common_not_login_name')}}
+								<else />
+									{{:date('Y-m-d H:i:s', $v['login_time'])}}
 								</if>
 							</td>
-							<td>{{$v.last_login_time}}</td>
-							<td class="view-operation">
-								<a href="{{:U('Admin/Admin/SaveInfo', array('id'=>$v['id']))}}">
-									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
-								</a>
-								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Admin/Delete')}}" data-id="{{$v.id}}"></button>
+							<td class="am-hide-sm-only">{{:date('Y-m-d H:i:s', $v['add_time'])}}</td>
+							<td>
+								<if condition="$v['id'] == 1">
+									<span class="cr-ccc">{{:L('common_do_not_operate')}}</span>
+								<else />
+									<a href="{{:U('Admin/Admin/SaveInfo', array('id'=>$v['id']))}}">
+										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+									</a>
+									<if condition="$v['id'] != $admin['id']">
+										<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Admin/Delete')}}" data-am-popover="{content: '{{:L('common_operation_delete')}}', trigger: 'hover focus'}" data-id="{{$v.id}}"></button>
+									</if>
+								</if>
 							</td>
 						</tr>
 					</foreach>
 				<else />
-					<tr><td colspan="9" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+					<tr><td colspan="5" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
 				</if>
 			</tbody>
 		</table>

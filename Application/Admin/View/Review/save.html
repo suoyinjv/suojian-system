@@ -1,92 +1,102 @@
-<include file="Public/Header" />
-
-<!-- right content start  -->
-<div class="content-right">
-	<div class="content">
-		<!-- form start -->
-		<form class="am-form form-validation view-save" action="{:U('Admin/Review/Save')}" method="POST" request-type="ajax-url" request-value="{:U('Admin/Review/Index')}">
-			<legend>
-				<span class="fs-16">
-					<if condition="empty($data['id'])">
-						新增点评
-					<else />
-						编辑点评
-					</if>
-				</span>
-				<a href="{:U('Admin/Review/Index')}" class="fr fs-14 m-t-5 am-icon-mail-reply"> 返回</a>
-			</legend>
-			<div class="am-form-group">
-				<label>学员</label>
-				<select name="student_id" class="am-radius c-p" data-validation-message="请选择学员" required>
-					<option value="">请选择学员</option>
-					<volist name="student_list" id="v">
-						<option value="{$v.id}" <if condition="isset($data['student_id']) and $data['student_id'] eq $v['id']">selected</if>>{$v.name}</option>
-					</volist>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>课程</label>
-				<select name="course_id" class="am-radius c-p" data-validation-message="请选择课程" required>
-					<option value="">请选择课程</option>
-					<volist name="course_list" id="v">
-						<option value="{$v.id}" <if condition="isset($data['course_id']) and $data['course_id'] eq $v['id']">selected</if>>{$v.name}</option>
-					</volist>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>课次</label>
-				<select name="schedule_id" class="am-radius c-p" data-validation-message="请选择课次">
-					<option value="">请选择课次</option>
-					<volist name="schedule_list" id="v">
-						<option value="{$v.id}" <if condition="isset($data['schedule_id']) and $data['schedule_id'] eq $v['id']">selected</if>>{$v.name}</option>
-					</volist>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>点评类型</label>
-				<select name="type" class="am-radius c-p" data-validation-message="请选择点评类型" required>
-					<option value="">请选择点评类型</option>
-					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>课堂表现</option>
-					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>课后反馈</option>
-					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>阶段总结</option>
-					<option value="4" <if condition="isset($data['type']) and $data['type'] eq 4">selected</if>>学习建议</option>
-				</select>
-			</div>
-			<div class="am-form-group">
-				<label>点评内容</label>
-				<textarea name="content" class="am-radius" placeholder="请输入点评内容" rows="6" data-validation-message="请输入点评内容" required><notempty name="data">{$data.content}</notempty></textarea>
-			</div>
-			<div class="am-form-group">
-				<label>评分（1-5星）</label>
-				<div class="star-rating">
-					<input type="radio" id="star5" name="score" value="5" <if condition="isset($data['score']) and $data['score'] eq 5">checked</if> /><label for="star5" title="5星">★</label>
-					<input type="radio" id="star4" name="score" value="4" <if condition="isset($data['score']) and $data['score'] eq 4">checked</if> /><label for="star4" title="4星">★</label>
-					<input type="radio" id="star3" name="score" value="3" <if condition="isset($data['score']) and $data['score'] eq 3">checked</if> /><label for="star3" title="3星">★</label>
-					<input type="radio" id="star2" name="score" value="2" <if condition="isset($data['score']) and $data['score'] eq 2">checked</if> /><label for="star2" title="2星">★</label>
-					<input type="radio" id="star1" name="score" value="1" <if condition="isset($data['score']) and $data['score'] eq 1">checked</if> /><label for="star1" title="1星">★</label>
-				</div>
-			</div>
-			<div class="am-form-group">
-				<label>标签</label>
-				<input type="text" name="tags" placeholder="请输入标签，多个标签用逗号分隔" maxlength="200" data-validation-message="请输入标签" class="am-radius" <notempty name="data">value="{$data.tags}"</notempty> />
-			</div>
-			<div class="am-form-group">
-				<label>是否公开</label>
-				<div class="am-form-group">
-					<input type="radio" name="is_public" value="1" id="is_public_1" <if condition="!isset($data['is_public']) or $data['is_public'] eq 1">checked</if> /> <label for="is_public_1">公开</label>&nbsp;&nbsp;
-					<input type="radio" name="is_public" value="0" id="is_public_0" <if condition="isset($data['is_public']) and $data['is_public'] eq 0">checked</if> /> <label for="is_public_0">不公开</label>
-				</div>
-			</div>
-			<div class="am-form-group">
-				<input type="hidden" name="id" <notempty name="data">value="{$data.id}"</notempty> />
-				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'提交中...'}">保存</button>
-			</div>
-		</form>
-        <!-- form end -->
-	</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评价编辑</title>
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
+</head>
+<body>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <?php echo $info ? '编辑' : '新增'; ?>点评
+            <a href="<?php echo U('index'); ?>" class="pull-right" style="font-size:14px;margin-top:2px;">&larr; 返回</a>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <form method="post" class="form-horizontal" onsubmit="return submitForm()">
+            <input type="hidden" name="id" value="<?php echo $info['id'] ?? 0; ?>">
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">学员</label>
+                <div class="col-sm-4">
+                    <select name="student_id" class="form-control" required>
+                        <option value="">请选择学员</option>
+                        <?php if (!empty($students)): ?>
+                        <?php foreach ($students as $v): ?>
+                        <option value="<?php echo $v['id']; ?>" <?php echo ($info['student_id'] ?? 0) == $v['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($v['username']); ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">老师</label>
+                <div class="col-sm-4">
+                    <select name="teacher_id" class="form-control" required>
+                        <option value="">请选择老师</option>
+                        <?php if (!empty($teachers)): ?>
+                        <?php foreach ($teachers as $v): ?>
+                        <option value="<?php echo $v['id']; ?>" <?php echo ($info['teacher_id'] ?? 0) == $v['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($v['username']); ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">评分</label>
+                <div class="col-sm-4">
+                    <select name="score" class="form-control">
+                        <?php for ($i = 5; $i >= 1; $i--): ?>
+                        <option value="<?php echo $i; ?>" <?php echo ($info['score'] ?? 5) == $i ? 'selected' : ''; ?>><?php echo $i; ?>星</option>
+                        <?php endfor; ?>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">评价内容</label>
+                <div class="col-sm-6">
+                    <textarea name="content" class="form-control" rows="4"><?php echo htmlspecialchars($info['content'] ?? ''); ?></textarea>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">状态</label>
+                <div class="col-sm-4">
+                    <select name="status" class="form-control">
+                        <option value="1" <?php echo ($info['status'] ?? 1) == 1 ? 'selected' : ''; ?>>显示</option>
+                        <option value="0" <?php echo ($info['status'] ?? 1) == 0 ? 'selected' : ''; ?>>隐藏</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a href="<?php echo U('index'); ?>" class="btn btn-default">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<!-- right content end  -->
-
-<!-- footer start -->
-<include file="Public/Footer" />
-<!-- footer end -->
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script>
+function submitForm() {
+    var data = $('form').serialize();
+    $.post('', data, function(res) {
+        if (res.code == 0) {
+            alert(res.msg);
+            location.href = '<?php echo U('index'); ?>';
+        } else {
+            alert(res.msg);
+        }
+    }, 'json');
+    return false;
+}
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>使用优惠券</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
@@ -21,7 +21,7 @@
                     <p class="text-center text-muted">使用后状态将变更为"已使用"，无法撤销。</p>
                     
                     <div class="text-center am-margin-top">
-                        <a href="{:U('doUse', array('id'=>I('id')))}" class="btn btn-success">确认使用</a>
+                        <a href="<?php echo U('doUse', array('id'=>I('id'))); ?>" class="btn btn-success">确认使用</a>
                         <a href="javascript:history.back()" class="btn btn-default">返回</a>
                     </div>
                 </div>

@@ -110,11 +110,11 @@
                                 <volist name="studentStats" id="item" key="k">
                                 <tr>
                                     <td>
-                                        <if condition="$k eq 1">
+                                        <if condition="$k == 1">
                                             <span class="am-badge am-badge-danger">🥇 1</span>
-                                        <elseif condition="$k eq 2"/>
+                                        <elseif condition="$k == 2"/>
                                             <span class="am-badge am-badge-warning">🥈 2</span>
-                                        <elseif condition="$k eq 3"/>
+                                        <elseif condition="$k == 3"/>
                                             <span class="am-badge am-badge-secondary">🥉 3</span>
                                         <else/>
                                             <span class="am-badge">{$k}</span>

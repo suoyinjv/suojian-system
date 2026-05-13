@@ -126,11 +126,11 @@
                     <td>{$vo.course_name}</td>
                     <td>{$vo.attend_date}</td>
                     <td>
-                        <if condition="$vo['status'] eq 1">
+                        <if condition="$vo['status'] == 1">
                             <span class="am-badge am-badge-success">正常</span>
-                        <elseif condition="$vo['status'] eq 2" />
+                        <elseif condition="$vo['status'] == 2" />
                             <span class="am-badge am-badge-primary">请假</span>
-                        <elseif condition="$vo['status'] eq 3" />
+                        <elseif condition="$vo['status'] == 3" />
                             <span class="am-badge am-badge-danger">旷课</span>
                         <else />
                             <span class="am-badge am-badge-warning">迟到</span>

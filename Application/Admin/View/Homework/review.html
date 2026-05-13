@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>作业回顾 - SchoolCMS</title>
+    <title>作业回顾 - SUOJIAN</title>
     <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
     <style>
         .homework-card { margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
@@ -47,7 +47,7 @@
                             <span class="am-text-secondary"> - {$vo.course_name}</span>
                         </div>
                         <div class="am-fr">
-                            <if condition="$vo['is_submit'] eq 1">
+                            <if condition="$vo['is_submit'] == 1">
                             <span class="am-badge am-badge-success">已完成 | 得分：{$vo.score|default='--'}/{$vo.total_score|default=100}</span>
                             <else/>
                             <span class="am-badge am-badge-warning">未完成</span>
@@ -83,7 +83,7 @@
                                             <default/>未知
                                         </switch>
                                     </p>
-                                    <if condition="$vo['is_submit'] eq 1">
+                                    <if condition="$vo['is_submit'] == 1">
                                     <p>提交时间：{$vo.submit_time}</p>
                                     <if condition="!empty($vo['comment'])">
                                     <p><strong>教师评语：</strong>{$vo.comment}</p>
@@ -92,7 +92,7 @@
                                 </div>
                             </div>
                             <div style="margin-top:15px;">
-                                <if condition="$vo['is_submit'] eq 1">
+                                <if condition="$vo['is_submit'] == 1">
                                 <a href="{:U('correct', array('id'=>$vo['submit_id']))}" class="am-btn am-btn-xs am-btn-primary">查看批改</a>
                                 <else/>
                                 <a href="{:U('submit', array('homework_id'=>$vo['id']))}" class="am-btn am-btn-xs am-btn-default">去完成</a>

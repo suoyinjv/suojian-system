@@ -1,0 +1,75 @@
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <legend><span class="fs-16 fw-700">💰 财务数据</span></legend>
+
+        <div class="am-g am-margin-top">
+            <div class="am-u-sm-12 am-u-md-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">📈 每日收入（近30天）</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered am-text-center">
+                            <thead><tr><th>日期</th><th>订单数</th><th>金额</th></tr></thead>
+                            <tbody>
+                                <volist name="daily_revenue" id="vo">
+                                <tr><td>{{$vo.date}}</td><td>{{$vo.cnt}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
+                                </volist>
+                                <if condition="count($daily_revenue) == 0">
+                                <tr><td colspan="3" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="am-u-sm-12 am-u-md-6">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">💳 支付方式统计</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered">
+                            <thead><tr><th>支付方式</th><th>订单数</th><th>金额</th></tr></thead>
+                            <tbody>
+                                <volist name="pay_type_stats" id="vo">
+                                <tr><td>
+                                    <if condition="$vo['pay_type'] == 1">微信
+                                    <elseif condition="$vo['pay_type'] == 2"/>支付宝
+                                    <elseif condition="$vo['pay_type'] == 3"/>银行卡
+                                    <elseif condition="$vo['pay_type'] == 4"/>现金
+                                    <else/>其他
+                                    </if>
+                                </td><td>{{$vo.cnt}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
+                                </volist>
+                                <if condition="count($pay_type_stats) == 0">
+                                <tr><td colspan="3" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <div class="am-panel am-panel-default">
+                    <div class="am-panel-hd">🏅 课程收入排名（Top 5）</div>
+                    <div class="am-panel-bd">
+                        <table class="am-table am-table-bordered">
+                            <thead><tr><th>课程</th><th>收入</th></tr></thead>
+                            <tbody>
+                                <volist name="course_revenue" id="vo">
+                                <tr><td>{{$vo.course_name|default='未知'}}</td><td class="am-text-success">¥{{$vo.amount|number_format=2}}</td></tr>
+                                </volist>
+                                <if condition="count($course_revenue) == 0">
+                                <tr><td colspan="2" class="am-text-center cr-999">暂无数据</td></tr>
+                                </if>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<include file="Public/Footer" />

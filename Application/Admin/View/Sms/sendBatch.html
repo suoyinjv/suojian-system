@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>批量发送短信</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -63,7 +63,7 @@
                             </div>
                             
                             <div class="am-form-group">
-                                <a href="{:U('send')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                <a href="<?php echo U('send'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                             </div>
                         </form>
                     </div>
@@ -72,8 +72,8 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/static/js/jquery-2.0.0.min.js"></script>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/static/js/jquery-2.0.0.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 <script>
 $(function() {
     loadTemplates();
@@ -93,7 +93,7 @@ $(function() {
     
     $('#templateSelect').change(function() {
         if ($(this).val()) {
-            $.get('__CONTROLLER__/getTemplate?id=' + $(this).val(), function(res) {
+            $.get('/getTemplate?id=' + $(this).val(), function(res) {
                 if (res.data) {
                     $('#smsContent').val(res.data.content);
                     $('#charCount').text(res.data.content.length);
@@ -104,7 +104,7 @@ $(function() {
 });
 
 function loadTemplates() {
-    $.get('__CONTROLLER__/templateLists?json=1', function(res) {
+    $.get('/templateLists?json=1', function(res) {
         var html = '<option value="">不使用模板</option>';
         if (res.data) {
             $.each(res.data, function(i, v) {
@@ -116,7 +116,7 @@ function loadTemplates() {
 }
 
 function loadClasses() {
-    $.get('__CONTROLLER__/getClasses?json=1', function(res) {
+    $.get('/getClasses?json=1', function(res) {
         var html = '<option value="">全部学员</option>';
         if (res.data) {
             $.each(res.data, function(i, v) {
@@ -130,10 +130,10 @@ function loadClasses() {
 $('#batchForm').submit(function() {
     if (!confirm('确认发送短信？')) return false;
     var formData = $(this).serialize();
-    $.post('__SELF__', formData, function(res) {
+    $.post('', formData, function(res) {
         alert(res.msg);
         if (res.code) {
-            location.href = '__CONTROLLER__/log';
+            location.href = '/log';
         }
     });
     return false;

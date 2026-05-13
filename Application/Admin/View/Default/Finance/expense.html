@@ -1,1 +1,64 @@
-Expense.html
+<include file="Public/Header" />
+
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<!-- operation start -->
+		<div class="am-g m-t-15">
+			<a href="{{:U('Admin/Finance/AddExpense')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增支出</a>
+			<a href="{{:U('Admin/Finance/Expense')}}" class="am-btn am-btn-default am-radius am-btn-xs m-l-10"> 支出明细</a>
+		</div>
+		<!-- operation end -->
+
+		<!-- list start -->
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>支出项目</th>
+					<th>金额</th>
+					<th>类型</th>
+					<th>经手人</th>
+					<th>时间</th>
+					<th>备注</th>
+					<th>{{:L('common_operation_name')}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<if condition="!empty($list)">
+					<foreach name="list" item="v">
+						<tr id="data-list-{{$v.id}}">
+							<td>{{$v.id}}</td>
+							<td>{{$v.title}}</td>
+							<td class="am-text-danger">-¥{{$v.amount}}</td>
+							<td>{{$v.type_name}}</td>
+							<td>{{$v.handler}}</td>
+							<td>{{$v.add_time}}</td>
+							<td>{{$v.remark}}</td>
+							<td class="view-operation">
+								<a href="{{:U('Admin/Finance/ExpenseEdit', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
+								</a>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Finance/Delete')}}" data-id="{{$v.id}}"></button>
+							</td>
+						</tr>
+					</foreach>
+				<else />
+					<tr><td colspan="8" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+				</if>
+			</tbody>
+		</table>
+		<!-- list end -->
+
+		<!-- page start -->
+		<if condition="!empty($list)">
+			{{$page_html}}
+		</if>
+		<!-- page end -->
+	</div>
+</div>
+<!-- right content end  -->
+
+<!-- footer start -->
+<include file="Public/Footer" />
+<!-- footer end -->

@@ -28,26 +28,26 @@
                         <form class="am-form am-form-inline">
                             <div class="am-form-group">
                                 <select name="week_start" class="am-form-field">
-                                    <php>$week_start = date('Y-m-d', strtotime('monday this week'));</php>
-                                    <option value="{$week_start}">本周</option>
-                                    <php>$next_week = date('Y-m-d', strtotime('monday next week'));</php>
-                                    <option value="{$next_week}">下周</option>
+                                    <?php $week_start = date('Y-m-d', strtotime('monday this week')); ?>
+                                    <option value="<?php echo $week_start; ?>">本周</option>
+                                    <?php $next_week = date('Y-m-d', strtotime('monday next week')); ?>
+                                    <option value="<?php echo $next_week; ?>">下周</option>
                                 </select>
                             </div>
                             <div class="am-form-group">
                                 <select name="teacher_id" class="am-form-field">
                                     <option value="">全部老师</option>
-                                    <volist name="teachers" id="vo">
-                                    <option value="{$vo.id}">{$vo.name}</option>
-                                    </volist>
+                                    <?php if(is_array($teachers)): foreach($teachers as $vo): ?>
+                                    <option value="<?php echo $vo['id']; ?>"><?php echo $vo['name']; ?></option>
+                                    <?php endforeach; endif; ?>
                                 </select>
                             </div>
                             <div class="am-form-group">
                                 <select name="class_id" class="am-form-field">
                                     <option value="">全部班级</option>
-                                    <volist name="classes" id="vo">
-                                    <option value="{$vo.id}">{$vo.name}</option>
-                                    </volist>
+                                    <?php if(is_array($classes)): foreach($classes as $vo): ?>
+                                    <option value="<?php echo $vo['id']; ?>"><?php echo $vo['name']; ?></option>
+                                    <?php endforeach; endif; ?>
                                 </select>
                             </div>
                             <button type="submit" class="am-btn am-btn-primary">筛选</button>
@@ -58,24 +58,28 @@
                 <!-- 日历视图 -->
                 <div class="schedule-grid">
                     <div class="schedule-header">时间</div>
-                    <php>for($i=0;$i<7;$i++): $day = date('Y-m-d', strtotime($week_start . " +{$i} days")); $day_name = date('m/d', strtotime($day)); $day_week = ['周日','周一','周二','周三','周四','周五','周六'][date('w', strtotime($day))];</php>
-                    <div class="schedule-header">{$day_week}<br>{$day_name}</div>
-                    <php>endfor;</php>
+                    <?php for($i=0;$i<7;$i++): 
+                        $day = date('Y-m-d', strtotime($week_start . " +{$i} days")); 
+                        $day_name = date('m/d', strtotime($day)); 
+                        $day_week = ['周日','周一','周二','周三','周四','周五','周六'][date('w', strtotime($day))]; 
+                    ?>
+                    <div class="schedule-header"><?php echo $day_week; ?><br><?php echo $day_name; ?></div>
+                    <?php endfor; ?>
                     
-                    <php>for($h=8;$h<=20;$h++):</php>
-                    <div class="schedule-time">{$h}:00</div>
-                    <php>for($i=0;$i<7;$i++):</php>
+                    <?php for($h=8;$h<=20;$h++): ?>
+                    <div class="schedule-time"><?php echo $h; ?>:00</div>
+                    <?php for($i=0;$i<7;$i++): ?>
                     <div class="schedule-cell">
                         <!-- 这里会通过JS填充课程 -->
                     </div>
-                    <php>endfor; endfor;</php>
+                    <?php endfor; endfor; ?>
                 </div>
                 
                 <div class="am-text-center am-margin-top">
-                    <a href="{:U('add')}" class="am-btn am-btn-primary">
+                    <a href="<?php echo U('add'); ?>" class="am-btn am-btn-primary">
                         <i class="am-icon-plus"></i> 添加排课
                     </a>
-                    <a href="{:U('index')}" class="am-btn am-btn-default">
+                    <a href="<?php echo U('index'); ?>" class="am-btn am-btn-default">
                         <i class="am-icon-list"></i> 列表视图
                     </a>
                 </div>
@@ -88,9 +92,13 @@
 <script>
 // 加载课程数据并渲染到日历
 $(function() {
-    $.get('__CONTROLLER__/getWeekSchedules?week_start=' + $('select[name="week_start"]').val(), function(res) {
-        if (res.data) {
-            renderSchedules(res.data);
+    $.ajax({
+        url: '<?php echo U('Schedule/getWeekSchedules'); ?>?week_start=' + $('select[name="week_start"]').val(),
+        dataType: 'json',
+        success: function(res) {
+            if (res.data) {
+                renderSchedules(res.data);
+            }
         }
     });
 });

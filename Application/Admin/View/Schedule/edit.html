@@ -21,7 +21,7 @@
                                 <div class="am-u-sm-7">
                                     <select name="course_id" class="am-form-field" required>
                                         <volist name="courses" id="vo">
-                                        <option value="{$vo.id}" <if condition="$info['course_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        <option value="{$vo.id}" <if condition="$info['course_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -32,7 +32,7 @@
                                 <div class="am-u-sm-7">
                                     <select name="class_id" class="am-form-field" required>
                                         <volist name="classes" id="vo">
-                                        <option value="{$vo.id}" <if condition="$info['class_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        <option value="{$vo.id}" <if condition="$info['class_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -43,7 +43,7 @@
                                 <div class="am-u-sm-7">
                                     <select name="teacher_id" class="am-form-field" required>
                                         <volist name="teachers" id="vo">
-                                        <option value="{$vo.id}" <if condition="$info['teacher_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        <option value="{$vo.id}" <if condition="$info['teacher_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -76,7 +76,7 @@
                                     <select name="room_id" class="am-form-field">
                                         <option value="">不限定</option>
                                         <volist name="rooms" id="vo">
-                                        <option value="{$vo.id}" <if condition="$info['room_id'] eq $vo['id']">selected</if>>{$vo.name}</option>
+                                        <option value="{$vo.id}" <if condition="$info['room_id'] == $vo['id']">selected</if>>{$vo.name}</option>
                                         </volist>
                                     </select>
                                 </div>
@@ -86,9 +86,9 @@
                                 <label class="am-u-sm-3 am-text-right">状态</label>
                                 <div class="am-u-sm-7">
                                     <select name="status" class="am-form-field">
-                                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>正常</option>
-                                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>已取消</option>
-                                        <option value="2" <if condition="$info['status'] eq 2">selected</if>>已结束</option>
+                                        <option value="1" <if condition="$info['status'] == 1">selected</if>>正常</option>
+                                        <option value="0" <if condition="$info['status'] == 0">selected</if>>已取消</option>
+                                        <option value="2" <if condition="$info['status'] == 2">selected</if>>已结束</option>
                                     </select>
                                 </div>
                             </div>

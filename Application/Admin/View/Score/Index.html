@@ -3,83 +3,57 @@
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
-		<legend>
-			<span class="fs-16">成绩管理</span>
-		</legend>
+        <!-- operation start -->
+        <div class="am-g">
+            <button class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus tree-submit-add" data-am-modal="{target: '#data-save-win'}"> {{:L('common_operation_add')}}</button>
+        </div>
+        <!-- operation end -->
 
-		<!-- form start -->
-		<form class="am-form view-list" action="{{:U('Admin/Score/Index')}}" method="POST">
-			<div class="am-g">
-				<input type="text" class="am-radius form-keyword" placeholder="学员姓名" name="student_name" <present name="param['student_name']"> value="{{$param.student_name}}"</present> />
-				<select name="semester_id" class="am-radius c-p m-l-5">
-					<option value="">全部学期</option>
-					<volist name="semester_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($param['semester_id']) and $param['semester_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
-					</volist>
-				</select>
-				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
+        <!-- save win start -->
+        <div class="am-popup am-radius" id="data-save-win">
+			<div class="am-popup-inner">
+				<div class="am-popup-hd">
+					<h4 class="am-popup-title" data-add-title="{{:L('score_add_name')}}" data-edit-title="{{:L('score_edit_name')}}">{{:L('score_add_name')}}</h4>
+					<span data-am-modal-close class="am-close">&times;</span>
+				</div>
+				<div class="am-popup-bd">
+					<!-- form start -->
+					<form class="am-form form-validation admin-save" action="{{:U('Admin/Score/Save')}}" method="POST" request-type="ajax-reload" request-value="">
+						<div class="am-form-group">
+							<label>{{:L('common_name_text')}}</label>
+							<input type="text" placeholder="{{:L('common_name_text')}}" name="name" minlength="2" maxlength="16" data-validation-message="{{:L('common_name_format')}}" class="am-radius" required />
+						</div>
+						<div class="am-form-group">
+							<label>{{:L('common_view_sort_title')}}</label>
+							<input type="number" placeholder="{{:L('common_view_sort_title')}}" name="sort" min="0" max="255" data-validation-message="{{:L('common_sort_error')}}" class="am-radius" value="0" required />
+						</div>
+						<include file="Lib/Enable" />
+						<div class="am-form-group">
+							<input type="hidden" name="id" />
+							<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
+						</div>
+					</form>
+					<!-- form end -->
+				</div>
 			</div>
-		</form>
-		<!-- form end -->
-
-		<!-- operation start -->
-		<div class="am-g m-t-15">
-			<a href="{{:U('Admin/Score/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 录入成绩</a>
 		</div>
-		<!-- operation end -->
+		<!-- save win end -->
 
-		<!-- list start -->
-		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>学员姓名</th>
-					<th>科目</th>
-					<th>成绩</th>
-					<th>学期</th>
-					<th>考试时间</th>
-					<th>{{:L('common_operation_name')}}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<if condition="!empty($list)">
-					<foreach name="list" item="v">
-						<tr id="data-list-{{$v.id}}">
-							<td>{{$v.id}}</td>
-							<td>{{$v.student_name}}</td>
-							<td>{{$v.subject_name}}</td>
-							<td>
-								<if condition="$v['score'] ge 90"><span class="am-badge am-badge-success">{{$v.score}}</span>
-								<elseif condition="$v['score'] ge 60" /><span class="am-badge am-badge-warning">{{$v.score}}</span>
-								<else /><span class="am-badge am-badge-danger">{{$v.score}}</span>
-								</if>
-							</td>
-							<td>{{$v.semester_name}}</td>
-							<td>{{$v.exam_time}}</td>
-							<td class="view-operation">
-								<a href="{{:U('Admin/Score/SaveInfo', array('id'=>$v['id']))}}">
-									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
-								</a>
-								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Score/Delete')}}" data-id="{{$v.id}}"></button>
-							</td>
-						</tr>
-					</foreach>
-				<else />
-					<tr><td colspan="7" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
-				</if>
-			</tbody>
-		</table>
+        <!-- list start -->
+		<div id="tree" class="m-t-15">
+			<div class="m-t-30 t-c">
+				<img src="__PUBLIC__/Common/Images/loading.gif" />
+				<p>{{:L('common_form_loading_tips')}}</p>
+			</div>
+		</div>
 		<!-- list end -->
-
-		<!-- page start -->
-		<if condition="!empty($list)">
-			{{$page_html}}
-		</if>
-		<!-- page end -->
 	</div>
 </div>
 <!-- right content end  -->
-
+		
 <!-- footer start -->
 <include file="Public/Footer" />
 <!-- footer end -->
+<script>
+	Tree(0, "{{:U('Admin/Score/GetNodeSon')}}", 0);
+</script>

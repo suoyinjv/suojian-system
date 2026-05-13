@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>学员课程包</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -12,10 +12,10 @@
             <div class="am-u-sm-12">
                 <div class="am-panel am-panel-success">
                     <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="am-icon-user"></i> {$studentName} - 课程包列表</h3>
+                        <h3 class="am-panel-title"><i class="am-icon-user"></i> <?php echo $studentName; ?> - 课程包列表</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <a href="{:U('buyPackage?student_id='.I('student_id'))}" class="am-btn am-btn-primary am-radius am-margin-bottom">
+                        <a href="<?php echo U('buyPackage?student_id='.I('student_id')); ?>" class="am-btn am-btn-primary am-radius am-margin-bottom">
                             <i class="am-icon-plus"></i> 购买课程包
                         </a>
                         
@@ -33,35 +33,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <volist name="list" id="vo">
+                                <?php foreach($$list as $$vo): ?>
                                 <tr>
-                                    <td>{$vo.id}</td>
-                                    <td>{$vo.package_name}</td>
+                                    <td><?php echo $vo['id']; ?></td>
+                                    <td><?php echo $vo['package_name']; ?></td>
                                     <td>{$vo.create_time|date='Y-m-d',###}</td>
                                     <td>{$vo.expire_time|date='Y-m-d',###|default='永久'}</td>
-                                    <td>{$vo.total_hours}</td>
-                                    <td><span class="am-badge am-badge-success">{$vo.remaining_hours}</span></td>
+                                    <td><?php echo $vo['total_hours']; ?></td>
+                                    <td><span class="am-badge am-badge-success"><?php echo $vo['remaining_hours']; ?></span></td>
                                     <td>
-                                        <if condition="$vo['status'] eq 1">
+                                        <?php if($vo['status'] == 1): ?>
                                             <span class="am-badge am-badge-success">正常</span>
-                                        <elseif condition="$vo['status'] eq 2"/>
+                                        <?php elseif($vo['status'] == 2): ?>
                                             <span class="am-badge am-badge-warning">已用完</span>
                                         <else/>
                                             <span class="am-badge am-badge-default">已过期</span>
-                                        </if>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="{:U('consumptionLog?student_package_id='.$vo['id'])}">消费记录</a>
+                                        <a href="<?php echo U('consumptionLog?student_package_id='.$vo['id']); ?>">消费记录</a>
                                     </td>
                                 </tr>
-                                </volist>
-                                <notpresent name="list">
+                                <?php endforeach; ?>
+                                <?php if(!isset($$list)): ?>
                                 <tr><td colspan="8" class="text-center">暂无课程包</td></tr>
-                                </notpresent>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                         
-                        <a href="{:U('Student/index')}" class="am-btn am-btn-default am-margin-top">
+                        <a href="<?php echo U('Student/index'); ?>" class="am-btn am-btn-default am-margin-top">
                             <i class="am-icon-arrow-left"></i> 返回学员列表
                         </a>
                     </div>
@@ -70,6 +70,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

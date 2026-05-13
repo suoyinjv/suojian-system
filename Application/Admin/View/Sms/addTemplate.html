@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>添加短信模板</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
+    <link rel="stylesheet" href="/Public/AmazeUI/css/amazeui.min.css">
 </head>
 <body>
 <div class="am-cf admin-main">
@@ -15,7 +15,7 @@
                         <h3 class="am-panel-title"><i class="am-icon-plus"></i> 添加短信模板</h3>
                     </div>
                     <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST">
+                        <form class="am-form am-form-horizontal" action="" method="POST">
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-text-right">模板名称 <span class="am-text-danger">*</span></label>
                                 <div class="am-u-sm-7">
@@ -59,7 +59,7 @@
                             
                             <div class="am-form-group">
                                 <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="{:U('template')}" class="am-btn am-btn-default am-btn-block">返回</a>
+                                    <a href="<?php echo U('template'); ?>" class="am-btn am-btn-default am-btn-block">返回</a>
                                 </div>
                             </div>
                         </form>
@@ -69,6 +69,6 @@
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
+<script src="/Public/AmazeUI/js/amazeui.min.js"></script>
 </body>
 </html>

@@ -1,85 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>上传资源 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/font-awesome-4.4.0/css/font-awesome.min.css">
-</head>
-<body>
-<div class="am-cf admin-main">
-    <div class="admin-content">
-        <div class="am-g am-margin-top am-padding-top-sm">
-            <div class="am-u-sm-10 am-u-sm-centered">
-                <div class="am-panel am-panel-warning">
-                    <div class="am-panel-hd">
-                        <h3 class="am-panel-title"><i class="fa fa-upload"></i> 上传资源</h3>
-                    </div>
-                    <div class="am-panel-bd">
-                        <form class="am-form am-form-horizontal" action="__SELF__" method="POST" enctype="multipart/form-data">
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">选择文件 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <input type="file" name="file" class="am-form-field" required accept="*/*">
-                                    <p class="am-text-sm am-text-muted">支持文档、图片、视频、音频、压缩包等文件</p>
-                                </div>
-                            </div>
+<include file="Public/Header" />
+<include file="Public/Nav" />
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源分类 <span class="am-text-danger">*</span></label>
-                                <div class="am-u-sm-7">
-                                    <select name="category" class="am-form-field" required>
-                                        <option value="">请选择分类</option>
-                                        <option value="课件">课件</option>
-                                        <option value="教案">教案</option>
-                                        <option value="试题">试题</option>
-                                        <option value="教材">教材</option>
-                                        <option value="视频">视频</option>
-                                        <option value="音频">音频</option>
-                                        <option value="图片">图片</option>
-                                        <option value="其他">其他</option>
-                                    </select>
-                                </div>
-                            </div>
+<!-- right content start  -->
+<div class="content-right">
+	<div class="content">
+		<div class="am-panel am-panel-warning">
+			<div class="am-panel-hd">
+				<h3 class="am-panel-title"><i class="fa fa-upload"></i> 上传资源</h3>
+			</div>
+			<div class="am-panel-bd">
+				<form class="am-form am-form-horizontal" action="<?php echo U('Admin/Resource/upload'); ?>" method="POST" enctype="multipart/form-data">
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">选择文件 <span class="am-text-danger">*</span></label>
+						<div class="am-u-sm-7">
+							<input type="file" name="file" class="am-form-field" required accept="*/*">
+							<p class="am-text-sm am-text-muted">支持文档、图片、视频、音频、压缩包等文件</p>
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">资源描述</label>
-                                <div class="am-u-sm-7">
-                                    <textarea name="description" class="am-form-field" rows="4" placeholder="请输入资源描述信息">{$info.description}</textarea>
-                                </div>
-                            </div>
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">资源名称</label>
+						<div class="am-u-sm-7">
+							<input type="text" name="title" class="am-form-field" placeholder="留空则使用文件名">
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-text-right">是否共享</label>
-                                <div class="am-u-sm-7 am-padding-top-xs">
-                                    <label class="am-checkbox">
-                                        <input type="checkbox" name="is_shared" value="1" checked> 允许其他用户查看此资源
-                                    </label>
-                                </div>
-                            </div>
+					<div class="am-form-group">
+						<label class="am-u-sm-3 am-text-right">资源描述</label>
+						<div class="am-u-sm-7">
+							<textarea name="description" class="am-form-field" rows="4" placeholder="请输入资源描述信息"></textarea>
+						</div>
+					</div>
 
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <button type="submit" class="am-btn am-btn-primary am-btn-block">
-                                        <i class="am-icon-upload"></i> 开始上传
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="am-form-group">
-                                <div class="am-u-sm-7 am-u-sm-offset-3">
-                                    <a href="__CONTROLLER__/index" class="am-btn am-btn-default am-btn-block">
-                                        <i class="am-icon-arrow-left"></i> 返回列表
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+					<div class="am-form-group">
+						<div class="am-u-sm-7 am-u-sm-offset-3">
+							<button type="submit" class="am-btn am-btn-primary am-radius"><i class="am-icon-upload"></i> 开始上传</button>
+							<a href="<?php echo U('Admin/Resource/index'); ?>" class="am-btn am-btn-default am-radius"><i class="am-icon-arrow-left"></i> 返回列表</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
-</body>
-</html>
+<!-- right content end  -->
+
+<include file="Public/Footer" />

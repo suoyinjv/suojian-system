@@ -70,7 +70,7 @@
 							<select name="campus_id" class="am-form-field">
 								<option value="">全部校区</option>
 								<volist name="campusList" id="campus">
-								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId eq $campus['id']">selected</if>>{{$campus.name}}</option>
+								<option value="{{$campus.id}}" <if condition="isset($campusId) and $campusId == $campus['id']">selected</if>>{{$campus.name}}</option>
 								</volist>
 							</select>
 						</div>
@@ -78,23 +78,23 @@
 							<select name="source" class="am-form-field">
 								<option value="">来源渠道</option>
 								<volist name="sourceList" id="src">
-								<option value="{{$src}}" <if condition="isset($source) and $source eq $src">selected</if>>{{$src}}</option>
+								<option value="{{$src}}" <if condition="isset($source) and $source == $src">selected</if>>{{$src}}</option>
 								</volist>
 							</select>
 						</div>
 						<div class="am-u-md-2">
 							<select name="level" class="am-form-field">
 								<option value="">学员等级</option>
-								<option value="normal" <if condition="isset($level) and $level eq 'normal'">selected</if>>普通</option>
-								<option value="vip" <if condition="isset($level) and $level eq 'vip'">selected</if>>VIP</option>
+								<option value="normal" <if condition="isset($level) and $level == 'normal'">selected</if>>普通</option>
+								<option value="vip" <if condition="isset($level) and $level == 'vip'">selected</if>>VIP</option>
 							</select>
 						</div>
 						<div class="am-u-md-2">
 							<select name="status" class="am-form-field">
 								<option value="">状态</option>
-								<option value="1" <if condition="isset($status) and $status eq 1">selected</if>>在读</option>
-								<option value="2" <if condition="isset($status) and $status eq 2">selected</if>>毕业</option>
-								<option value="0" <if condition="isset($status) and $status eq 0">selected</if>>休学</option>
+								<option value="1" <if condition="isset($status) and $status == 1">selected</if>>在读</option>
+								<option value="2" <if condition="isset($status) and $status == 2">selected</if>>毕业</option>
+								<option value="0" <if condition="isset($status) and $status == 0">selected</if>>休学</option>
 							</select>
 						</div>
 						<div class="am-u-md-2">
@@ -137,7 +137,7 @@
 							<td>{{$item.campus_name}}</td>
 							<td>{{$item.source}}</td>
 							<td>
-								<if condition="$item['level'] eq 'vip'">
+								<if condition="$item['level'] == 'vip'">
 								<span class="am-badge am-badge-warning">VIP</span>
 								<else />
 								<span class="am-badge am-badge-default">普通</span>
@@ -147,9 +147,9 @@
 							<td class="am-text-right">{{$item.remain_hours}}</td>
 							<td class="am-text-right">{{$item.total_attendance}}</td>
 							<td>
-								<if condition="$item['status'] eq 1">
+								<if condition="$item['status'] == 1">
 								<span class="am-badge am-badge-success">在读</span>
-								<elseif condition="$item['status'] eq 2" />
+								<elseif condition="$item['status'] == 2" />
 								<span class="am-badge am-badge-primary">毕业</span>
 								<else />
 								<span class="am-badge am-badge-default">休学</span>

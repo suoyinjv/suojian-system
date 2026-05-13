@@ -1,86 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>作业管理 - SchoolCMS</title>
-    <link rel="stylesheet" href="__PUBLIC__/AmazeUI/css/amazeui.min.css">
-    <style>
-        .am-badge { margin-right: 5px; }
-    </style>
-</head>
-<body>
-<div class="am-cf admin-main">
-    <div class="admin-content">
-        <div class="am-u-sm-12">
-            <div class="am-btn-toolbar">
-                <a href="__CONTROLLER__/add" class="am-btn am-btn-primary am-radius">
-                    <i class="am-icon-plus"></i> 布置作业
-                </a>
+<include file="Public/Header" />
+
+<div class="content-right">
+    <div class="content">
+        <div class="am-g" style="margin-bottom:15px;">
+            <div class="am-u-sm-6">
+                <span class="fs-16 fw-700">📝 作业管理</span>
             </div>
-            <form class="am-form am-form-horizontal" method="get">
-                <div class="am-form-group">
-                    <div class="am-u-sm-3">
-                        <select name="course_id">
-                            <option value="0">全部课程</option>
-                            <volist name="courses" id="vo">
-                            <option value="{$key}" {:I('course_id')==$key?'selected':''}>{$vo}</option>
-                            </volist>
-                        </select>
-                    </div>
-                    <div class="am-u-sm-2">
-                        <button type="submit" class="am-btn am-btn-default">筛选</button>
-                    </div>
-                </div>
-            </form>
-            <table class="am-table am-table-bordered am-table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>作业标题</th>
-                        <th>课程</th>
-                        <th>班级</th>
-                        <th>截止时间</th>
-                        <th>状态</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <volist name="list" id="vo">
-                    <tr>
-                        <td>{$vo.id}</td>
-                        <td>{$vo.title}</td>
-                        <td>{$vo.course_name}</td>
-                        <td>{$vo.class_name}</td>
-                        <td>{$vo.submit_deadline}</td>
-                        <td>
-                            <if condition="$vo['status'] eq 1">
-                            <span class="am-badge am-badge-success">进行中</span>
-                            <else/>
-                            <span class="am-badge am-badge-gray">已禁用</span>
-                            </if>
-                        </td>
-                        <td>
-                            <a href="__CONTROLLER__/submitList/homework_id/{$vo.id}">查看提交</a>
-                            <a href="__CONTROLLER__/edit/id/{$vo.id}">编辑</a>
-                            <a href="javascript:;" onclick="deleteConfirm('__CONTROLLER__/delete/id/{$vo.id}')">删除</a>
-                        </td>
-                    </tr>
-                    </volist>
-                </tbody>
-            </table>
-            <div class="am-pagination">
-                {$page}
+            <div class="am-u-sm-6 tr">
+                <a href="{{:U('Admin/Homework/add')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 布置作业</a>
+            </div>
+        </div>
+        <div class="am-panel am-panel-default">
+            <div class="am-panel-bd">
+                <table class="am-table am-table-striped am-table-hover am-text-middle">
+                    <thead>
+                        <tr>
+                            <th>作业标题</th>
+                            <th>课程</th>
+                            <th>班级</th>
+                            <th>截止时间</th>
+                            <th>提交数</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="list" id="vo">
+                        <tr>
+                            <td>{{$vo.title}}</td>
+                            <td>{{$vo.course_name}}</td>
+                            <td>{{$vo.class_name}}</td>
+                            <td>{{$vo.submit_deadline}}</td>
+                            <td>{{$vo.submit_count|default=0}}</td>
+                            <td><if condition="$vo['status'] == 1"><span class="am-badge am-badge-success">已发布</span><else /><span class="am-badge">草稿</span></if></td>
+                            <td>
+                                <a href="{{:U('Admin/Homework/edit', array('id'=>$vo['id']))}}">编辑</a>
+                                <a href="{{:U('Admin/Homework/submitList', array('homework_id'=>$vo['id']))}}">提交记录</a>
+                            </td>
+                        </tr>
+                        </volist>
+                        <if condition="count($list) == 0">
+                        <tr><td colspan="7" class="am-text-center cr-999">暂无作业数据</td></tr>
+                        </if>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
-<script src="__PUBLIC__/AmazeUI/js/amazeui.min.js"></script>
-<script>
-function deleteConfirm(url) {
-    if(confirm('确定要删除吗？')) {
-        location.href = url;
-    }
-}
-</script>
-</body>
-</html>
+
+<include file="Public/Footer" />

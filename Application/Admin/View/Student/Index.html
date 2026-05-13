@@ -6,61 +6,170 @@
 		<!-- form start -->
 		<form class="am-form view-list" action="{{:U('Admin/Student/Index')}}" method="POST">
 			<div class="am-g">
-				<input type="text" class="am-radius form-keyword" placeholder="学员姓名/手机号" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
-				<select name="class_id" class="am-radius c-p m-l-5">
-					<option value="">全部班级</option>
-					<volist name="class_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($param['class_id']) and $param['class_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
-					</volist>
-				</select>
+				<input type="text" class="am-radius form-keyword" placeholder="{{:L('student_so_keyword_tips')}}" name="keyword" <present name="param['keyword']"> value="{{$param.keyword}}"</present> />
 				<button type="submit" class="am-btn am-btn-secondary am-btn-sm am-radius form-submit">{{:L('common_operation_query')}}</button>
-			</div>
-		</form>
-		<!-- form end -->
+				<label class="fs-12 m-l-5 c-p fw-100 more-submit">
+					{{:L('common_more_screening')}}
+					<input type="checkbox" name="is_more" value="1" id="is_more" <if condition="isset($param['is_more']) and $param['is_more'] == 1">checked</if> />
+					<i class="am-icon-angle-down"></i>
+				</label>
 
-		<!-- operation start -->
-		<div class="am-g m-t-15">
-			<a href="{{:U('Admin/Student/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> 新增学员</a>
-			<a href="{{:U('Admin/Student/ExcelImport')}}" class="am-btn am-btn-default am-radius am-btn-xs m-l-10 am-icon-upload"> 导入</a>
-			<a href="{{:U('Admin/Student/ExcelExport')}}" class="am-btn am-btn-default am-radius am-btn-xs m-l-10 am-icon-download"> 导出</a>
-		</div>
-		<!-- operation end -->
+				<div class="more-where <if condition="!isset($param['is_more']) or $param['is_more'] != 1">none</if>">
+					<select  class="am-radius c-p m-t-10 m-l-5 param-where" name="region_id">
+						<option value="0">{{:L('student_region_text')}}</option>
+						<foreach name="region_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['region_id']) and $param['region_id'] == $v['id']">selected</if>>{{$v.name}}</option>
+						</foreach>
+					</select>
+					<select name="class_id" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="0">{{:L('student_class_text')}}</option>
+						<foreach name="class_list" item="v">
+							<if condition="empty($v['item'])">
+								<option value="{{$v.id}}" <if condition="isset($param['class_id']) and $param['class_id'] == $v['id']">selected</if>>{{$v.name}}</option>
+							<else />
+								<optgroup label="{{$v.name}}">
+									<foreach name="v.item" item="vs">
+										<option value="{{$vs.id}}" <if condition="isset($param['class_id']) and $param['class_id'] == $vs['id']">selected</if>>{{$vs.name}}</option>
+									</foreach>
+								</optgroup>
+							</if>
+						</foreach>
+					</select>
+					<select name="state" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1">{{:L('common_view_student_state_name')}}</option>
+						<foreach name="common_student_state_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['state']) and $param['state'] == $v['id']">selected</if>>{{$v.name}}</option>
+						</foreach>
+					</select>
+					<select name="tuition_state" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1">{{:L('student_tuition_state_text')}}</option>
+						<foreach name="common_tuition_state_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['tuition_state']) and $param['tuition_state'] == $v['id']">selected</if>>{{$v.name}}</option>
+						</foreach>
+					</select>
+					<select name="gender" class="am-radius c-p m-t-10 m-l-5 param-where">
+						<option value="-1">{{:L('common_view_gender_name')}}</option>
+						<foreach name="common_gender_list" item="v">
+							<option value="{{$v.id}}" <if condition="isset($param['gender']) and $param['gender'] == $v['id']">selected</if>>{{$v.name}}</option>
+						</foreach>
+					</select>
+					<div class="param-date param-where m-l-5">
+						<input type="text" name="time_start" readonly="readonly" class="am-radius m-t-10" placeholder="{{:L('student_time_start_text')}}" id="time_start" <if condition="isset($param['time_start'])">value="{{$param.time_start}}"</if>/>
+						<span>~</span>
+						<input type="text" readonly="readonly" class="am-radius m-t-10" placeholder="{{:L('student_time_end_text')}}" name="time_end" id="time_end" <if condition="isset($param['time_end'])">value="{{$param.time_end}}"</if>/>
+					</div>
+				</div>
+			</div>
+        </form>
+        <!-- form end -->
+
+        <!-- operation start -->
+        <div class="am-g m-t-15">
+            <a href="{{:U('Admin/Student/SaveInfo')}}" class="am-btn am-btn-secondary am-radius am-btn-xs am-icon-plus"> {{:L('common_operation_add')}}</a>
+            <if condition="!IsMobile()">
+            	<a href="{{$excel_url}}" class="am-btn am-btn-success am-btn-xs m-l-10 am-icon-file-excel-o am-radius"> {{:L('common_operation_excel_export_name')}}</a>
+            	<a href="javascript:;" class="am-btn am-btn-primary am-btn-xs m-l-10 am-icon-cloud-upload am-radius" data-am-modal="{target: '#excel-import-win'}"> {{:L('common_operation_excel_import_name')}}</a>
+            	<!-- excel win html start -->
+				<include file="Lib/ExcelWinHtml" />
+				<!-- excel win html end -->
+            </if>
+        </div>
+        <!-- operation end -->
 
 		<!-- list start -->
-		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10">
+		<table class="am-table am-table-striped am-table-hover am-text-middle m-t-10 m-l-5">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>姓名</th>
-					<th>性别</th>
-					<th>手机号</th>
-					<th>班级</th>
-					<th>状态</th>
-					<th>报名日期</th>
+					<th>{{:L('student_username_name')}}</th>
+					<th class="am-hide-sm-only">{{:L('common_view_student_number_text')}}</th>
+					<th>{{:L('common_view_gender_name')}}</th>
+					<th class="am-hide-sm-only">{{:L('student_class_text')}}</th>
+					<th class="am-hide-sm-only">{{:L('common_view_student_state_name')}}</th>
+					<th>{{:L('common_more_name')}}</th>
 					<th>{{:L('common_operation_name')}}</th>
 				</tr>
 			</thead>
 			<tbody>
 				<if condition="!empty($list)">
 					<foreach name="list" item="v">
-						<tr id="data-list-{{$v.id}}">
-							<td>{{$v.id}}</td>
-							<td>{{$v.name}}</td>
-							<td><include file="Default/Lib/Gender" /></td>
-							<td>{{$v.mobile}}</td>
-							<td>{{$v.class_name}}</td>
-							<td><include file="Default/Lib/StudentState" /></td>
-							<td>{{$v.add_time}}</td>
+						<tr id="data-list-{{$v.id}}-{{$v.id_card}}">
+							<td>{{$v.username}}</td>
+							<td class="am-hide-sm-only">{{$v.number}}</td>
+							<td>{{$v.gender}}</td>
+							<td class="am-hide-sm-only">{{$v.class_name}}</td>
+							<td class="am-hide-sm-only">{{$v.state}}</td>
+							<td>
+								<span class="am-icon-caret-down c-p" data-am-modal="{target: '#my-popup{{$v.id}}'}"> {{:L('common_see_more_name')}}</span>
+								<div class="am-popup am-radius" id="my-popup{{$v.id}}">
+									<div class="am-popup-inner">
+										<div class="am-popup-hd">
+											<h4 class="am-popup-title">{{:L('common_detail_content')}}</h4>
+											<span data-am-modal-close class="am-close">&times;</span>
+										</div>
+										<div class="am-popup-bd">
+											<dl class="dl-content">
+												<dt>{{:L('student_username_name')}}</dt>
+												<dd>{{$v.username}}</dd>
+
+												<dt>{{:L('common_view_student_number_text')}}</dt>
+												<dd>{{$v.number}}</dd>
+
+												<dt>{{:L('common_view_id_card_text')}}</dt>
+												<dd>{{$v.id_card}}</dd>
+
+												<dt>{{:L('common_address_text')}}</dt>
+												<dd>{{$v.region_name}} {{$v.address}}</dd>
+
+												<dt>{{:L('common_view_gender_name')}}</dt>
+												<dd>{{$v.gender}}</dd>
+
+												<dt>{{:L('student_birthday_text')}}</dt>
+												<dd>{{$v.birthday}}</dd>
+
+												<dt>{{:L('common_view_tel_name')}}</dt>
+												<dd>{{$v.tel}}</dd>
+
+												<dt>{{:L('student_my_mobile_name')}}</dt>
+												<dd>{{$v.my_mobile}}</dd>
+
+												<dt>{{:L('common_view_parent_mobile_name')}}</dt>
+												<dd>{{$v.parent_mobile}}</dd>
+
+												<dt>{{:L('common_email_name')}}</dt>
+												<dd>{{$v.email}}</dd>
+
+												<dt>{{:L('student_class_text')}}</dt>
+												<dd>{{$v.class_name}}</dd>
+
+												<dt>{{:L('student_tuition_state_text')}}</dt>
+												<dd>{{$v.tuition_state}}</dd>
+
+												<dt>{{:L('common_view_student_state_name')}}</dt>
+												<dd>{{$v.state}}</dd>
+
+												<dt>{{:L('student_sign_up_name')}}</dt>
+												<dd>{{$v.add_time}}</dd>
+
+												<dt>{{:L('common_upd_time_name')}}</dt>
+												<dd>{{$v.upd_time}}</dd>
+											</dl>
+										</div>
+									</div>
+								</div>
+							</td>
 							<td class="view-operation">
+								<a href="{{:U('Admin/Fraction/SaveInfo', array('id'=>$v['id']))}}">
+									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-line-chart" data-am-popover="{content: '{{:L('common_operation_fraction')}}', trigger: 'hover focus'}"></button>
+								</a>
 								<a href="{{:U('Admin/Student/SaveInfo', array('id'=>$v['id']))}}">
 									<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-edit" data-am-popover="{content: '{{:L('common_operation_edit')}}', trigger: 'hover focus'}"></button>
 								</a>
-								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Student/Delete')}}" data-id="{{$v.id}}"></button>
+								<button class="am-btn am-btn-default am-btn-xs am-radius am-icon-trash-o submit-delete" data-url="{{:U('Admin/Student/Delete')}}" data-am-popover="{content: '{{:L('common_operation_delete')}}', trigger: 'hover focus'}" data-id="{{$v.id}}-{{$v.id_card}}"></button>
 							</td>
 						</tr>
 					</foreach>
 				<else />
-					<tr><td colspan="8" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
+					<tr><td colspan="10" class="table-no">{{:L('common_not_data_tips')}}</td></tr>
 				</if>
 			</tbody>
 		</table>
@@ -74,7 +183,13 @@
 	</div>
 </div>
 <!-- right content end  -->
-
+		
 <!-- footer start -->
 <include file="Public/Footer" />
 <!-- footer end -->
+
+<if condition="!IsMobile()">
+	<!-- excel win js start -->
+	<include file="Lib/ExcelWinJs" />
+	<!-- excel win js end -->
+</if>

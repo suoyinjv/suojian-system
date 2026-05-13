@@ -8,83 +8,97 @@
 			<legend>
 				<span class="fs-16">
 					<if condition="empty($data['id'])">
-						新增学员
+						{{:L('student_add_name')}}
 					<else />
-						编辑学员
+						{{:L('student_edit_name')}}
 					</if>
 				</span>
 				<a href="{{:U('Admin/Student/Index')}}" class="fr fs-14 m-t-5 am-icon-mail-reply"> {{:L('common_operation_back')}}</a>
 			</legend>
-
 			<div class="am-form-group">
-				<label>姓名</label>
-				<input type="text" name="name" placeholder="姓名" class="am-radius" <notempty name="data"> value="{{$data.name}}"</notempty> required />
+				<label>{{:L('student_username_text')}}</label>
+				<input type="text" name="username" placeholder="{{:L('student_username_text')}}" minlength="2" maxlength="16" data-validation-message="{{:L('student_username_format')}}" class="am-radius" <notempty name="data"> value="{{$data.username}}"</notempty> required />
 			</div>
-
 			<div class="am-form-group">
-				<label>性别</label>
-				<div>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="gender" value="1" <if condition="!isset($data['gender']) or $data['gender'] eq 1">checked="checked"</if> data-am-ucheck /> 男
-					</label>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="gender" value="2" <if condition="isset($data['gender']) and $data['gender'] eq 2">checked="checked"</if> data-am-ucheck /> 女
-					</label>
-				</div>
+				<label>{{:L('common_view_student_number_text')}}</label>
+				<input type="text" name="number" placeholder="{{:L('common_student_number_tips')}}" class="am-radius" <notempty name="data"> value="{{$data.number}}"</notempty> disabled />
 			</div>
-
 			<div class="am-form-group">
-				<label>手机号</label>
-				<input type="text" name="mobile" placeholder="手机号" class="am-radius" <notempty name="data"> value="{{$data.mobile}}"</notempty> required />
+				<label>{{:L('common_view_id_card_text')}}</label>
+				<input type="text" name="id_card" placeholder="{{:L('common_view_id_card_text')}}" pattern="{{:L('common_regex_id_card')}}" data-validation-message="{{:L('common_view_id_card_format')}}" class="am-radius" <notempty name="data"> value="{{$data.id_card}}" disabled</notempty> required />
 			</div>
-
+			<include file="Lib/Gender" />
 			<div class="am-form-group">
-				<label>所属班级</label>
-				<select name="class_id" class="am-radius">
-					<option value="">请选择班级</option>
-					<volist name="class_list" id="v">
-						<option value="{{$v.id}}" <if condition="isset($data['class_id']) and $data['class_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
-					</volist>
+				<label>{{:L('student_birthday_text')}}</label>
+				<input type="text" name="birthday" class="am-radius" placeholder="{{:L('student_birthday_text')}}" pattern="{{:L('common_regex_birthday')}}" data-validation-message="{{:L('student_birthday_format')}}" <notempty name="data"> value="{{$data.birthday}}" </notempty> data-am-datepicker="{format: 'yyyy-mm-dd', viewMode: 'years'}" readonly required />
+			</div>
+			<div class="am-form-group">
+				<label>{{:L('student_class_text')}}</label>
+				<select name="class_id" class="am-radius c-p" data-validation-message="{{:L('student_class_format')}}" required>
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="class_list" item="v">
+						<if condition="empty($v['item'])">
+							<option value="{{$v.id}}" <if condition="isset($data['class_id']) and $data['class_id'] == $v['id']">selected</if>>{{$v.name}}</option>
+						<else />
+							<optgroup label="{{$v.name}}">
+								<foreach name="v.item" item="vs">
+									<option value="{{$vs.id}}" <if condition="isset($data['class_id']) and $data['class_id'] == $vs['id']">selected</if>>{{$vs.name}}</option>
+								</foreach>
+							</optgroup>
+						</if>
+					</foreach>
 				</select>
 			</div>
-
 			<div class="am-form-group">
-				<label>家长姓名</label>
-				<input type="text" name="parent_name" placeholder="家长姓名" class="am-radius" <notempty name="data"> value="{{$data.parent_name}}"</notempty> />
+				<label>{{:L('student_region_text')}}</label>
+				<select name="region_id" class="am-radius c-p" data-validation-message="{{:L('student_region_format')}}" required>
+					<option value="">{{:L('common_select_can_choose')}}</option>
+					<foreach name="region_list" item="v">
+						<option value="{{$v.id}}" <if condition="isset($data['region_id']) and $data['region_id'] == $v['id']">selected</if>>{{$v.name}}</option>
+					</foreach>
+				</select>
 			</div>
-
 			<div class="am-form-group">
-				<label>家长电话</label>
-				<input type="text" name="parent_mobile" placeholder="家长电话" class="am-radius" <notempty name="data"> value="{{$data.parent_mobile}}"</notempty> />
+				<label>{{:L('common_address_text')}}</label>
+				<input type="text" placeholder="{{:L('common_address_text')}}" name="address" data-validation-message="{{:L('common_address_format')}}" class="am-radius" <notempty name="data"> value="{{$data.address}}"</notempty> />
 			</div>
-
 			<div class="am-form-group">
-				<label>备注</label>
-				<textarea name="remark" class="am-radius" rows="3"><notempty name="data">{{$data.remark}}</notempty></textarea>
+				<label>{{:L('common_view_tel_name')}}</label>
+				<input type="text" placeholder="{{:L('common_view_tel_name')}}" name="tel" pattern="{{:L('common_regex_tel')}}" data-validation-message="{{:L('common_view_tel_error')}}" class="am-radius" <notempty name="data"> value="{{$data.tel}}"</notempty> />
 			</div>
-
 			<div class="am-form-group">
-				<label>状态</label>
+				<label>{{:L('student_my_mobile_name')}}</label>
+				<input type="text" placeholder="{{:L('student_my_mobile_name')}}" name="my_mobile" pattern="{{:L('common_regex_mobile')}}" data-validation-message="{{:L('student_my_mobile_error')}}" class="am-radius" <notempty name="data"> value="{{$data.my_mobile}}"</notempty> />
+			</div>
+			<div class="am-form-group">
+				<label>{{:L('common_view_parent_mobile_name')}}</label>
+				<input type="text" placeholder="{{:L('common_view_parent_mobile_name')}}" name="parent_mobile" pattern="{{:L('common_regex_mobile')}}" data-validation-message="{{:L('common_view_parent_mobile_error')}}" class="am-radius" <notempty name="data"> value="{{$data.parent_mobile}}"</notempty> required />
+			</div>
+			<div class="am-form-group">
+				<label>{{:L('common_email_name')}}</label>
+				<input type="text" placeholder="{{:L('common_email_name')}}" name="email" pattern="{{:L('common_regex_email')}}" data-validation-message="{{:L('common_email_format_error')}}" maxlength="60" class="am-radius" <notempty name="data"> value="{{$data.email}}"</notempty> />
+			</div>
+			<include file="Lib/StudentState" />
+			<div class="am-form-group">
+				<label>{{:L('student_tuition_state_text')}}</label>
 				<div>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="1" <if condition="!isset($data['status']) or $data['status'] eq 1">checked="checked"</if> data-am-ucheck /> 正常
-					</label>
-					<label class="am-radio-inline m-r-10">
-						<input type="radio" name="status" value="0" <if condition="isset($data['status']) and $data['status'] eq 0">checked="checked"</if> data-am-ucheck /> 休学
-					</label>
+					<foreach name="common_tuition_state_list" item="v">
+						<label class="am-radio-inline m-r-10">
+							<input type="radio" name="tuition_state" value="{{$v.id}}" <if condition="isset($data['tuition_state']) and $data['tuition_state'] == $v['id']">checked="checked"<else /><if condition="!isset($data['tuition_state']) and isset($v['checked']) and $v['checked'] == true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+						</label>
+					</foreach>
 				</div>
 			</div>
-
 			<div class="am-form-group">
 				<input type="hidden" name="id" <notempty name="data"> value="{{$data.id}}"</notempty> />
 				<button type="submit" class="am-btn am-btn-primary am-radius btn-loading-example am-btn-sm w100" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">{{:L('common_operation_save')}}</button>
 			</div>
 		</form>
-		<!-- form end -->
+        <!-- form end -->
 	</div>
 </div>
 <!-- right content end  -->
-
+		
 <!-- footer start -->
 <include file="Public/Footer" />
 <!-- footer end -->

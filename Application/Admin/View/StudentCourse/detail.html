@@ -116,7 +116,7 @@
                                     </td>
                                     <td>{$vo.expire_date|default='永久'|date='Y-m-d',###}</td>
                                     <td>
-                                        <if condition="$vo['remaining_hours'] gt 0">
+                                        <if condition="$vo['remaining_hours'] > 0">
                                             <span class="am-badge am-badge-success">正常</span>
                                         <else/>
                                             <span class="am-badge am-badge-danger">已耗尽</span>

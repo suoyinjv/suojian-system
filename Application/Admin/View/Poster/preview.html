@@ -57,7 +57,7 @@
 							<tr>
 								<td class="cr-999">文件状态</td>
 								<td>
-									<if condition="$data['status'] eq 1">
+									<if condition="$data['status'] == 1">
 										<span class="am-text-success"><i class="am-icon-check-circle"></i> 生成成功</span>
 									<else />
 										<span class="am-text-danger" title="{{$data.error_msg}}"><i class="am-icon-times-circle"></i> 生成失败</span>
@@ -83,7 +83,7 @@
 						<!-- action buttons -->
 						<div class="am-g">
 							<div class="am-u-sm-4 am-text-center">
-								<if condition="$data['status'] eq 1">
+								<if condition="$data['status'] == 1">
 									<a href="{{$data.download_url}}" class="am-btn am-btn-secondary am-btn-sm am-radius am-icon-download">
 										<div class="fs-12 m-t-5">下载</div>
 									</a>

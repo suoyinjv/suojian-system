@@ -16,8 +16,8 @@
                 <div class="am-u-sm-3">
                     <select name="type" class="am-form-field">
                         <option value="">全部类型</option>
-                        <option value="daily" <if condition="I('type') eq 'daily'">selected</if>>日常签到</option>
-                        <option value="lesson" <if condition="I('type') eq 'lesson'">selected</if>>课次打卡</option>
+                        <option value="daily" <if condition="I('type') == 'daily'">selected</if>>日常签到</option>
+                        <option value="lesson" <if condition="I('type') == 'lesson'">selected</if>>课次打卡</option>
                     </select>
                 </div>
                 <div class="am-u-sm-2">
@@ -54,7 +54,7 @@
                     <td>{$vo.student_name}</td>
                     <td>{$vo.student_phone}</td>
                     <td>
-                        <if condition="$vo['type'] eq 'daily'">
+                        <if condition="$vo['type'] == 'daily'">
                             <span class="am-badge am-badge-primary">日常签到</span>
                         <else />
                             <span class="am-badge am-badge-success">课次打卡</span>
@@ -64,7 +64,7 @@
                     <td>{$vo.checkin_time}</td>
                     <td>{$vo.location|default='-'}</td>
                     <td>
-                        <if condition="$vo['status'] eq 1">
+                        <if condition="$vo['status'] == 1">
                             <span class="am-badge am-badge-success">正常</span>
                         <else />
                             <span class="am-badge am-badge-warning">异常</span>

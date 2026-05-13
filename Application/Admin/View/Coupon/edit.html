@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>编辑优惠券</title>
-    <link rel="stylesheet" href="__PUBLIC__/css/bootstrap.min.css">
-    <link rel="stylesheet" href="__PUBLIC__/css/admin.css">
+    <link rel="stylesheet" href="/Public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Public/css/admin.css">
 </head>
 <body>
 <div class="panel panel-primary">
@@ -12,11 +12,11 @@
         <h3 class="panel-title">编辑优惠券</h3>
     </div>
     <div class="panel-body">
-        <form action="__SELF__" method="POST" class="form-horizontal">
+        <form action="" method="POST" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-2 control-label">优惠券名称 <span class="text-danger">*</span></label>
                 <div class="col-sm-6">
-                    <input type="text" name="name" class="form-control" value="{$info.name}" required>
+                    <input type="text" name="name" class="form-control" value="<?php echo $info['name']; ?>" required>
                 </div>
             </div>
             
@@ -24,8 +24,8 @@
                 <label class="col-sm-2 control-label">优惠券类型</label>
                 <div class="col-sm-6">
                     <select name="type" class="form-control">
-                        <option value="1" <if condition="$info['type'] eq 1">selected</if>>折扣券</option>
-                        <option value="2" <if condition="$info['type'] eq 2">selected</if>>抵扣券</option>
+                        <option value="1" <?php if($info['type'] == 1): ?>selected<?php endif; ?>>折扣券</option>
+                        <option value="2" <?php if($info['type'] == 2): ?>selected<?php endif; ?>>抵扣券</option>
                     </select>
                 </div>
             </div>
@@ -33,28 +33,28 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">面值</label>
                 <div class="col-sm-6">
-                    <input type="number" name="value" step="0.01" class="form-control" value="{$info.value}" required>
+                    <input type="number" name="value" step="0.01" class="form-control" value="<?php echo $info['value']; ?>" required>
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-sm-2 control-label">使用门槛</label>
                 <div class="col-sm-6">
-                    <input type="number" name="min_amount" step="0.01" class="form-control" value="{$info.min_amount}">
+                    <input type="number" name="min_amount" step="0.01" class="form-control" value="<?php echo $info['min_amount']; ?>">
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-sm-2 control-label">最高抵扣</label>
                 <div class="col-sm-6">
-                    <input type="number" name="max_deduct" step="0.01" class="form-control" value="{$info.max_deduct}">
+                    <input type="number" name="max_deduct" step="0.01" class="form-control" value="<?php echo $info['max_deduct']; ?>">
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-sm-2 control-label">发放总量</label>
                 <div class="col-sm-6">
-                    <input type="number" name="total_count" class="form-control" value="{$info.total_count}" readonly>
+                    <input type="number" name="total_count" class="form-control" value="<?php echo $info['total_count']; ?>" readonly>
                 </div>
                 <div class="col-sm-4 help-block">发行后不可修改</div>
             </div>
@@ -62,7 +62,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">剩余数量</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" value="{$info.remain_count}" readonly>
+                    <input type="text" class="form-control" value="<?php echo $info['remain_count']; ?>" readonly>
                 </div>
                 <div class="col-sm-4 help-block">已发放数量: {$info.total_count - $info.remain_count}</div>
             </div>
@@ -70,14 +70,14 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">有效期开始</label>
                 <div class="col-sm-6">
-                    <input type="date" name="valid_start" class="form-control" value="{$info.valid_start}">
+                    <input type="date" name="valid_start" class="form-control" value="<?php echo $info['valid_start']; ?>">
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-sm-2 control-label">有效期结束</label>
                 <div class="col-sm-6">
-                    <input type="date" name="valid_end" class="form-control" value="{$info.valid_end}">
+                    <input type="date" name="valid_end" class="form-control" value="<?php echo $info['valid_end']; ?>">
                 </div>
             </div>
             
@@ -85,8 +85,8 @@
                 <label class="col-sm-2 control-label">状态</label>
                 <div class="col-sm-6">
                     <select name="status" class="form-control">
-                        <option value="1" <if condition="$info['status'] eq 1">selected</if>>启用</option>
-                        <option value="0" <if condition="$info['status'] eq 0">selected</if>>禁用</option>
+                        <option value="1" <?php if($info['status'] == 1): ?>selected<?php endif; ?>>启用</option>
+                        <option value="0" <?php if($info['status'] == 0): ?>selected<?php endif; ?>>禁用</option>
                     </select>
                 </div>
             </div>
@@ -94,7 +94,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-6">
                     <button type="submit" class="btn btn-primary">保存修改</button>
-                    <a href="{:U('index')}" class="btn btn-default">返回</a>
+                    <a href="<?php echo U('index'); ?>" class="btn btn-default">返回</a>
                 </div>
             </div>
         </form>

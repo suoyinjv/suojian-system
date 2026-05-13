@@ -1,18 +1,17 @@
-<include file="Public/Header" />
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
 		<!-- table nav start -->
-		<include file="Nav" />
+		
 		<!-- table nav end -->
 
 		<div class="am-panel am-panel-success">
 			<div class="am-panel-hd">
 				<h3 class="am-panel-title">
-					<i class="am-icon-file-text"></i> {{:L('message_template_title')}}
-					<a href="{{:U('Admin/Message/addTemplate')}}" class="am-btn am-btn-xs am-btn-primary am-radius am-fr">
-						<i class="am-icon-plus"></i> {{:L('message_add_template')}}
+					<i class="am-icon-file-text"></i> <?php echo L('message_template_title'); ?>
+					<a href="<?php echo U('Admin/Message/addTemplate'); ?>" class="am-btn am-btn-xs am-btn-primary am-radius am-fr">
+						<i class="am-icon-plus"></i> <?php echo L('message_add_template'); ?>
 					</a>
 				</h3>
 			</div>
@@ -21,72 +20,65 @@
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>{{:L('message_template_name')}}</th>
-							<th>{{:L('message_template_content')}}</th>
-							<th>{{:L('message_template_type')}}</th>
-							<th>{{:L('message_template_channel')}}</th>
-							<th>{{:L('message_template_status')}}</th>
-							<th>{{:L('message_template_createtime')}}</th>
-							<th>{{:L('message_template_action')}}</th>
+							<th><?php echo L('message_template_name'); ?></th>
+							<th><?php echo L('message_template_content'); ?></th>
+							<th><?php echo L('message_template_type'); ?></th>
+							<th><?php echo L('message_template_channel'); ?></th>
+							<th><?php echo L('message_template_status'); ?></th>
+							<th><?php echo L('message_template_createtime'); ?></th>
+							<th><?php echo L('message_template_action'); ?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<volist name="list" id="vo">
+						<?php if(!empty($list)): foreach($list as $vo): ?>
 						<tr>
-							<td>{$vo.id}</td>
-							<td>{$vo.name}</td>
-							<td class="am-text-truncate" style="max-width:250px;">{$vo.content}</td>
+							<td><?php echo $vo['id']; ?></td>
+							<td><?php echo $vo['name']; ?></td>
+							<td class="am-text-truncate" style="max-width:250px;"><?php echo $vo['content']; ?></td>
 							<td>
-								<if condition="$vo['type'] eq 1">
-									<span class="am-badge am-badge-primary">{{:L('message_type_notice')}}</span>
-								<elseif condition="$vo['type'] eq 2"/>
-									<span class="am-badge am-badge-warning">{{:L('message_type_marketing')}}</span>
-								<elseif condition="$vo['type'] eq 3"/>
-									<span class="am-badge am-badge-secondary">{{:L('message_type_reminder')}}</span>
-								<else/>
-									<span class="am-badge am-badge-default">{{:L('message_type_other')}}</span>
-								</if>
+								<?php if($vo['type'] == 1): ?>
+									<span class="am-badge am-badge-primary"><?php echo L('message_type_notice'); ?></span>
+								<?php elseif($vo['type'] == 2): ?>
+									<span class="am-badge am-badge-warning"><?php echo L('message_type_marketing'); ?></span>
+								<?php elseif($vo['type'] == 3): ?>
+									<span class="am-badge am-badge-secondary"><?php echo L('message_type_reminder'); ?></span>
+								<?php else: ?>
+									<span class="am-badge am-badge-default"><?php echo L('message_type_other'); ?></span>
+								<?php endif; ?>
 							</td>
 							<td>
-								<if condition="$vo['channel'] eq 'sms'">
-									<span class="am-badge am-badge-primary">{{:L('message_channel_sms')}}</span>
-								<elseif condition="$vo['channel'] eq 'weixin'"/>
-									<span class="am-badge am-badge-success">{{:L('message_channel_weixin')}}</span>
-								<else/>
-									<span class="am-badge am-badge-secondary">{{:L('message_channel_both')}}</span>
-								</if>
+								<?php if($vo['channel'] == 'sms'): ?>
+									<span class="am-badge am-badge-primary"><?php echo L('message_channel_sms'); ?></span>
+								<?php elseif($vo['channel'] == 'weixin'): ?>
+									<span class="am-badge am-badge-success"><?php echo L('message_channel_weixin'); ?></span>
+								<?php else: ?>
+									<span class="am-badge am-badge-secondary"><?php echo L('message_channel_both'); ?></span>
+								<?php endif; ?>
 							</td>
 							<td>
-								<if condition="$vo['status'] eq 1">
-									<span class="am-badge am-badge-success">{{:L('common_status_on')}}</span>
-								<else/>
-									<span class="am-badge am-badge-default">{{:L('common_status_off')}}</span>
-								</if>
+								<?php if($vo['status'] == 1): ?>
+									<span class="am-badge am-badge-success"><?php echo L('common_status_on'); ?></span>
+								<?php else: ?>
+									<span class="am-badge am-badge-default"><?php echo L('common_status_off'); ?></span>
+								<?php endif; ?>
 							</td>
-							<td>{$vo.create_time|date='Y-m-d',###}</td>
+							<td><?php echo $vo['create_time'] ? date('Y-m-d', $vo['create_time']) : '-'; ?></td>
 							<td>
-								<a href="{{:U('Admin/Message/addTemplate?id='.$vo['id'])}}" class="am-btn am-btn-xs am-btn-secondary am-radius">{{:L('common_operation_edit')}}</a>
-								<a href="{{:U('Admin/Message/deleteTemplate?id='.$vo['id'])}}" class="am-btn am-btn-xs am-btn-danger am-radius" onclick="return confirm('{{:L("message_delete_confirm")}}')">{{:L('common_operation_delete')}}</a>
+								<a href="<?php echo U('Admin/Message/addTemplate?id='.$vo['id']); ?>" class="am-btn am-btn-xs am-btn-secondary am-radius"><?php echo L('common_operation_edit'); ?></a>
+								<a href="<?php echo U('Admin/Message/deleteTemplate?id='.$vo['id']); ?>" class="am-btn am-btn-xs am-btn-danger am-radius" onclick="return confirm('<?php echo L("message_delete_confirm"); ?>')"><?php echo L('common_operation_delete'); ?></a>
 							</td>
 						</tr>
-						</volist>
-						<notpresent name="list">
+						<?php endforeach; else: ?>
 						<tr>
-							<td colspan="8" class="am-text-center">{{:L('message_template_empty')}}</td>
+							<td colspan="8" class="am-text-center"><?php echo L('message_template_empty'); ?></td>
 						</tr>
-						</notpresent>
+						<?php endif; ?>
 					</tbody>
 				</table>
 
-				<div class="am-cf">
-					<div class="am-fr">
-						{$page}
-					</div>
-				</div>
-
 				<hr>
-				<a href="{{:U('Admin/Message/Send')}}" class="am-btn am-btn-default">
-					<i class="am-icon-arrow-left"></i> {{:L('message_back_to_send')}}
+				<a href="<?php echo U('Admin/Message/Send'); ?>" class="am-btn am-btn-default">
+					<i class="am-icon-arrow-left"></i> <?php echo L('message_back_to_send'); ?>
 				</a>
 			</div>
 		</div>
@@ -95,5 +87,5 @@
 <!-- right content end  -->
 
 <!-- footer start -->
-<include file="Public/Footer" />
+
 <!-- footer end -->

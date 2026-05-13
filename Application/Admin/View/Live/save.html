@@ -23,9 +23,9 @@
 				<label>课程类型<span class="fs-12 fw-100 cr-red"> *</span></label>
 				<select name="type" class="am-radius c-p" data-validation-message="请选择课程类型" required>
 					<option value="">请选择课程类型</option>
-					<option value="1" <if condition="isset($data['type']) and $data['type'] eq 1">selected</if>>1对1</option>
-					<option value="2" <if condition="isset($data['type']) and $data['type'] eq 2">selected</if>>小班课（2-10人）</option>
-					<option value="3" <if condition="isset($data['type']) and $data['type'] eq 3">selected</if>>大班课（10人以上）</option>
+					<option value="1" <if condition="isset($data['type']) and $data['type'] == 1">selected</if>>1对1</option>
+					<option value="2" <if condition="isset($data['type']) and $data['type'] == 2">selected</if>>小班课（2-10人）</option>
+					<option value="3" <if condition="isset($data['type']) and $data['type'] == 3">selected</if>>大班课（10人以上）</option>
 				</select>
 			</div>
 			<div class="am-form-group">
@@ -33,7 +33,7 @@
 				<select name="course_id" class="am-radius c-p" data-validation-message="请选择所属课程" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="course_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['course_id']) and $data['course_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['course_id']) and $data['course_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -42,7 +42,7 @@
 				<select name="teacher_id" class="am-radius c-p" data-validation-message="请选择授课老师" required>
 					<option value="">{{:L('common_select_can_choose')}}</option>
 					<foreach name="teacher_list" item="v">
-						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] eq $v['id']">selected</if>>{{$v.name}}</option>
+						<option value="{{$v.id}}" <if condition="isset($data['teacher_id']) and $data['teacher_id'] == $v['id']">selected</if>>{{$v.name}}</option>
 					</foreach>
 				</select>
 			</div>
@@ -68,7 +68,7 @@
 				<div>
 					<foreach name="common_is_enable_list" item="v">
 						<label class="am-radio-inline m-r-10">
-							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] eq $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] eq true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
+							<input type="radio" name="is_enable" value="{{$v.id}}" <if condition="isset($data['is_enable']) and $data['is_enable'] == $v['id']">checked="checked"<else /><if condition="!isset($data['is_enable']) and isset($v['checked']) and $v['checked'] == true">checked="checked"</if></if> data-am-ucheck /> {{$v.name}}
 						</label>
 					</foreach>
 				</div>

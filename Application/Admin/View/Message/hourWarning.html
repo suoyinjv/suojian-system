@@ -1,33 +1,33 @@
-<include file="Public/Header" />
+
 
 <!-- right content start  -->
 <div class="content-right">
 	<div class="content">
 		<!-- table nav start -->
-		<include file="Nav" />
+		
 		<!-- table nav end -->
 
 		<div class="am-panel am-panel-primary">
 			<div class="am-panel-hd">
 				<h3 class="am-panel-title">
-					<i class="am-icon-warning"></i> {{:L('message_hour_warning_title')}}
+					<i class="am-icon-warning"></i> <?php echo L('message_hour_warning_title'); ?>
 				</h3>
 			</div>
 			<div class="am-panel-bd">
-				<form class="am-form form-validation view-save" action="{{:U('Admin/Message/SaveHourWarning')}}" method="POST" request-type="ajax-url" request-value="{{:U('Admin/Message/HourWarning')}}">
+				<form class="am-form form-validation view-save" action="<?php echo U('Admin/Message/SaveHourWarning'); ?>" method="POST" request-type="ajax-url" request-value="<?php echo U('Admin/Message/HourWarning'); ?>">
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_hour_warning_enable')}}</label>
+						<label class="am-u-sm-3"><?php echo L('message_hour_warning_enable'); ?></label>
 						<div class="am-u-sm-9">
 							<div class="am-g">
 								<div class="am-u-sm-4">
 									<select name="is_enable" class="am-form-field am-radius">
-										<option value="1" <if condition="isset($data) and $data['is_enable'] eq 1">selected</if>>{{:L('common_status_on')}}</option>
-										<option value="0" <if condition="!isset($data) or $data['is_enable'] eq 0">selected</if>>{{:L('common_status_off')}}</option>
+										<option value="1" <?php if(isset($data) and $data['is_enable'] == 1): ?>selected<?php endif; ?>><?php echo L('common_status_on'); ?></option>
+										<option value="0" <?php if(!isset($data) or $data['is_enable'] == 0): ?>selected<?php endif; ?>><?php echo L('common_status_off'); ?></option>
 									</select>
 								</div>
 								<div class="am-u-sm-8 am-text-muted am-padding-vertical-xs">
-									<i class="am-icon-info-circle"></i> {{:L('message_hour_warning_enable_tips')}}
+									<i class="am-icon-info-circle"></i> <?php echo L('message_hour_warning_enable_tips'); ?>
 								</div>
 							</div>
 						</div>
@@ -36,86 +36,86 @@
 					<hr>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_hour_warning_threshold')}}</label>
+						<label class="am-u-sm-3"><?php echo L('message_hour_warning_threshold'); ?></label>
 						<div class="am-u-sm-9">
 							<div class="am-g">
 								<div class="am-u-sm-4">
 									<select name="threshold" class="am-form-field am-radius">
-										<option value="5" <if condition="!isset($data) or $data['threshold'] eq 5">selected</if>>5 {{:L('message_hour_unit')}}</option>
-										<option value="10" <if condition="isset($data) and $data['threshold'] eq 10">selected</if>>10 {{:L('message_hour_unit')}}</option>
-										<option value="15" <if condition="isset($data) and $data['threshold'] eq 15">selected</if>>15 {{:L('message_hour_unit')}}</option>
-										<option value="20" <if condition="isset($data) and $data['threshold'] eq 20">selected</if>>20 {{:L('message_hour_unit')}}</option>
-										<option value="30" <if condition="isset($data) and $data['threshold'] eq 30">selected</if>>30 {{:L('message_hour_unit')}}</option>
-										<option value="50" <if condition="isset($data) and $data['threshold'] eq 50">selected</if>>50 {{:L('message_hour_unit')}}</option>
+										<option value="5" <?php if(!isset($data) or $data['threshold'] == 5): ?>selected<?php endif; ?>>5 <?php echo L('message_hour_unit'); ?></option>
+										<option value="10" <?php if(isset($data) and $data['threshold'] == 10): ?>selected<?php endif; ?>>10 <?php echo L('message_hour_unit'); ?></option>
+										<option value="15" <?php if(isset($data) and $data['threshold'] == 15): ?>selected<?php endif; ?>>15 <?php echo L('message_hour_unit'); ?></option>
+										<option value="20" <?php if(isset($data) and $data['threshold'] == 20): ?>selected<?php endif; ?>>20 <?php echo L('message_hour_unit'); ?></option>
+										<option value="30" <?php if(isset($data) and $data['threshold'] == 30): ?>selected<?php endif; ?>>30 <?php echo L('message_hour_unit'); ?></option>
+										<option value="50" <?php if(isset($data) and $data['threshold'] == 50): ?>selected<?php endif; ?>>50 <?php echo L('message_hour_unit'); ?></option>
 									</select>
 								</div>
 								<div class="am-u-sm-8 am-text-muted am-padding-vertical-xs">
-									<i class="am-icon-info-circle"></i> {{:L('message_hour_warning_threshold_tips')}}
+									<i class="am-icon-info-circle"></i> <?php echo L('message_hour_warning_threshold_tips'); ?>
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_hour_warning_advance')}}</label>
+						<label class="am-u-sm-3"><?php echo L('message_hour_warning_advance'); ?></label>
 						<div class="am-u-sm-9">
 							<div class="am-g">
 								<div class="am-u-sm-4">
 									<select name="advance_days" class="am-form-field am-radius">
-										<option value="3" <if condition="!isset($data) or $data['advance_days'] eq 3">selected</if>>3 {{:L('message_day_unit')}}</option>
-										<option value="5" <if condition="isset($data) and $data['advance_days'] eq 5">selected</if>>5 {{:L('message_day_unit')}}</option>
-										<option value="7" <if condition="isset($data) and $data['advance_days'] eq 7">selected</if>>7 {{:L('message_day_unit')}}</option>
-										<option value="10" <if condition="isset($data) and $data['advance_days'] eq 10">selected</if>>10 {{:L('message_day_unit')}}</option>
-										<option value="15" <if condition="isset($data) and $data['advance_days'] eq 15">selected</if>>15 {{:L('message_day_unit')}}</option>
-										<option value="30" <if condition="isset($data) and $data['advance_days'] eq 30">selected</if>>30 {{:L('message_day_unit')}}</option>
+										<option value="3" <?php if(!isset($data) or $data['advance_days'] == 3): ?>selected<?php endif; ?>>3 <?php echo L('message_day_unit'); ?></option>
+										<option value="5" <?php if(isset($data) and $data['advance_days'] == 5): ?>selected<?php endif; ?>>5 <?php echo L('message_day_unit'); ?></option>
+										<option value="7" <?php if(isset($data) and $data['advance_days'] == 7): ?>selected<?php endif; ?>>7 <?php echo L('message_day_unit'); ?></option>
+										<option value="10" <?php if(isset($data) and $data['advance_days'] == 10): ?>selected<?php endif; ?>>10 <?php echo L('message_day_unit'); ?></option>
+										<option value="15" <?php if(isset($data) and $data['advance_days'] == 15): ?>selected<?php endif; ?>>15 <?php echo L('message_day_unit'); ?></option>
+										<option value="30" <?php if(isset($data) and $data['advance_days'] == 30): ?>selected<?php endif; ?>>30 <?php echo L('message_day_unit'); ?></option>
 									</select>
 								</div>
 								<div class="am-u-sm-8 am-text-muted am-padding-vertical-xs">
-									<i class="am-icon-info-circle"></i> {{:L('message_hour_warning_advance_tips')}}
+									<i class="am-icon-info-circle"></i> <?php echo L('message_hour_warning_advance_tips'); ?>
 								</div>
 							</div>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_send_channel')}}</label>
+						<label class="am-u-sm-3"><?php echo L('message_send_channel'); ?></label>
 						<div class="am-u-sm-9">
 							<select name="channel" class="am-form-field am-radius">
-								<option value="sms" <if condition="isset($data) and $data['channel'] eq 'sms'">selected</if>>{{:L('message_channel_sms')}}</option>
-								<option value="weixin" <if condition="!isset($data) or $data['channel'] eq 'weixin'">selected</if>>{{:L('message_channel_weixin')}}</option>
-								<option value="both" <if condition="isset($data) and $data['channel'] eq 'both'">selected</if>>{{:L('message_channel_both')}}</option>
+								<option value="sms" <?php if(isset($data) and $data['channel'] == 'sms'): ?>selected<?php endif; ?>><?php echo L('message_channel_sms'); ?></option>
+								<option value="weixin" <?php if(!isset($data) or $data['channel'] == 'weixin'): ?>selected<?php endif; ?>><?php echo L('message_channel_weixin'); ?></option>
+								<option value="both" <?php if(isset($data) and $data['channel'] == 'both'): ?>selected<?php endif; ?>><?php echo L('message_channel_both'); ?></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_hour_warning_template')}}</label>
+						<label class="am-u-sm-3"><?php echo L('message_hour_warning_template'); ?></label>
 						<div class="am-u-sm-9">
 							<select name="template_id" id="templateSelect" class="am-form-field am-radius">
-								<option value="">{{:L('message_no_template')}}</option>
+								<option value=""><?php echo L('message_no_template'); ?></option>
 							</select>
 						</div>
 					</div>
 
 					<div class="am-form-group">
-						<label class="am-u-sm-3">{{:L('message_hour_warning_content')}} <span class="am-text-danger">*</span></label>
+						<label class="am-u-sm-3"><?php echo L('message_hour_warning_content'); ?> <span class="am-text-danger">*</span></label>
 						<div class="am-u-sm-9">
-							<textarea name="content" class="am-form-field am-radius" rows="5" id="msgContent" placeholder="{{:L('message_hour_warning_content_tips')}}" required data-validation-message="{{:L('message_hour_warning_content_required')}}"><present name="data">{$data.content}</present></textarea>
-							<p class="am-text-sm am-text-muted">{{:L('message_template_var_tips')}}: {name}, {course}, {remain_hours}, {expire_date}, {parent_name}</p>
+							<textarea name="content" class="am-form-field am-radius" rows="5" id="msgContent" placeholder="<?php echo L('message_hour_warning_content_tips'); ?>" required data-validation-message="<?php echo L('message_hour_warning_content_required'); ?>"><?php if(isset($data)): ?><?php echo $data['content']; ?><?php endif; ?></textarea>
+							<p class="am-text-sm am-text-muted"><?php echo L('message_template_var_tips'); ?>: {name}, {course}, {remain_hours}, {expire_date}, {parent_name}</p>
 						</div>
 					</div>
 
 					<div class="am-alert am-alert-warning" data-am-alert>
-						<i class="am-icon-info-circle"></i> {{:L('message_hour_warning_tips')}}
+						<i class="am-icon-info-circle"></i> <?php echo L('message_hour_warning_tips'); ?>
 					</div>
 
 					<div class="am-form-group">
 						<div class="am-u-sm-9 am-u-sm-offset-3">
-							<button type="submit" class="am-btn am-btn-primary btn-loading-example am-radius" data-am-loading="{loadingText:'{{:L('common_form_loading_tips')}}'}">
-								<i class="am-icon-check"></i> {{:L('common_operation_save')}}
+							<button type="submit" class="am-btn am-btn-primary btn-loading-example am-radius" data-am-loading="{loadingText:'<?php echo L('common_form_loading_tips'); ?>'}">
+								<i class="am-icon-check"></i> <?php echo L('common_operation_save'); ?>
 							</button>
-							<a href="{{:U('Admin/Message/Log')}}" class="am-btn am-btn-default am-radius am-margin-left-sm">
-								<i class="am-icon-history"></i> {{:L('message_view_log')}}
+							<a href="<?php echo U('Admin/Message/Log'); ?>" class="am-btn am-btn-default am-radius am-margin-left-sm">
+								<i class="am-icon-history"></i> <?php echo L('message_view_log'); ?>
 							</a>
 						</div>
 					</div>
@@ -127,7 +127,7 @@
 <!-- right content end  -->
 
 <!-- footer start -->
-<include file="Public/Footer" />
+
 <!-- footer end -->
 
 <script>
@@ -136,7 +136,7 @@ $(function() {
 
 	$('#templateSelect').change(function() {
 		if ($(this).val()) {
-			$.get('__CONTROLLER__/getTemplate?id=' + $(this).val(), function(res) {
+			$.get('/getTemplate?id=' + $(this).val(), function(res) {
 				if (res.data) {
 					$('#msgContent').val(res.data.content);
 				}
@@ -146,8 +146,8 @@ $(function() {
 });
 
 function loadTemplates() {
-	$.get('__CONTROLLER__/templateLists?json=1&type=hour_warning', function(res) {
-		var html = '<option value="">{{:L("message_no_template")}}</option>';
+	$.get('/templateLists?json=1&type=hour_warning', function(res) {
+		var html = '<option value=""><?php echo L("message_no_template"); ?></option>';
 		if (res.data) {
 			$.each(res.data, function(i, v) {
 				html += '<option value="' + v.id + '">' + v.name + '</option>';
