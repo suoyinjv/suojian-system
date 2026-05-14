@@ -82,7 +82,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Delete } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -101,7 +101,7 @@ async function loadData() {
   loading.value = true
   try {
     const params = { page: page.value, pageSize }
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/semesterList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/semesterList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr.map(item => ({ ...item, status: item.status ?? 1 }))
@@ -136,7 +136,7 @@ async function handleSave() {
     if (form.end_date) params.append('end_date', form.end_date)
     params.append('sort_order', form.sort_order)
     params.append('status', form.status)
-    await axios.post(BASE + '/m/Admin/c/Api/a/semesterCreate', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/semesterCreate', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('添加成功')
@@ -154,7 +154,7 @@ function handleDelete(row) {
   ElMessageBox.confirm(`确定删除学期「${row.name}」吗？`, '确认删除', { type: 'warning' })
     .then(async () => {
       try {
-        await axios.get(BASE + '/m/Admin/c/Api/a/semesterDelete?id=' + row.id)
+        await http.get(BASE + '/m/Admin/c/Api/a/semesterDelete?id=' + row.id)
         ElMessage.success('删除成功')
         loadData()
       } catch {

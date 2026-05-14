@@ -594,7 +594,7 @@ class ApiController extends CommonController
 
     public function schedules() { $page=max(1,intval(I('page',1))); $ps=min(50,max(5,intval(I('pageSize',15)))); $offset=($page-1)*$ps; $where=$this->_buildWhere([]); $list=M('Schedule')->alias('s')->join('LEFT JOIN sc_teacher t ON s.teacher_id=t.id')->join('LEFT JOIN sc_student stu ON s.student_id=stu.id')->field('s.*,t.username as teacher_name,stu.username as student_name')->where($where)->order('s.id desc')->limit($offset,$ps)->select(); $total=M('Schedule')->alias('s')->where($where)->count(); $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]); }
 
-    public function scheduleCreate() { $data=$this->_buildWhere(['student_id'=>I('studentId'),'teacher_id'=>I('teacherId'),'course_id'=>I('courseId'),'class_id'=>I('classId',0),'weekday'=>I('weekday'),'start_time'=>I('startTime'),'end_time'=>I('endTime'),'classroom'=>I('classroom',''),'add_time'=>time()]); $id=M('Schedule')->add($data); $id?$this->json(0,'创建成功',['id'=>$id]):$this->json(-1,'创建失败'); }
+    // (moved to new section below)
 
     // ========== 考勤管理 ==========
 
@@ -1016,7 +1016,7 @@ class ApiController extends CommonController
 
     public function intervalDelete() { $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');M('Interval')->where(['id'=>$id])->delete()?$this->json(0,'删除成功'):$this->json(-1,'删除失败'); }
 
-    public function scheduleDelete() { $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');$where=$this->_buildWhere(['id'=>$id]);M('Schedule')->where($where)->delete()?$this->json(0,'删除成功'):$this->json(-1,'删除失败'); }
+    // (moved to new section below)
 
     public function leaveCreate() { if(!IS_POST)$this->json(-1,'非法请求');$data=['student_id'=>intval(I('student_id')),'reason'=>I('reason'),'start_date'=>I('start_date'),'end_date'=>I('end_date'),'add_time'=>time()];$id=M('Leave')->add($data);$id?$this->json(0,'创建成功',['id'=>$id]):$this->json(-1,'创建失败'); }
 
@@ -1043,6 +1043,234 @@ class ApiController extends CommonController
     public function transferList() { $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));$offset=($page-1)*$ps;$list=M('Transfer')->order('id desc')->limit($offset,$ps)->select();$total=M('Transfer')->count();$this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]); }
 
     public function transferCreate() { if(!IS_POST)$this->json(-1,'非法请求');$data=$this->_buildWhere(['student_id'=>intval(I('student_id')),'from_class_id'=>intval(I('from_class_id')),'to_class_id'=>intval(I('to_class_id')),'reason'=>I('reason',''),'status'=>intval(I('status',0)),'create_time'=>time()]);$id=M('Transfer')->add($data);$id?$this->json(0,'创建成功',['id'=>$id]):$this->json(-1,'创建失败'); }
+
+    // ========== 排课系统 API ==========
+
+    public function scheduleList() {
+        $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));
+        $offset=($page-1)*$ps;$where=$this->_buildWhere();
+        $t=intval(I('type',0));if($t>0)$where['type']=$t;
+        $tw=intval(I('teacher_id',0));if($tw>0)$where['teacher_id']=$tw;
+        $sd=I('schedule_date','');if($sd)$where['_string']="start_date<='$sd' AND end_date>='$sd'";
+        $list=M('Schedule')->where($where)->order('week_day,start_time')->limit($offset,$ps)->select();
+        $total=M('Schedule')->where($where)->count();
+        $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]);
+    }
+
+    public function scheduleCreate() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $type=intval(I('type',1));$data=$this->_buildWhere([
+            'class_id'=>intval(I('class_id',0)),'course_id'=>intval(I('course_id',0)),
+            'teacher_id'=>intval(I('teacher_id',0)),'student_id'=>intval(I('student_id',0)),
+            'type'=>$type,'grade_id'=>intval(I('grade_id',0)),
+            'week_day'=>intval(I('week_day')),'start_time'=>I('start_time'),'end_time'=>I('end_time'),
+            'room'=>I('room',''),'room_id'=>intval(I('room_id',0)),
+            'start_date'=>I('start_date'),'end_date'=>I('end_date',''),
+            'capacity'=>intval(I('capacity',0)),'enrolled'=>intval(I('enrolled',0)),
+            'status'=>1,'create_time'=>time()
+        ]);
+        $id=M('Schedule')->add($data);
+        $id?$this->json(0,'创建成功',['id'=>$id]):$this->json(-1,'创建失败');
+    }
+
+    public function scheduleUpdate() {
+        $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');
+        $data=[];foreach(['class_id','course_id','teacher_id','student_id','type','grade_id','week_day','room_id','capacity','enrolled','status'] as $f){$v=I($f,'');if($v!=='')$data[$f]=intval($v);}
+        foreach(['start_time','end_time','start_date','end_date','room'] as $f){$v=I($f,'');if($v!=='')$data[$f]=$v;}
+        if(empty($data))$this->json(-1,'无更新参数');
+        M('Schedule')->where(['id'=>$id])->save($data)!==false?$this->json(0,'更新成功'):$this->json(-1,'更新失败');
+    }
+
+    public function scheduleDelete() {
+        $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');
+        M('Schedule')->where($this->_buildWhere(['id'=>$id]))->delete()?$this->json(0,'删除成功'):$this->json(-1,'删除失败');
+    }
+
+    public function scheduleConflictCheck() {
+        $teacher_id=intval(I('teacher_id'));$week_day=intval(I('week_day'));
+        $start_time=I('start_time');$end_time=I('end_time');
+        $exclude_id=intval(I('exclude_id',0));
+        if(!$teacher_id||!$week_day||!$start_time||!$end_time)$this->json(-1,'参数不足');
+        $where=$this->_buildWhere(['teacher_id'=>$teacher_id,'week_day'=>$week_day,'status'=>1]);
+        $where['start_time']=['lt',$end_time];
+        $where['_string']="end_time > '{$start_time}'";
+        if($exclude_id>0)$where['id']=['neq',$exclude_id];
+        $conflicts=M('Schedule')->where($where)->select();
+        if(empty($conflicts)){$this->json(0,'无冲突');return;}
+        $this->json(0,'冲突',['conflicts'=>$conflicts]);
+    }
+
+    // ========== 1v1 预约 ==========
+
+    public function reservationList() {
+        $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));
+        $offset=($page-1)*$ps;$where=$this->_buildWhere();
+        $s=intval(I('student_id',0));if($s>0)$where['student_id']=$s;
+        $t=intval(I('teacher_id',0));if($t>0)$where['teacher_id']=$t;
+        $sd=I('schedule_date','');if($sd)$where['schedule_date']=$sd;
+        $st=intval(I('status',-1));if($st>=0)$where['status']=$st;
+        $list=M('Reservation')->where($where)->order('schedule_date desc,start_time')->limit($offset,$ps)->select();
+        $total=M('Reservation')->where($where)->count();
+        $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]);
+    }
+
+    public function reservationCreate() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $data=$this->_buildWhere([
+            'student_id'=>intval(I('student_id')),'teacher_id'=>intval(I('teacher_id')),
+            'subject_id'=>intval(I('subject_id',0)),'schedule_date'=>I('schedule_date'),
+            'start_time'=>I('start_time'),'end_time'=>I('end_time'),
+            'remark'=>I('remark',''),'status'=>0,'add_time'=>time()
+        ]);
+        $id=M('Reservation')->add($data);
+        $id?$this->json(0,'预约成功',['id'=>$id]):$this->json(-1,'预约失败');
+    }
+
+    public function reservationConfirm() {
+        $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');
+        M('Reservation')->where($this->_buildWhere(['id'=>$id]))->save(['status'=>1])!==false?$this->json(0,'确认成功'):$this->json(-1,'操作失败');
+    }
+
+    public function reservationComplete() {
+        $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');
+        M('Reservation')->where($this->_buildWhere(['id'=>$id]))->save(['status'=>2])!==false?$this->json(0,'已完成'):$this->json(-1,'操作失败');
+    }
+
+    public function reservationCancel() {
+        $id=intval(I('id'));if($id<=0)$this->json(-1,'参数错误');
+        M('Reservation')->where($this->_buildWhere(['id'=>$id]))->save(['status'=>3])!==false?$this->json(0,'已取消'):$this->json(-1,'操作失败');
+    }
+
+    // ========== 教师可约时段 ==========
+
+    public function teacherAvailabilityList() {
+        $teacher_id=intval(I('teacher_id'));
+        if($teacher_id<=0)$this->json(-1,'参数错误');
+        $list=M('TeacherAvailability')->where(['teacher_id'=>$teacher_id])->order('week_day,start_time')->select();
+        $this->json(0,'success',['list'=>$list]);
+    }
+
+    public function teacherAvailabilitySave() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $teacher_id=intval(I('teacher_id'));if($teacher_id<=0)$this->json(-1,'参数错误');
+        $items=I('items');if(empty($items))$this->json(-1,'参数错误');
+        M('TeacherAvailability')->where(['teacher_id'=>$teacher_id])->delete();
+        $rows=[];
+        foreach($items as $it){
+            $rows[]=['teacher_id'=>$teacher_id,'week_day'=>intval($it['week_day']),
+                'start_time'=>$it['start_time'],'end_time'=>$it['end_time'],
+                'max_students'=>intval($it['max_students']??1),'status'=>1];
+        }
+        if(!empty($rows)){M('TeacherAvailability')->addAll($rows);}
+        $this->json(0,'保存成功');
+    }
+
+    // ========== 课时包 ==========
+
+    public function studentPackageList() {
+        $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));
+        $offset=($page-1)*$ps;$where=$this->_buildWhere();
+        $s=intval(I('student_id',0));if($s>0)$where['student_id']=$s;
+        $st=intval(I('status',-1));if($st>=0)$where['status']=$st;
+        $list=M('StudentPackage')->where($where)->order('id desc')->limit($offset,$ps)->select();
+        $total=M('StudentPackage')->where($where)->count();
+        $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]);
+    }
+
+    public function studentPackageCreate() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $data=$this->_buildWhere([
+            'student_id'=>intval(I('student_id')),'package_id'=>intval(I('package_id',0)),
+            'subject_id'=>intval(I('subject_id',0)),'type'=>intval(I('type',1)),
+            'total_hours'=>floatval(I('total_hours')),'gift_hours'=>floatval(I('gift_hours',0)),
+            'total_amount'=>floatval(I('total_amount',0)),
+            'remaining_hours'=>floatval(I('total_hours')),'used_hours'=>0,
+            'expire_date'=>intval(I('expire_date',0)),'status'=>1,
+            'remark'=>I('remark',''),'add_time'=>time()
+        ]);
+        $id=M('StudentPackage')->add($data);
+        if($id){
+            // 记录购课流水
+            M('ConsumptionLog')->add(['campus_id'=>intval($data['campus_id']??0),
+                'student_id'=>$data['student_id'],'package_id'=>$id,'type'=>2,
+                'hours'=>$data['total_hours'],'remark'=>'购买课时包','add_time'=>time()]);
+            $this->json(0,'购买成功',['id'=>$id]);
+        }else{$this->json(-1,'购买失败');}
+    }
+
+    public function consumptionLogList() {
+        $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));
+        $offset=($page-1)*$ps;$where=$this->_buildWhere();
+        $s=intval(I('student_id',0));if($s>0)$where['student_id']=$s;
+        $p=intval(I('package_id',0));if($p>0)$where['package_id']=$p;
+        $list=M('ConsumptionLog')->where($where)->order('id desc')->limit($offset,$ps)->select();
+        $total=M('ConsumptionLog')->where($where)->count();
+        $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]);
+    }
+
+    // ========== 托管签到 ==========
+
+    public function aftercareCheckinList() {
+        $page=max(1,intval(I('page',1)));$ps=min(50,max(5,intval(I('pageSize',15))));
+        $offset=($page-1)*$ps;$where=$this->_buildWhere();
+        $d=I('checkin_date','');if($d)$where['checkin_date']=$d;
+        $s=intval(I('student_id',0));if($s>0)$where['student_id']=$s;
+        $list=M('AftercareCheckin')->where($where)->order('checkin_date desc')->limit($offset,$ps)->select();
+        $total=M('AftercareCheckin')->where($where)->count();
+        $this->json(0,'success',['list'=>$list,'total'=>$total,'page'=>$page,'pageSize'=>$ps]);
+    }
+
+    public function aftercareCheckin() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $student_id=intval(I('student_id'));$date=I('checkin_date',date('Y-m-d'));
+        if($student_id<=0)$this->json(-1,'参数错误');
+        $exist=M('AftercareCheckin')->where(['student_id'=>$student_id,'checkin_date'=>$date])->find();
+        if($exist)$this->json(-1,'今日已签到');
+        $data=$this->_buildWhere([
+            'student_id'=>$student_id,'checkin_date'=>$date,
+            'checkin_time'=>date('H:i:s'),'status'=>1,'add_time'=>time()
+        ]);
+        $id=M('AftercareCheckin')->add($data);
+        $id?$this->json(0,'签到成功',['id'=>$id]):$this->json(-1,'签到失败');
+    }
+
+    public function aftercareCheckout() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $student_id=intval(I('student_id'));$date=I('checkin_date',date('Y-m-d'));
+        if($student_id<=0)$this->json(-1,'参数错误');
+        $record=M('AftercareCheckin')->where(['student_id'=>$student_id,'checkin_date'=>$date])->find();
+        if(!$record)$this->json(-1,'今日未签到');
+        if($record['status']==2)$this->json(-1,'今日已签退');
+        M('AftercareCheckin')->where(['id'=>$record['id']])->save([
+            'checkout_time'=>date('H:i:s'),'status'=>2,
+            'pickup_person'=>I('pickup_person',''),'remark'=>I('remark','')
+        ]);
+        $this->json(0,'签退成功');
+    }
+
+    // ========== 年级/教材 ==========
+
+    public function gradeList() {
+        $list=M('Grade')->where(['status'=>1])->order('sort_order')->select();
+        $this->json(0,'success',['list'=>$list]);
+    }
+
+    public function textbookList() {
+        $subject_id=intval(I('subject_id',0));$grade_id=intval(I('grade_id',0));
+        $where=[];if($subject_id>0)$where['subject_id']=$subject_id;
+        if($grade_id>0)$where['grade_id']=$grade_id;
+        $list=M('Textbook')->where($where)->select();
+        $this->json(0,'success',['list'=>$list]);
+    }
+
+    public function textbookCreate() {
+        if(!IS_POST)$this->json(-1,'非法请求');
+        $data=['subject_id'=>intval(I('subject_id')),'grade_id'=>intval(I('grade_id')),
+            'name'=>I('name'),'publisher'=>I('publisher',''),'version'=>I('version',''),
+            'status'=>1,'add_time'=>time()];
+        $id=M('Textbook')->add($data);
+        $id?$this->json(0,'添加成功',['id'=>$id]):$this->json(-1,'添加失败');
+    }
 
     // ========== 工具方法 ==========
 

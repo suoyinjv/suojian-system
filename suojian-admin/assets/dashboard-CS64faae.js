@@ -1,0 +1,1 @@
+import{t as e}from"./request-9smzW3O6.js";var t=`http://47.114.125.123`;async function n(){return await e.get(`/m/Admin/c/Api/a/dashboardStats`,{baseURL:t})}async function r(){return await e.get(`/m/Admin/c/Api/a/recentArticles`,{baseURL:t})}export{r as n,n as t};

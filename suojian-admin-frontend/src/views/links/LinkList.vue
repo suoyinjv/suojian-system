@@ -104,7 +104,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Edit, Delete } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -124,7 +124,7 @@ async function loadData() {
   loading.value = true
   try {
     const params = { page: page.value, pageSize }
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/linkList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/linkList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr.map(item => ({ ...item, status: item.status ?? 1, is_new_window_open: item.is_new_window_open ?? 1 }))
@@ -177,7 +177,7 @@ async function handleSave() {
     const url = isEdit.value
       ? BASE + '/m/Admin/c/Api/a/linkUpdate'
       : BASE + '/m/Admin/c/Api/a/linkCreate'
-    await axios.post(url, params.toString(), {
+    await http.post(url, params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(isEdit.value ? '编辑成功' : '添加成功')
@@ -195,7 +195,7 @@ function handleDelete(row) {
   ElMessageBox.confirm(`确定删除友链「${row.name}」吗？`, '确认删除', { type: 'warning' })
     .then(async () => {
       try {
-        await axios.get(BASE + '/m/Admin/c/Api/a/linkDelete?id=' + row.id)
+        await http.get(BASE + '/m/Admin/c/Api/a/linkDelete?id=' + row.id)
         ElMessage.success('删除成功')
         loadData()
       } catch {
@@ -211,7 +211,7 @@ async function toggleStatus(row) {
     const params = new URLSearchParams()
     params.append('id', row.id)
     params.append('status', row.status)
-    await axios.post(BASE + '/m/Admin/c/Api/a/linkUpdate', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/linkUpdate', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(row.status === 1 ? '已启用' : '已停用')

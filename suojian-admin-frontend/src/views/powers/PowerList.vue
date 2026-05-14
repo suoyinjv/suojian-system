@@ -43,7 +43,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -57,7 +57,7 @@ const treeProps = {
 async function loadData() {
   loading.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/powerList')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/powerList')
     const data = res.data
     const list = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     treeData.value = list

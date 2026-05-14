@@ -64,7 +64,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -81,7 +81,7 @@ async function loadData() {
     const params = { page: page.value, pageSize }
     if (filters.status !== '') params.status = filters.status
     if (filters.phone) params.phone = filters.phone
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/smsList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/smsList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr

@@ -99,7 +99,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Edit, Delete, Top, Bottom } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const activeTab = ref('header')
@@ -136,7 +136,7 @@ async function loadData() {
   loading.value = true
   try {
     const params = { page: page.value, pageSize }
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/' + getApiEndpoint(), { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/' + getApiEndpoint(), { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr
@@ -185,7 +185,7 @@ async function handleSave() {
     if (isEdit.value && editId.value) params.append('id', editId.value)
     const endpoint = isEdit.value ? getUpdateEndpoint() : getCreateEndpoint()
     const url = BASE + '/m/Admin/c/Api/a/' + endpoint
-    await axios.post(url, params.toString(), {
+    await http.post(url, params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
@@ -203,7 +203,7 @@ function handleDelete(row) {
   ElMessageBox.confirm(`确定删除导航「${row.title}」吗？`, '确认删除', { type: 'warning' })
     .then(async () => {
       try {
-        await axios.get(BASE + '/m/Admin/c/Api/a/' + getDeleteEndpoint() + '?id=' + row.id)
+        await http.get(BASE + '/m/Admin/c/Api/a/' + getDeleteEndpoint() + '?id=' + row.id)
         ElMessage.success('删除成功')
         loadData()
       } catch {

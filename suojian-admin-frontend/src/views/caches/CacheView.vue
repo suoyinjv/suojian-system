@@ -84,7 +84,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { DataBoard, Coin, Timer, Refresh, Delete } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -101,7 +101,7 @@ function formatTime(ts) {
 async function loadCacheStatus() {
   loading.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/cacheInfo')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/cacheInfo')
     const data = res.data
     if (data && typeof data === 'object') {
       cacheInfo.total = data.total ?? '-'
@@ -123,7 +123,7 @@ async function handleClearAll() {
     .then(async () => {
       clearing.value = true
       try {
-        await axios.post(BASE + '/m/Admin/c/Api/a/cacheClear', null, {
+        await http.post(BASE + '/m/Admin/c/Api/a/cacheClear', null, {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         })
         ElMessage.success('全部缓存已清理')
@@ -144,7 +144,7 @@ async function handleClearOne(row) {
       try {
         const params = new URLSearchParams()
         params.append('key', row.key)
-        await axios.post(BASE + '/m/Admin/c/Api/a/cacheClear', params.toString(), {
+        await http.post(BASE + '/m/Admin/c/Api/a/cacheClear', params.toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         })
         ElMessage.success('缓存已清理')

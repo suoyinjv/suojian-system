@@ -1,0 +1,1 @@
+import{lt as e}from"./_plugin-vue_export-helper-n8qx7DKb.js";import{r as t}from"./index-BUJa2hnG.js";var n=t(`app`,()=>{let t=e(!1),n=e(null);function r(){t.value=!t.value}function i(e){n.value=e}function a(){sessionStorage.removeItem(`token`),n.value=null}return{sidebarCollapsed:t,user:n,toggleSidebar:r,setUser:i,logout:a}});export{n as t};

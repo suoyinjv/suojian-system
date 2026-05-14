@@ -75,7 +75,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Check } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -96,7 +96,7 @@ const form = reactive({
 async function loadData() {
   loading.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/emailConfig')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/emailConfig')
     const data = res.data
     if (data && typeof data === 'object') {
       form.smtp_host = data.smtp_host || data.host || ''
@@ -130,7 +130,7 @@ async function handleSave() {
     params.append('from_name', form.from_name)
     params.append('smtp_user', form.smtp_user)
     params.append('smtp_pass', form.smtp_pass)
-    await axios.post(BASE + '/m/Admin/c/Api/a/emailConfigSave', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/emailConfigSave', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('邮箱配置已保存')
@@ -151,7 +151,7 @@ async function handleTest() {
   try {
     const params = new URLSearchParams()
     params.append('email', testEmail.value)
-    await axios.post(BASE + '/m/Admin/c/Api/a/emailTest', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/emailTest', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(`测试邮件已发送到 ${testEmail.value}`)

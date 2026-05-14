@@ -102,7 +102,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Search, Edit } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -123,7 +123,7 @@ async function loadData() {
     const params = { page: page.value, pageSize }
     if (filters.key) params.key = filters.key
     if (filters.group) params.group = filters.group
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/configList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/configList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr
@@ -161,7 +161,7 @@ async function handleSave() {
     const params = new URLSearchParams()
     params.append('config_key', form.config_key)
     params.append('config_value', form.config_value)
-    await axios.post(BASE + '/m/Admin/c/Api/a/configSave', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/configSave', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('保存成功')

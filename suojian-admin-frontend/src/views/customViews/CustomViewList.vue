@@ -130,7 +130,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Edit, Delete } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -151,7 +151,7 @@ async function loadData() {
   loading.value = true
   try {
     const params = { page: page.value, pageSize }
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/customViewList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/customViewList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr.map(item => ({ ...item, status: item.status ?? 1 }))
@@ -207,7 +207,7 @@ function handleImageRemove() {
 async function uploadImage(file) {
   const fd = new FormData()
   fd.append('file', file)
-  const res = await axios.post(BASE + '/m/Admin/c/Api/a/uploadImage', fd, {
+  const res = await http.post(BASE + '/m/Admin/c/Api/a/uploadImage', fd, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
   return res.data?.url || res.data?.data?.url || ''
@@ -246,7 +246,7 @@ async function handleSave() {
       ? BASE + '/m/Admin/c/Api/a/customViewUpdate'
       : BASE + '/m/Admin/c/Api/a/customViewCreate'
 
-    await axios.post(url, params.toString(), {
+    await http.post(url, params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(isEdit.value ? '编辑成功' : '新增成功')
@@ -265,7 +265,7 @@ function handleDelete(row) {
   ElMessageBox.confirm(`确定删除视图「${row.title}」吗？`, '确认删除', { type: 'warning' })
     .then(async () => {
       try {
-        await axios.get(BASE + '/m/Admin/c/Api/a/customViewDelete?id=' + row.id)
+        await http.get(BASE + '/m/Admin/c/Api/a/customViewDelete?id=' + row.id)
         ElMessage.success('删除成功')
         loadData()
       } catch {

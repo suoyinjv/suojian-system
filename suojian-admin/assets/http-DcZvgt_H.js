@@ -1,0 +1,1 @@
+import{t as e}from"./axios-DziIki9L.js";var t=e.create({timeout:15e3});t.interceptors.request.use(e=>{let t=sessionStorage.getItem(`token`);return t&&(e.headers.Authorization=`Bearer ${t}`),e});export{t};

@@ -108,7 +108,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Search, Edit, Delete } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -136,7 +136,7 @@ async function loadData() {
     const params = { page: page.value, pageSize }
     if (filters.name) params.name = filters.name
     if (filters.status !== '') params.status = filters.status
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/regionList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/regionList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr
@@ -196,7 +196,7 @@ async function handleSave() {
     const url = isEdit.value
       ? BASE + '/m/Admin/c/Api/a/regionUpdate'
       : BASE + '/m/Admin/c/Api/a/regionCreate'
-    await axios.post(url, params.toString(), {
+    await http.post(url, params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success(isEdit.value ? '编辑成功' : '添加成功')
@@ -214,7 +214,7 @@ function handleDelete(row) {
   ElMessageBox.confirm(`确定删除区域「${row.name}」吗？`, '确认删除', { type: 'warning' })
     .then(async () => {
       try {
-        await axios.post(BASE + '/m/Admin/c/Api/a/regionDelete', new URLSearchParams({ id: row.id }).toString(), {
+        await http.post(BASE + '/m/Admin/c/Api/a/regionDelete', new URLSearchParams({ id: row.id }).toString(), {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         })
         ElMessage.success('删除成功')

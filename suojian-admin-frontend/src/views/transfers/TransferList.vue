@@ -106,7 +106,7 @@
 import { ref, reactive, watch, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Plus, Search } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const list = ref([])
@@ -136,7 +136,7 @@ async function loadData() {
     const params = { page: page.value, pageSize }
     if (filters.keyword) params.keyword = filters.keyword
     if (filters.campus_id) params.campus_id = filters.campus_id
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/transferList', { params })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/transferList', { params })
     const data = res.data
     const arr = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
     list.value = arr
@@ -160,7 +160,7 @@ async function searchStudents(query) {
   if (!query) { studentOptions.value = []; return }
   searchingStudent.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/studentList', { params: { keyword: query, pageSize: 20 } })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/studentList', { params: { keyword: query, pageSize: 20 } })
     const data = res.data
     studentOptions.value = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
   } catch {
@@ -178,7 +178,7 @@ function onStudentChange(val) {
 
 async function loadCampuses() {
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/campusList', { params: { pageSize: 200 } })
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/campusList', { params: { pageSize: 200 } })
     const data = res.data
     campusList.value = Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : []
   } catch {
@@ -212,7 +212,7 @@ async function handleSave() {
     if (form.student_name) params.append('student_name', form.student_name)
     params.append('to_campus_id', form.to_campus_id)
     if (form.reason) params.append('reason', form.reason)
-    await axios.post(BASE + '/m/Admin/c/Api/a/transferCreate', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/transferCreate', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('转校记录添加成功')

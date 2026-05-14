@@ -78,7 +78,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Check, Picture } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -100,7 +100,7 @@ const form = reactive({
 async function loadData() {
   loading.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/siteConfig')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/siteConfig')
     const data = res.data
     if (data && typeof data === 'object') {
       form.site_name = data.site_name || data.siteName || ''
@@ -140,7 +140,7 @@ async function handleSave() {
     params.append('page_size', form.page_size)
     params.append('register_open', form.register_open)
     params.append('maintenance', form.maintenance)
-    await axios.post(BASE + '/m/Admin/c/Api/a/siteConfigSave', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/siteConfigSave', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('站点设置已保存')

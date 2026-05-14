@@ -71,7 +71,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Check, View } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -90,7 +90,7 @@ const previewUrl = computed(() => {
 async function loadData() {
   loading.value = true
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/seoConfig')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/seoConfig')
     const data = res.data
     if (data && typeof data === 'object') {
       form.title = data.title || ''
@@ -124,7 +124,7 @@ async function handleSave() {
     params.append('title', form.title)
     params.append('keywords', form.keywords)
     params.append('description', form.description)
-    await axios.post(BASE + '/m/Admin/c/Api/a/seoSave', params.toString(), {
+    await http.post(BASE + '/m/Admin/c/Api/a/seoSave', params.toString(), {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
     ElMessage.success('SEO设置保存成功')

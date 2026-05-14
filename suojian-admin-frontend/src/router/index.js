@@ -385,6 +385,34 @@ const routes = [
         component: () => import('../views/resources/ResourceList.vue'),
         meta: { title: '资源库' },
       },
+      // ========== 排课中心 ==========
+      {
+        path: 'schedules-center',
+        name: 'ScheduleCenter',
+        component: () => import('../views/schedules/ScheduleCenter.vue'),
+        meta: { title: '排课中心' },
+      },
+      // ========== 1v1预约 ==========
+      {
+        path: 'reservations',
+        name: 'Reservations',
+        component: () => import('../views/reservations/ReservationList.vue'),
+        meta: { title: '1v1预约' },
+      },
+      // ========== 课时包 ==========
+      {
+        path: 'student-packages',
+        name: 'StudentPackages',
+        component: () => import('../views/studentPackages/StudentPackageList.vue'),
+        meta: { title: '课时包管理' },
+      },
+      // ========== 托管签到 ==========
+      {
+        path: 'aftercare',
+        name: 'Aftercare',
+        component: () => import('../views/aftercare/AftercareCheckin.vue'),
+        meta: { title: '托管签到' },
+      },
     ],
   },
   {

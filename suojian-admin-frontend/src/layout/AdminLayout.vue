@@ -308,6 +308,29 @@
             <span>报表管理</span>
           </el-menu-item>
         </el-sub-menu>
+        <!-- 排课系统 -->
+        <el-sub-menu index="scheduling">
+          <template #title>
+            <el-icon><Calendar /></el-icon>
+            <span>排课系统</span>
+          </template>
+          <el-menu-item index="/schedules-center">
+            <el-icon><Grid /></el-icon>
+            <span>排课中心</span>
+          </el-menu-item>
+          <el-menu-item index="/reservations">
+            <el-icon><EditPen /></el-icon>
+            <span>1v1预约</span>
+          </el-menu-item>
+          <el-menu-item index="/student-packages">
+            <el-icon><Coin /></el-icon>
+            <span>课时包</span>
+          </el-menu-item>
+          <el-menu-item index="/aftercare">
+            <el-icon><Clock /></el-icon>
+            <span>托管签到</span>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
@@ -409,6 +432,27 @@ function toggleFullscreen() {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
 }
 
+.admin-sidebar .el-menu {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  max-height: calc(100vh - 60px);
+}
+
+.admin-sidebar .el-menu::-webkit-scrollbar {
+  width: 5px;
+}
+.admin-sidebar .el-menu::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+}
+.admin-sidebar .el-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-menu:not(.el-menu--collapse) {
+  width: 240px;
+}
+
 .sidebar-header {
   height: 60px;
   display: flex;
@@ -430,11 +474,6 @@ function toggleFullscreen() {
   font-size: 22px;
   font-weight: 700;
   color: #4fc3f7;
-}
-
-.sidebar-menu {
-  border-right: none;
-  flex: 1;
 }
 
 .sidebar-menu:not(.el-menu--collapse) {

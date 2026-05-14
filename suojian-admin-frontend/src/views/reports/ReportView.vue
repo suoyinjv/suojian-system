@@ -144,7 +144,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { User, Plus, DataBoard } from '@element-plus/icons-vue'
-import axios from 'axios'
+import http from '../../utils/http'
 
 const BASE = 'http://47.114.125.123'
 const loading = ref(false)
@@ -160,7 +160,7 @@ function formatMoney(v) {
 
 async function loadFinance() {
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/reportFinance')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/reportFinance')
     const data = res.data
     if (data && typeof data === 'object') {
       finance.total_income = data.total_income ?? data.totalIncome ?? 0
@@ -177,7 +177,7 @@ async function loadFinance() {
 
 async function loadStudent() {
   try {
-    const res = await axios.get(BASE + '/m/Admin/c/Api/a/reportStudent')
+    const res = await http.get(BASE + '/m/Admin/c/Api/a/reportStudent')
     const data = res.data
     if (data && typeof data === 'object') {
       student.total_students = data.total_students ?? data.totalStudents ?? 0
