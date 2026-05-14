@@ -1,0 +1,72 @@
+/* SUOJIAN Admin CSS */
+:root {
+  --el-color-primary: #4fc3f7;
+  --el-color-primary-light-3: #81d4fa;
+  --el-color-primary-light-5: #b3e5fc;
+  --el-color-primary-light-7: #e1f5fe;
+  --el-color-primary-dark-2: #29b6f6;
+  --el-border-radius-base: 8px;
+  --el-font-size-base: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #909399;
+}
+
+/* Element Plus overrides */
+.el-table {
+  border-radius: 8px;
+}
+
+.el-table th.el-table__cell {
+  background-color: #f5f7fa !important;
+  color: #606266;
+  font-weight: 600;
+}
+
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: #fafafa;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: #e8f4fd !important;
+}
+
+.el-card__header {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.el-menu-item.is-active {
+  background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(124, 77, 255, 0.08)) !important;
+  border-right: 3px solid #4fc3f7;
+}
+
+.el-menu-item:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
