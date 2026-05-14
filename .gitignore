@@ -2,4 +2,4 @@
 .DS_Store
 .ide
 *.log
-*.lock
+*.lockApplication/Runtime/Cache/
